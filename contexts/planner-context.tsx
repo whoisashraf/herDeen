@@ -17,9 +17,8 @@ interface PlannerContextType {
   addTask: () => void;
   updateTask: (id: string, updates: Partial<Task>) => void;
   deleteTask: (id: string) => void;
+  setTasksFromAI: (tasks: Task[]) => void;
   generatePlan: () => void;
-  savePlan: () => void;
-  generatedPlan: Task[];
   savedPlan: Task[];
   toggleTaskComplete: (id: string) => void;
 }
@@ -27,23 +26,7 @@ interface PlannerContextType {
 const PlannerContext = createContext<PlannerContextType | undefined>(undefined);
 
 export function PlannerProvider({ children }: { children: ReactNode }) {
-  const [tasks, setTasks] = useState<Task[]>([
-    {
-      id: '1',
-      title: '',
-      priority: 'medium',
-      estimatedDuration: 40,
-      preferredTime: '01:50',
-    },
-    {
-      id: '2',
-      title: '',
-      priority: 'medium',
-      estimatedDuration: 40,
-      preferredTime: '01:50',
-    },
-  ]);
-  const [generatedPlan, setGeneratedPlan] = useState<Task[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [savedPlan, setSavedPlan] = useState<Task[]>([]);
 
   const addTask = () => {
@@ -65,22 +48,31 @@ export function PlannerProvider({ children }: { children: ReactNode }) {
     setTasks(tasks.filter((task) => task.id !== id));
   };
 
-  const generatePlan = () => {
-    // Simulate AI generation - assign times to tasks
-    const plan = tasks.map((task, index) => {
-      const startHour = 9 + index;
-      return {
-        ...task,
-        startTime: `${startHour}:00 AM`,
-        endTime: `${startHour}:45 AM`,
-        description: task.description || "Spend time on this task with focus and intention.",
-      };
-    });
-    setGeneratedPlan(plan);
+  const setTasksFromAI = (aiTasks: Task[]) => {
+    setTasks(aiTasks);
   };
 
-  const savePlan = () => {
-    setSavedPlan(generatedPlan);
+  const generatePlan = () => {
+    // Generate schedule with proper time slots based on preferred times
+    const plan = tasks.map((task) => {
+      // Use preferred time or calculate based on duration
+      const [hours, minutes] = task.preferredTime.split(':').map(Number);
+      const startTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+      
+      // Calculate end time
+      const endMinutes = minutes + task.estimatedDuration;
+      const endHours = hours + Math.floor(endMinutes / 60);
+      const finalMinutes = endMinutes % 60;
+      const endTime = `${endHours.toString().padStart(2, '0')}:${finalMinutes.toString().padStart(2, '0')}`;
+      
+      return {
+        ...task,
+        startTime,
+        endTime,
+        description: task.description || task.title,
+      };
+    });
+    setSavedPlan(plan);
   };
 
   const toggleTaskComplete = (id: string) => {
@@ -98,9 +90,8 @@ export function PlannerProvider({ children }: { children: ReactNode }) {
         addTask,
         updateTask,
         deleteTask,
+        setTasksFromAI,
         generatePlan,
-        savePlan,
-        generatedPlan,
         savedPlan,
         toggleTaskComplete,
       }}

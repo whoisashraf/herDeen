@@ -1,3 +1,4 @@
+import { AIChatModal } from '@/components/ai-chat-modal';
 import { TaskCard } from '@/components/task-card';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { usePlanner } from '@/contexts/planner-context';
@@ -7,8 +8,9 @@ import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function PlannerScreen() {
-  const { tasks, addTask, updateTask, deleteTask, generatePlan } = usePlanner();
-  const [expandedTasks, setExpandedTasks] = useState<string[]>(['1', '2']);
+  const { tasks, addTask, updateTask, deleteTask, setTasksFromAI, generatePlan } = usePlanner();
+  const [expandedTasks, setExpandedTasks] = useState<string[]>([]);
+  const [showAIChat, setShowAIChat] = useState(false);
   const navigation = useNavigation();
   const router = useRouter();
 
@@ -22,9 +24,15 @@ export default function PlannerScreen() {
     navigation.dispatch(DrawerActions.openDrawer());
   };
 
+  const handleAITasksReceived = (aiTasks: any[]) => {
+    setTasksFromAI(aiTasks);
+    // Expand all tasks so user can review them
+    setExpandedTasks(aiTasks.map((t) => t.id));
+  };
+
   const handleGeneratePlan = () => {
     generatePlan();
-    router.push('/(drawer)/planner/plan-result');
+    router.push('/(drawer)/planner/my-plan');
   };
 
   return (
@@ -54,7 +62,7 @@ export default function PlannerScreen() {
             <Text style={styles.heroTitle}>
               Let's AI plan your day with{'\n'}peace and purpose.
             </Text>
-            <TouchableOpacity style={styles.planButton}>
+            <TouchableOpacity style={styles.planButton} onPress={() => setShowAIChat(true)}>
               <Text style={styles.planButtonText}>Plan my day for me</Text>
               <IconSymbol name="sparkles" size={16} color="#6B46C1" />
             </TouchableOpacity>
@@ -88,11 +96,18 @@ export default function PlannerScreen() {
         {/* Generate Button */}
         <TouchableOpacity style={styles.generateButton} onPress={handleGeneratePlan}>
           <IconSymbol name="sparkles" size={20} color="#fff" />
-          <Text style={styles.generateButtonText}>Generate My Day Plan</Text>
+          <Text style={styles.generateButtonText}> Continue with plan</Text>
         </TouchableOpacity>
 
         <View style={styles.bottomSpacer} />
       </ScrollView>
+
+      {/* AI Chat Modal */}
+      <AIChatModal
+        visible={showAIChat}
+        onClose={() => setShowAIChat(false)}
+        onTasksReceived={handleAITasksReceived}
+      />
     </View>
   );
 }
