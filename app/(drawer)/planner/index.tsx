@@ -4,9 +4,10 @@ import { TaskCard } from '@/components/task-card';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { usePlanner } from '@/contexts/planner-context';
 import { DrawerActions } from '@react-navigation/native';
+import { Image } from 'expo-image';
 import { useNavigation, useRouter } from 'expo-router';
 import { useState } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function PlannerScreen() {
   const { tasks, addTask, updateTask, deleteTask, setTasksFromAI, generatePlan } = usePlanner();
@@ -41,9 +42,11 @@ export default function PlannerScreen() {
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.headerLeft}>
-          <View style={styles.logo}>
-            <IconSymbol name="moon.stars" size={20} color="#fff" />
-          </View>
+          <Image
+            source={require('@/assets/icons/ai_logo.svg')}
+            style={styles.logo}
+            contentFit="contain"
+          />
           <Text style={styles.headerTitle}>AI Day Planner</Text>
         </View>
         <View style={styles.headerRight}>
@@ -57,21 +60,29 @@ export default function PlannerScreen() {
       </View>
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+
+      
         {/* Hero Card */}
-        <View style={styles.heroCard}>
+        <ImageBackground
+          source={require('@/assets/images/card-bg.png')}
+          style={styles.heroCard}
+          imageStyle={styles.heroCardImage}
+        >
           <View style={styles.heroContent}>
             <Text style={styles.heroTitle}>
               Let&apos;s AI plan your day with{'\n'}peace and purpose.
             </Text>
             <TouchableOpacity style={styles.planButton} onPress={() => setShowAIChat(true)}>
               <Text style={styles.planButtonText}>Plan my day for me</Text>
-              <IconSymbol name="sparkles" size={16} color="#6B46C1" />
+              <IconSymbol name="sparkles" size={16} color="#62206E" />
             </TouchableOpacity>
           </View>
-          <View style={styles.heroIcon}>
-            <IconSymbol name="brain" size={60} color="#fff" />
-          </View>
-        </View>
+          <Image
+            source={require('@/assets/icons/ai_icon.svg')}
+            style={styles.heroIcon}
+            contentFit="contain"
+          />
+        </ImageBackground>
 
         {/* Tasks */}
         <View style={styles.tasksContainer}>
@@ -134,10 +145,6 @@ const styles = StyleSheet.create({
   logo: {
     width: 32,
     height: 32,
-    borderRadius: 8,
-    backgroundColor: '#6B46C1',
-    alignItems: 'center',
-    justifyContent: 'center',
     marginRight: 10,
   },
   headerTitle: {
@@ -159,7 +166,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   heroCard: {
-    backgroundColor: '#6B46C1',
+    backgroundColor: '#62206E',
     marginHorizontal: 20,
     marginTop: 20,
     borderRadius: 20,
@@ -167,6 +174,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     overflow: 'hidden',
+  },
+  heroCardImage: {
+    borderRadius: 20,
   },
   heroContent: {
     flex: 1,
@@ -191,24 +201,24 @@ const styles = StyleSheet.create({
   planButtonText: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#6B46C1',
+    color: '#62206E',
   },
   heroIcon: {
-    width: 80,
+    width: 120,
     height: 80,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginLeft: 10,
+    top:20,
   },
   tasksContainer: {
     paddingHorizontal: 20,
-    paddingTop: 24,
+    paddingTop: 32,
+    paddingBottom: 8,
   },
   addMoreButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 16,
+    paddingVertical: 20,
+    marginTop: 8,
     gap: 8,
   },
   addMoreText: {
@@ -217,12 +227,12 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   generateButton: {
-    backgroundColor: '#6B46C1',
+    backgroundColor: '#62206E',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     marginHorizontal: 20,
-    marginTop: 12,
+    marginTop: 24,
     paddingVertical: 16,
     borderRadius: 16,
     gap: 8,

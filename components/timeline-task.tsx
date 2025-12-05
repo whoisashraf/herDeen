@@ -46,7 +46,7 @@ export function TimelineTask({
             </View>
             {onEdit && (
               <TouchableOpacity style={styles.editButton} onPress={onEdit}>
-                <IconSymbol name="pencil" size={14} color="#6B46C1" />
+                <IconSymbol name="pencil" size={14} color="#62206E" />
                 <Text style={styles.editText}>Edit</Text>
               </TouchableOpacity>
             )}
@@ -80,10 +80,10 @@ const styles = StyleSheet.create({
     width: 12,
     height: 12,
     borderRadius: 6,
-    backgroundColor: '#6B46C1',
+    backgroundColor: '#62206E',
     borderWidth: 2,
     borderColor: '#fff',
-    shadowColor: '#6B46C1',
+    shadowColor: '#62206E',
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
   },
   editText: {
     fontSize: 13,
-    color: '#6B46C1',
+    color: '#62206E',
     fontWeight: '500',
   },
   checkButton: {

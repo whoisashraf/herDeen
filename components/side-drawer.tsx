@@ -1,4 +1,5 @@
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { Image } from 'expo-image';
 import { usePathname, useRouter } from 'expo-router';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
@@ -43,13 +44,13 @@ export function SideDrawer() {
     <View style={styles.container}>
       <ScrollView style={styles.scrollView}>
         {/* Logo */}
+        
         <View style={styles.header}>
-          <View style={styles.logo}>
-            <IconSymbol name="moon.stars" size={24} color="#fff" />
-          </View>
-          <Text style={styles.logoText}>
-            Her<Text style={styles.logoAccent}>Deen</Text>
-          </Text>
+          <Image
+            source={require('@/assets/icons/menu_logo.svg')}
+            style={styles.logo}
+            contentFit="contain"
+          />
         </View>
 
         {/* Menu Items */}
@@ -106,12 +107,8 @@ const styles = StyleSheet.create({
     paddingTop: 60,
   },
   logo: {
-    width: 32,
+    width: 130,
     height: 32,
-    borderRadius: 8,
-    backgroundColor: '#6B46C1',
-    alignItems: 'center',
-    justifyContent: 'center',
     marginRight: 8,
   },
   logoText: {
@@ -135,7 +132,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   menuItemActive: {
-    backgroundColor: '#6B46C1',
+    backgroundColor: '#62206E',
   },
   menuText: {
     fontSize: 15,
