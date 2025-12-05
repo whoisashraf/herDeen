@@ -41,7 +41,7 @@ export function TaskCard({
       {isExpanded && (
         <View style={styles.content}>
           {/* Task Description */}
-          <Text style={styles.label}>What's on your plate today?</Text>
+          <Text style={styles.label}>What&apos;s on your plate today?</Text>
           <TextInput
             style={styles.input}
             placeholder="Online class, Grocery shopping, Client meeting"
