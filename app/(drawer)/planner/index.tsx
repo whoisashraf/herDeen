@@ -1,3 +1,4 @@
+// This is a comment to trigger a reload.
 import { AIChatModal } from '@/components/ai-chat-modal';
 import { TaskCard } from '@/components/task-card';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -60,7 +61,7 @@ export default function PlannerScreen() {
         <View style={styles.heroCard}>
           <View style={styles.heroContent}>
             <Text style={styles.heroTitle}>
-              Let's AI plan your day with{'\n'}peace and purpose.
+              Let&apos;s AI plan your day with{'\n'}peace and purpose.
             </Text>
             <TouchableOpacity style={styles.planButton} onPress={() => setShowAIChat(true)}>
               <Text style={styles.planButtonText}>Plan my day for me</Text>
