@@ -1,12 +1,13 @@
-// This is a comment to trigger a reload.
+
 import { AIChatModal } from '@/components/ai-chat-modal';
 import { TaskCard } from '@/components/task-card';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { usePlanner } from '@/contexts/planner-context';
 import { DrawerActions } from '@react-navigation/native';
+import { Image } from 'expo-image';
 import { useNavigation, useRouter } from 'expo-router';
 import { useState } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function PlannerScreen() {
   const { tasks, addTask, updateTask, deleteTask, setTasksFromAI, generatePlan } = usePlanner();
@@ -41,9 +42,7 @@ export default function PlannerScreen() {
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.headerLeft}>
-          <View style={styles.logo}>
-            <IconSymbol name="moon.stars" size={20} color="#fff" />
-          </View>
+          <Image source={require('@/assets/icons/plan-logo.png')} style={styles.logoImage} />
           <Text style={styles.headerTitle}>AI Day Planner</Text>
         </View>
         <View style={styles.headerRight}>
@@ -58,20 +57,20 @@ export default function PlannerScreen() {
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         {/* Hero Card */}
-        <View style={styles.heroCard}>
+        <ImageBackground source={require('@/assets/images/card-bg.png')} style={styles.heroCard}>
           <View style={styles.heroContent}>
-            <Text style={styles.heroTitle}>
-              Let&apos;s AI plan your day with{'\n'}peace and purpose.
-            </Text>
+            <View style={styles.heroTitleContainer}>
+              <Text style={styles.heroTitle}>
+                Let&apos;s AI plan your day with{"\n"}peace and purpose.
+              </Text>
+              <Image source={require('@/assets/images/subtract.svg')} style={styles.subtractImage} />
+            </View>
             <TouchableOpacity style={styles.planButton} onPress={() => setShowAIChat(true)}>
               <Text style={styles.planButtonText}>Plan my day for me</Text>
-              <IconSymbol name="sparkles" size={16} color="#6B46C1" />
+              <IconSymbol name="sparkles" size={16} color="#4A0C63" />
             </TouchableOpacity>
           </View>
-          <View style={styles.heroIcon}>
-            <IconSymbol name="brain" size={60} color="#fff" />
-          </View>
-        </View>
+        </ImageBackground>
 
         {/* Tasks */}
         <View style={styles.tasksContainer}>
@@ -97,7 +96,7 @@ export default function PlannerScreen() {
         {/* Generate Button */}
         <TouchableOpacity style={styles.generateButton} onPress={handleGeneratePlan}>
           <IconSymbol name="sparkles" size={20} color="#fff" />
-          <Text style={styles.generateButtonText}> Continue with plan</Text>
+          <Text style={styles.generateButtonText}>Generate My Day Plan</Text>
         </TouchableOpacity>
 
         <View style={styles.bottomSpacer} />
@@ -116,7 +115,7 @@ export default function PlannerScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: '#F5F5F5',
   },
   header: {
     flexDirection: 'row',
@@ -125,20 +124,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 60,
     paddingBottom: 16,
-    backgroundColor: '#fff',
+    backgroundColor: '#F5F5F5',
   },
   headerLeft: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 12,
   },
-  logo: {
-    width: 32,
-    height: 32,
-    borderRadius: 8,
-    backgroundColor: '#6B46C1',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 10,
+  logoImage: {
+    width: 40,
+    height: 40,
   },
   headerTitle: {
     fontSize: 16,
@@ -159,24 +154,32 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   heroCard: {
-    backgroundColor: '#6B46C1',
     marginHorizontal: 20,
     marginTop: 20,
     borderRadius: 20,
-    padding: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    padding: 24,
     overflow: 'hidden',
   },
   heroContent: {
     flex: 1,
   },
   heroTitle: {
+    flex: 1,
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: '700',
     color: '#fff',
-    marginBottom: 16,
     lineHeight: 24,
+  },
+  heroTitleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  subtractImage: {
+    width: 100,
+    height: 100,
+    resizeMode: 'contain',
   },
   planButton: {
     backgroundColor: '#fff',
@@ -191,14 +194,12 @@ const styles = StyleSheet.create({
   planButtonText: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#6B46C1',
+    color: '#4A0C63',
   },
-  heroIcon: {
-    width: 80,
-    height: 80,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginLeft: 10,
+  heroImage: {
+    width: 100,
+    height: 100,
+    resizeMode: 'contain',
   },
   tasksContainer: {
     paddingHorizontal: 20,
@@ -217,7 +218,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   generateButton: {
-    backgroundColor: '#6B46C1',
+    backgroundColor: '#4A0C63',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',

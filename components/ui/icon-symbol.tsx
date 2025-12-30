@@ -1,11 +1,11 @@
 // Fallback for using MaterialIcons on Android and web.
 
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { SymbolWeight, SymbolViewProps } from 'expo-symbols';
+import { SymbolViewProps, SymbolWeight } from 'expo-symbols';
 import { ComponentProps } from 'react';
 import { OpaqueColorValue, type StyleProp, type TextStyle } from 'react-native';
 
-type IconMapping = Record<SymbolViewProps['name'], ComponentProps<typeof MaterialIcons>['name']>;
+type IconMapping = Partial<Record<SymbolViewProps['name'], ComponentProps<typeof MaterialIcons>['name']>>;
 type IconSymbolName = keyof typeof MAPPING;
 
 /**
@@ -15,10 +15,35 @@ type IconSymbolName = keyof typeof MAPPING;
  */
 const MAPPING = {
   'house.fill': 'home',
+  'house': 'home',
   'paperplane.fill': 'send',
   'chevron.left.forwardslash.chevron.right': 'code',
   'chevron.right': 'chevron-right',
+  'chevron.up': 'expand-less',
+  'chevron.down': 'expand-more',
   'qibla_icon': 'explore',
+  'bell': 'notifications',
+  'line.3.horizontal': 'menu',
+  'target': 'track-changes',
+  'plus': 'add',
+  'trash': 'delete',
+  'figure.stand': 'accessibility',
+  'book': 'book',
+  'heart': 'favorite',
+  'hands.sparkles': 'stars',
+  'moon.stars': 'nights-stay',
+  'calendar': 'calendar-today',
+  'flag': 'flag',
+  'book.closed': 'menu-book',
+  'drop': 'opacity',
+  'gearshape': 'settings',
+  'arrow.right.square': 'logout',
+  'sparkles': 'auto-awesome',
+  'checkmark': 'check',
+  'pencil': 'edit',
+  'arrow.counterclockwise': 'refresh',
+  'checkmark.circle.fill': 'check-circle',
+  'circle': 'radio-button-unchecked',
 } as IconMapping;
 
 /**

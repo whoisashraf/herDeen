@@ -34,6 +34,12 @@ export default function DrawerLayout() {
             drawerLabel: 'AI Day Planner',
           }}
         />
+        <Drawer.Screen
+          name="ibadah-goals"
+          options={{
+            drawerLabel: 'Ibadah Goals',
+          }}
+        />
       </Drawer>
     </GestureHandlerRootView>
   );

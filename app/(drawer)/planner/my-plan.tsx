@@ -2,15 +2,26 @@ import { TimelineTask } from '@/components/timeline-task';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { usePlanner } from '@/contexts/planner-context';
 import { DrawerActions } from '@react-navigation/native';
-import { useNavigation } from 'expo-router';
+import { Image } from 'expo-image';
+import { useNavigation, useRouter } from 'expo-router';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function MyPlanScreen() {
-  const { savedPlan, toggleTaskComplete } = usePlanner();
+  const { savedPlan, toggleTaskComplete, generatePlan, savePlan, isPlanSaved } = usePlanner();
   const navigation = useNavigation();
+  const router = useRouter();
 
   const openDrawer = () => {
     navigation.dispatch(DrawerActions.openDrawer());
+  };
+
+  const handleRegenerate = () => {
+    router.back();
+  };
+
+  const handleSavePlan = () => {
+    savePlan();
+    // Stay on this page to show the saved plan
   };
 
   return (
@@ -18,9 +29,7 @@ export default function MyPlanScreen() {
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.headerLeft}>
-          <View style={styles.logo}>
-            <IconSymbol name="moon.stars" size={20} color="#fff" />
-          </View>
+          <Image source={require('@/assets/icons/plan-logo.png')} style={styles.logoImage} />
           <Text style={styles.headerTitle}>AI Day Planner</Text>
         </View>
         <View style={styles.headerRight}>
@@ -35,7 +44,9 @@ export default function MyPlanScreen() {
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         {/* Title */}
-        <Text style={styles.pageTitle}>Yes! My Plan</Text>
+        <Text style={styles.pageTitle}>
+          {isPlanSaved ? 'Yes! My Plan' : 'Ouuu! Here\'s your Plan for the day.'}
+        </Text>
 
         {/* Timeline */}
         <View style={styles.timeline}>
@@ -48,6 +59,7 @@ export default function MyPlanScreen() {
               startTime={task.startTime || '9:00 AM'}
               endTime={task.endTime || '9:45 AM'}
               isCompleted={task.isCompleted}
+              onEdit={isPlanSaved ? undefined : () => { }}
               onToggleComplete={() => toggleTaskComplete(task.id)}
             />
           ))}
@@ -55,6 +67,20 @@ export default function MyPlanScreen() {
 
         <View style={styles.bottomSpacer} />
       </ScrollView>
+
+      {/* Action Buttons - only show if plan is not saved */}
+      {!isPlanSaved && (
+        <View style={styles.actionButtons}>
+          <TouchableOpacity style={styles.regenerateButton} onPress={handleRegenerate}>
+            <Image source={require('@/assets/icons/reset_icon.png')} style={styles.regenerateButtonIcon} />
+            <Text style={styles.regenerateText}>Regenerate</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.saveButton} onPress={handleSavePlan}>
+            <IconSymbol name="checkmark" size={18} color="#fff" />
+            <Text style={styles.saveText}>Yes, Save Plan</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 }
@@ -62,7 +88,7 @@ export default function MyPlanScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: '#fff',
   },
   header: {
     flexDirection: 'row',
@@ -76,15 +102,11 @@ const styles = StyleSheet.create({
   headerLeft: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 12,
   },
-  logo: {
-    width: 32,
-    height: 32,
-    borderRadius: 8,
-    backgroundColor: '#6B46C1',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 10,
+  logoImage: {
+    width: 40,
+    height: 40,
   },
   headerTitle: {
     fontSize: 16,
@@ -105,9 +127,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   pageTitle: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: '700',
-    color: '#1F2937',
+    color: '#333',
     paddingHorizontal: 20,
     paddingTop: 24,
     paddingBottom: 20,
@@ -117,5 +139,49 @@ const styles = StyleSheet.create({
   },
   bottomSpacer: {
     height: 40,
+  },
+  actionButtons: {
+    flexDirection: 'row',
+    paddingHorizontal: 20,
+    paddingBottom: 40,
+    gap: 12,
+  },
+  regenerateButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#4A0C63',
+    backgroundColor: '#fff',
+    gap: 8,
+  },
+  regenerateText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#4A0C63',
+  },
+  regenerateButtonIcon: {
+    width: 18, // Match the size of the original IconSymbol
+    height: 18,
+    tintColor: '#4A0C63', // Match the color of the regenerateText
+    resizeMode: 'contain',
+  },
+  saveButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
+    borderRadius: 12,
+    backgroundColor: '#4A0C63',
+    gap: 8,
+  },
+  saveText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#fff',
   },
 });
