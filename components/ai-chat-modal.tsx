@@ -2,18 +2,18 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { aiService } from '@/services/ai-service';
 import { useEffect, useRef, useState } from 'react';
 import {
-  ActivityIndicator,
-  Alert,
-  KeyboardAvoidingView,
-  Modal,
-  Platform,
-  ScrollView,
-  Share,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View
+    ActivityIndicator,
+    Alert,
+    KeyboardAvoidingView,
+    Modal,
+    Platform,
+    ScrollView,
+    Share,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View
 } from 'react-native';
 
 interface Message {
@@ -177,7 +177,7 @@ export function AIChatModal({ visible, onClose, onTasksReceived }: AIChatModalPr
             >
               {!message.isUser && (
                 <View style={styles.aiAvatar}>
-                  <IconSymbol name="brain" size={16} color="#6B46C1" />
+                  <IconSymbol name="brain" size={16} color="#62206E" />
                 </View>
               )}
               <View style={styles.messageWrapper}>
@@ -219,7 +219,7 @@ export function AIChatModal({ visible, onClose, onTasksReceived }: AIChatModalPr
           {/* Loading indicator */}
           {isLoading && (
             <View style={styles.loadingContainer}>
-              <ActivityIndicator size="small" color="#6B46C1" />
+              <ActivityIndicator size="small" color="#62206E" />
               <Text style={styles.loadingText}>AI is thinking...</Text>
             </View>
           )}
@@ -253,9 +253,9 @@ export function AIChatModal({ visible, onClose, onTasksReceived }: AIChatModalPr
             disabled={!inputText.trim() || isLoading}
           >
             {isLoading ? (
-              <ActivityIndicator size="small" color="#6B46C1" />
+              <ActivityIndicator size="small" color="#62206E" />
             ) : (
-              <IconSymbol name="arrow.up.circle.fill" size={32} color="#6B46C1" />
+              <IconSymbol name="arrow.up.circle.fill" size={32} color="#62206E" />
             )}
           </TouchableOpacity>
         </View>
@@ -288,7 +288,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: '#6B46C1',
+    backgroundColor: '#62206E',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
@@ -341,7 +341,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   userMessageContent: {
-    backgroundColor: '#6B46C1',
+    backgroundColor: '#62206E',
     borderBottomRightRadius: 4,
   },
   aiMessageContent: {
@@ -368,7 +368,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#6B46C1',
+    backgroundColor: '#62206E',
     paddingVertical: 14,
     paddingHorizontal: 24,
     borderRadius: 12,

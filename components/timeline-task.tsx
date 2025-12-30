@@ -59,7 +59,7 @@ export function TimelineTask({
           <View style={styles.cardFooter}>
             {onEdit ? (
               <TouchableOpacity style={styles.editButton} onPress={onEdit}>
-                <IconSymbol name="pencil" size={16} color="#4A0C63" />
+                <IconSymbol name="pencil" size={14} color="#62206E" />
                 <Text style={styles.editText}>Edit</Text>
               </TouchableOpacity>
             ) : onToggleComplete && (
@@ -89,13 +89,16 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
   },
   dot: {
-    width: 18,
-    height: 18,
-    borderRadius: 9,
-    backgroundColor: '#4A0C63',
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 2,
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: '#62206E',
+    borderWidth: 2,
+    borderColor: '#fff',
+    shadowColor: '#62206E',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
     elevation: 2,
   },
   dotInner: {
@@ -195,9 +198,9 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
   editText: {
-    fontSize: 14,
-    color: '#4A0C63',
-    fontWeight: '600',
+    fontSize: 13,
+    color: '#62206E',
+    fontWeight: '500',
   },
   checkButton: {
     padding: 4,

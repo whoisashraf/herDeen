@@ -104,9 +104,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 12,
   },
-  logoImage: {
-    width: 40,
-    height: 40,
+  logo: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
+    backgroundColor: '#62206E',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 10,
   },
   headerTitle: {
     fontSize: 16,

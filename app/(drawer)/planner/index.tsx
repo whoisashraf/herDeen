@@ -42,7 +42,11 @@ export default function PlannerScreen() {
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.headerLeft}>
-          <Image source={require('@/assets/icons/plan-logo.png')} style={styles.logoImage} />
+          <Image
+            source={require('@/assets/icons/ai_logo.svg')}
+            style={styles.logo}
+            contentFit="contain"
+          />
           <Text style={styles.headerTitle}>AI Day Planner</Text>
         </View>
         <View style={styles.headerRight}>
@@ -56,8 +60,14 @@ export default function PlannerScreen() {
       </View>
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+
+      
         {/* Hero Card */}
-        <ImageBackground source={require('@/assets/images/card-bg.png')} style={styles.heroCard}>
+        <ImageBackground
+          source={require('@/assets/images/card-bg.png')}
+          style={styles.heroCard}
+          imageStyle={styles.heroCardImage}
+        >
           <View style={styles.heroContent}>
             <View style={styles.heroTitleContainer}>
               <Text style={styles.heroTitle}>
@@ -67,9 +77,14 @@ export default function PlannerScreen() {
             </View>
             <TouchableOpacity style={styles.planButton} onPress={() => setShowAIChat(true)}>
               <Text style={styles.planButtonText}>Plan my day for me</Text>
-              <IconSymbol name="sparkles" size={16} color="#4A0C63" />
+              <IconSymbol name="sparkles" size={16} color="#62206E" />
             </TouchableOpacity>
           </View>
+          <Image
+            source={require('@/assets/icons/ai_icon.svg')}
+            style={styles.heroIcon}
+            contentFit="contain"
+          />
         </ImageBackground>
 
         {/* Tasks */}
@@ -131,9 +146,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 12,
   },
-  logoImage: {
-    width: 40,
-    height: 40,
+  logo: {
+    width: 32,
+    height: 32,
+    marginRight: 10,
   },
   headerTitle: {
     fontSize: 16,
@@ -154,11 +170,15 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   heroCard: {
+    backgroundColor: '#62206E',
     marginHorizontal: 20,
     marginTop: 20,
     borderRadius: 20,
     padding: 24,
     overflow: 'hidden',
+  },
+  heroCardImage: {
+    borderRadius: 20,
   },
   heroContent: {
     flex: 1,
@@ -194,22 +214,24 @@ const styles = StyleSheet.create({
   planButtonText: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#4A0C63',
+    color: '#62206E',
   },
-  heroImage: {
-    width: 100,
-    height: 100,
-    resizeMode: 'contain',
+  heroIcon: {
+    width: 120,
+    height: 80,
+    top:20,
   },
   tasksContainer: {
     paddingHorizontal: 20,
-    paddingTop: 24,
+    paddingTop: 32,
+    paddingBottom: 8,
   },
   addMoreButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 16,
+    paddingVertical: 20,
+    marginTop: 8,
     gap: 8,
   },
   addMoreText: {
@@ -218,12 +240,12 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   generateButton: {
-    backgroundColor: '#4A0C63',
+    backgroundColor: '#62206E',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     marginHorizontal: 20,
-    marginTop: 12,
+    marginTop: 24,
     paddingVertical: 16,
     borderRadius: 16,
     gap: 8,
