@@ -195,11 +195,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   priorityLow: {
-    backgroundColor: '#FEFCE8',
+    backgroundColor: '#FFF6001F',
     borderColor: '#FEF08A',
   },
   priorityLowActive: {
     backgroundColor: '#FEF08A',
+    borderColor: '#62206E',
   },
   priorityMedium: {
     backgroundColor: '#EDE9FE',
@@ -207,13 +208,15 @@ const styles = StyleSheet.create({
   },
   priorityMediumActive: {
     backgroundColor: '#C4B5FD',
+    borderColor: '#62206E',
   },
   priorityHigh: {
-    backgroundColor: '#FEE2E2',
+    backgroundColor: '#FF00001F',
     borderColor: '#FECACA',
   },
   priorityHighActive: {
     backgroundColor: '#FECACA',
+    borderColor: '#62206E',
   },
   priorityText: {
     fontSize: 13,
@@ -223,6 +226,8 @@ const styles = StyleSheet.create({
     color: '#333',
     fontWeight: '500',
   },
+
+
   timeRow: {
     flexDirection: 'row',
     gap: 12,

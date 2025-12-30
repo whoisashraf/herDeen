@@ -1,9 +1,10 @@
 import qiblaIcon from '@/assets/icons/qibla_icon.png';
 import quranIcon from '@/assets/icons/quran_icon.png';
+import { CommunityModal } from '@/components/modals/CommunityModal';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useRouter } from 'expo-router';
-import React from 'react';
+import React, { useState } from 'react';
 import { Dimensions, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 const { width } = Dimensions.get('window');
@@ -26,42 +27,59 @@ const actions = [
 
 export const QuickActionsGrid = () => {
   const router = useRouter();
+  const [isCommunityModalVisible, setIsCommunityModalVisible] = useState(false);
+
   return (
-    <View style={styles.container}>
-      {actions.map((action, index) => (
-        <TouchableOpacity
-          key={index}
-          style={styles.actionItem}
-          onPress={() => {
-            if (action.name === 'Quran') {
-              router.push('/(drawer)/quran');
-            } else if (action.name === 'Adhkar') {
-              router.push('/(drawer)/adhkar');
-            } else if (action.name === 'Prayer Times') {
-              router.push('/(drawer)/prayer-times');
-            }
-          }}>
-          <View
-            style={[
-              styles.iconBackground,
-              (action.icon === 'qibla_image' || action.icon === 'quran_image') && {
-                backgroundColor: '#EBE0EC',
-              },
-            ]}>
-            {action.icon === 'qibla_image' ? (
-              <Image source={qiblaIcon} style={{ width: 24, height: 24, tintColor: '#62206E' }} />
-            ) : action.icon === 'quran_image' ? (
-              <Image source={quranIcon} style={{ width: 24, height: 24, tintColor: '#62206E' }} />
-            ) : (
-              <IconSymbol name={action.icon as any} size={24} color="#6C2A75" />
-            )}
-          </View>
-          <ThemedText type="poppins-semibold" style={styles.actionText}>
-            {action.name}
-          </ThemedText>
-        </TouchableOpacity>
-      ))}
-    </View>
+    <>
+      <View style={styles.container}>
+        {actions.map((action, index) => (
+          <TouchableOpacity
+            key={index}
+            style={styles.actionItem}
+            onPress={() => {
+              if (action.name === 'Quran') {
+                router.push('/(drawer)/quran');
+              } else if (action.name === 'Adhkar') {
+                router.push('/(drawer)/adhkar');
+              } else if (action.name === 'Prayer Times') {
+                router.push('/(drawer)/prayer-times');
+              } else if (action.name === 'Qibla') {
+                router.push('/(drawer)/qibla');
+              } else if (action.name === 'AI Planner') {
+                router.push('/(drawer)/planner');
+              } else if (action.name === 'Tasbih') {
+                router.push('/(drawer)/tasbih');
+              } else if (action.name === 'Community') {
+                setIsCommunityModalVisible(true);
+              }
+            }}>
+            <View
+              style={[
+                styles.iconBackground,
+                (action.icon === 'qibla_image' || action.icon === 'quran_image') && {
+                  backgroundColor: '#EBE0EC',
+                },
+              ]}>
+              {action.icon === 'qibla_image' ? (
+                <Image source={qiblaIcon} style={{ width: 24, height: 24, tintColor: '#62206E' }} />
+              ) : action.icon === 'quran_image' ? (
+                <Image source={quranIcon} style={{ width: 24, height: 24, tintColor: '#62206E' }} />
+              ) : (
+                <IconSymbol name={action.icon as any} size={24} color="#6C2A75" />
+              )}
+            </View>
+            <ThemedText type="poppins-semibold" style={styles.actionText}>
+              {action.name}
+            </ThemedText>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      <CommunityModal
+        visible={isCommunityModalVisible}
+        onClose={() => setIsCommunityModalVisible(false)}
+      />
+    </>
   );
 };
 

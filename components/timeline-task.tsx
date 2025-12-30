@@ -1,4 +1,5 @@
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 interface TimelineTaskProps {
@@ -22,41 +23,49 @@ export function TimelineTask({
   onEdit,
   onToggleComplete,
 }: TimelineTaskProps) {
+  // Fixed dashed column settings (matches design): 97px total length, dash 3px, gap 3px
+  const DASH_CONTAINER_HEIGHT = 97;
+  const DASH_HEIGHT = 3;
+  const DASH_GAP = 3;
+  const DASH_COUNT = Math.max(4, Math.floor(DASH_CONTAINER_HEIGHT / (DASH_HEIGHT + DASH_GAP)));
+
   return (
     <View style={styles.container}>
       {/* Timeline Dot */}
       <View style={styles.timelineContainer}>
-        <View style={[styles.dot, isCompleted && styles.dotCompleted]} />
-        <View style={styles.line} />
+        <View style={[styles.dot, isCompleted && styles.dotCompleted]}>
+          <View style={[styles.dotInner, isCompleted && styles.dotInnerCompleted]} />
+        </View>
+        <View style={[styles.dashColumn, { height: DASH_CONTAINER_HEIGHT }]} pointerEvents="none">
+          {Array.from({ length: DASH_COUNT }).map((_, i) => (
+            <View key={i} style={styles.dash} />
+          ))}
+        </View>
       </View>
 
       {/* Content */}
       <View style={styles.content}>
         <Text style={styles.taskLabel}>Task {taskNumber}</Text>
         <View style={styles.card}>
-          <View style={styles.cardContent}>
+          <View style={styles.cardTopRow}>
             <Text style={styles.title}>{title}</Text>
-            {description && <Text style={styles.description}>{description}</Text>}
-          </View>
-          <View style={styles.cardFooter}>
             <View style={styles.timeContainer}>
-              <Text style={styles.time}>
-                {startTime} - {endTime}
-              </Text>
+              <Text style={styles.time}>{startTime} - {endTime}</Text>
             </View>
-            {onEdit && (
+          </View>
+
+          {description && <Text style={styles.description}>{description}</Text>}
+
+          <View style={styles.cardFooter}>
+            {onEdit ? (
               <TouchableOpacity style={styles.editButton} onPress={onEdit}>
                 <IconSymbol name="pencil" size={14} color="#62206E" />
                 <Text style={styles.editText}>Edit</Text>
               </TouchableOpacity>
-            )}
-            {onToggleComplete && (
-              <TouchableOpacity style={styles.checkButton} onPress={onToggleComplete}>
-                <IconSymbol
-                  name={isCompleted ? 'checkmark.circle.fill' : 'checkmark.circle'}
-                  size={20}
-                  color={isCompleted ? '#10B981' : '#D1D5DB'}
-                />
+            ) : onToggleComplete && (
+              <TouchableOpacity style={styles.completeButton} onPress={onToggleComplete}>
+                <IconSymbol name="checkmark" size={14} color="#10B981" />
+                <Text style={styles.completeText}>Mark Complete</Text>
               </TouchableOpacity>
             )}
           </View>
@@ -69,12 +78,15 @@ export function TimelineTask({
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    marginBottom: 8,
+    marginBottom: 24,
   },
   timelineContainer: {
     alignItems: 'center',
-    marginRight: 12,
-    paddingTop: 8,
+    marginRight: 16,
+    paddingTop: 6,
+    paddingBottom: 6,
+    position: 'relative',
+    alignSelf: 'stretch',
   },
   dot: {
     width: 12,
@@ -89,69 +101,99 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
-  dotCompleted: {
-    backgroundColor: '#10B981',
-    shadowColor: '#10B981',
+  dotInner: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#fff',
   },
-  line: {
-    width: 2,
-    flex: 1,
-    backgroundColor: '#E5E7EB',
-    marginTop: 4,
+  dotInnerCompleted: {
+    backgroundColor: '#fff',
+  },
+  dotCompleted: {
+    backgroundColor: '#4A0C63',
+  },
+  dashColumn: {
+    position: 'absolute',
+    left: 6,
+    top: 12,
+    width: 6,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    zIndex: 1,
+  },
+  dash: {
+    width: 1.5,
+    height: 3,
+    borderRadius: 1,
+    backgroundColor: '#62206E',
+    marginVertical: 3,
+    opacity: 1,
   },
   content: {
     flex: 1,
   },
   taskLabel: {
-    fontSize: 12,
-    color: '#9CA3AF',
-    marginBottom: 4,
-    fontWeight: '500',
+    fontSize: 13,
+    color: '#1F2937',
+    marginBottom: 8,
+    fontWeight: '600',
   },
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: '#FFFFFF',
     borderRadius: 12,
-    padding: 14,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 1,
+    paddingHorizontal: 18,
+    paddingVertical: 14,
+    borderWidth: 1,
+    borderColor: '#F3E9F6',
+    shadowColor: '#ECDFF2',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 3,
+  },
+  cardTopRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   cardContent: {
     marginBottom: 10,
   },
   title: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#1F2937',
+    fontSize: 22,
+    fontWeight: '800',
+    color: '#2F0633',
     marginBottom: 4,
+    flex: 1,
   },
   description: {
     fontSize: 13,
     color: '#6B7280',
-    lineHeight: 18,
+    lineHeight: 20,
+    marginTop: 8,
+    marginBottom: 8,
   },
   cardFooter: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
   },
   timeContainer: {
-    backgroundColor: '#FEE2E2',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 6,
+    backgroundColor: '#FF00001F',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
   },
   time: {
     fontSize: 12,
-    color: '#991B1B',
-    fontWeight: '500',
+    color: '#2B0E30',
+    fontWeight: '600',
   },
   editButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    gap: 6,
     paddingHorizontal: 8,
     paddingVertical: 4,
   },
@@ -162,5 +204,17 @@ const styles = StyleSheet.create({
   },
   checkButton: {
     padding: 4,
+  },
+  completeButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+  },
+  completeText: {
+    fontSize: 13,
+    color: '#10B981',
+    fontWeight: '600',
   },
 });

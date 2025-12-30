@@ -1,4 +1,4 @@
-// This is a comment to trigger a reload.
+
 import { AIChatModal } from '@/components/ai-chat-modal';
 import { TaskCard } from '@/components/task-card';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -69,9 +69,12 @@ export default function PlannerScreen() {
           imageStyle={styles.heroCardImage}
         >
           <View style={styles.heroContent}>
-            <Text style={styles.heroTitle}>
-              Let&apos;s AI plan your day with{'\n'}peace and purpose.
-            </Text>
+            <View style={styles.heroTitleContainer}>
+              <Text style={styles.heroTitle}>
+                Let&apos;s AI plan your day with{"\n"}peace and purpose.
+              </Text>
+              <Image source={require('@/assets/images/subtract.svg')} style={styles.subtractImage} />
+            </View>
             <TouchableOpacity style={styles.planButton} onPress={() => setShowAIChat(true)}>
               <Text style={styles.planButtonText}>Plan my day for me</Text>
               <IconSymbol name="sparkles" size={16} color="#62206E" />
@@ -108,7 +111,7 @@ export default function PlannerScreen() {
         {/* Generate Button */}
         <TouchableOpacity style={styles.generateButton} onPress={handleGeneratePlan}>
           <IconSymbol name="sparkles" size={20} color="#fff" />
-          <Text style={styles.generateButtonText}> Continue with plan</Text>
+          <Text style={styles.generateButtonText}>Generate My Day Plan</Text>
         </TouchableOpacity>
 
         <View style={styles.bottomSpacer} />
@@ -127,7 +130,7 @@ export default function PlannerScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: '#F5F5F5',
   },
   header: {
     flexDirection: 'row',
@@ -136,11 +139,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 60,
     paddingBottom: 16,
-    backgroundColor: '#fff',
+    backgroundColor: '#F5F5F5',
   },
   headerLeft: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 12,
   },
   logo: {
     width: 32,
@@ -170,9 +174,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginTop: 20,
     borderRadius: 20,
-    padding: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    padding: 24,
     overflow: 'hidden',
   },
   heroCardImage: {
@@ -182,11 +184,22 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   heroTitle: {
+    flex: 1,
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: '700',
     color: '#fff',
-    marginBottom: 16,
     lineHeight: 24,
+  },
+  heroTitleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  subtractImage: {
+    width: 100,
+    height: 100,
+    resizeMode: 'contain',
   },
   planButton: {
     backgroundColor: '#fff',

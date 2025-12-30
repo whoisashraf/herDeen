@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#9CA3AF',
   },
   taskTitle: {
-    fontSize: 16,
+    fontSize: 14,
   },
   taskTitlePending: {
     color: '#374151',

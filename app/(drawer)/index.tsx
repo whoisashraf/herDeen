@@ -1,42 +1,36 @@
-import { AdhkarBanner } from '@/components/dashboard/AdhkarBanner';
-import { DuaOfTheDay } from '@/components/dashboard/DuaOfTheDay';
+import { ScrollView, StyleSheet } from 'react-native';
+import { ThemedView } from '@/components/themed-view';
 import { Header } from '@/components/dashboard/Header';
+import { DuaOfTheDay } from '@/components/dashboard/DuaOfTheDay';
 import { PrayerTimesCard } from '@/components/dashboard/PrayerTimesCard';
 import { QuickActionsGrid } from '@/components/dashboard/QuickActionsGrid';
+import { AdhkarBanner } from '@/components/dashboard/AdhkarBanner';
 import { QuranProgressCard } from '@/components/dashboard/QuranProgressCard';
 import { TasksList } from '@/components/dashboard/TasksList';
-import { ScrollView, StyleSheet, View } from 'react-native';
 
-export default function Dashboard() {
+export default function HomeScreen() {
   return (
-    <View style={styles.container}>
+    <ThemedView style={styles.container}>
       <Header />
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.mainContent}>
-          <PrayerTimesCard />
-          <QuranProgressCard />
-          <QuickActionsGrid />
-          <TasksList />
-          <AdhkarBanner />
-          <DuaOfTheDay />
-        </View>
+        <PrayerTimesCard />
+        <QuranProgressCard />
+        <QuickActionsGrid />
+        <TasksList />
+        <AdhkarBanner />
+        <DuaOfTheDay />
       </ScrollView>
-    </View>
+    </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8F9FA',
   },
-
-
   scrollContent: {
-    paddingBottom: 40,
-  },
-  mainContent: {
-    flex: 1,
-    paddingHorizontal: 24,
+    paddingHorizontal: 16,
+    paddingBottom: 20,
+    gap: 16, // Adds space between components
   },
 });
