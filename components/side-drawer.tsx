@@ -1,6 +1,6 @@
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { usePathname, useRouter } from 'expo-router';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 interface MenuItem {
   id: string;
@@ -12,10 +12,10 @@ interface MenuItem {
 const menuItems: MenuItem[] = [
   { id: 'home', label: 'Home', icon: 'house', route: '/(drawer)' },
   { id: 'planner', label: 'AI Day Planner', icon: 'calendar', route: '/(drawer)/planner' },
-  { id: 'goals', label: 'Ibadah Goals', icon: 'flag', route: '/(drawer)' },
-  { id: 'quran', label: 'Her Quran', icon: 'book', route: '/(drawer)' },
-  { id: 'journal', label: 'Her Journal', icon: 'book.closed', route: '/(drawer)' },
-  { id: 'tracker', label: 'Menstrual Tracker', icon: 'drop', route: '/(drawer)' },
+  { id: 'ibadah-goals', label: 'Ibadah Goals', icon: 'flag', route: '/(drawer)/ibadah-goals' },
+  { id: 'quran', label: 'Her Quran', icon: 'book', route: '/(drawer)/quran' },
+  { id: 'journal', label: 'Her Journal', icon: 'book.closed', route: '/(drawer)/journal' },
+  { id: 'tracker', label: 'Menstrual Tracker', icon: 'drop', route: '/(drawer)/tracker' },
 ];
 
 export function SideDrawer() {
@@ -41,12 +41,13 @@ export function SideDrawer() {
 
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.scrollView}>
+      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         {/* Logo */}
         <View style={styles.header}>
-          <View style={styles.logo}>
-            <IconSymbol name="moon.stars" size={24} color="#fff" />
-          </View>
+          <Image
+            source={require('@/assets/images/logo.png')}
+            style={styles.logoImage}
+          />
           <Text style={styles.logoText}>
             Her<Text style={styles.logoAccent}>Deen</Text>
           </Text>
@@ -64,8 +65,8 @@ export function SideDrawer() {
               >
                 <IconSymbol
                   name={item.icon as any}
-                  size={20}
-                  color={active ? '#fff' : '#333'}
+                  size={22}
+                  color={active ? '#fff' : '#4A4A4A'}
                 />
                 <Text style={[styles.menuText, active && styles.menuTextActive]}>
                   {item.label}
@@ -79,11 +80,11 @@ export function SideDrawer() {
       {/* Bottom Actions */}
       <View style={styles.footer}>
         <TouchableOpacity style={styles.footerItem}>
-          <IconSymbol name="gearshape" size={20} color="#333" />
+          <IconSymbol name="gearshape" size={22} color="#4A4A4A" />
           <Text style={styles.footerText}>Settings</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.footerItem}>
-          <IconSymbol name="arrow.right.square" size={20} color="#E53E3E" />
+          <IconSymbol name="arrow.right.square" size={22} color="#EF4444" />
           <Text style={[styles.footerText, styles.logoutText]}>Log Out</Text>
         </TouchableOpacity>
       </View>
@@ -94,7 +95,7 @@ export function SideDrawer() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#FAFAFA',
   },
   scrollView: {
     flex: 1,
@@ -104,43 +105,43 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
     paddingTop: 60,
+    paddingBottom: 30,
   },
-  logo: {
-    width: 32,
-    height: 32,
+  logoImage: {
+    width: 36,
+    height: 36,
     borderRadius: 8,
-    backgroundColor: '#6B46C1',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 8,
+    marginRight: 10,
   },
   logoText: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '600',
-    color: '#333',
+    color: '#4A4A4A',
   },
   logoAccent: {
-    color: '#D946EF',
+    color: '#F3AFAF',
   },
   menu: {
-    paddingHorizontal: 12,
-    paddingTop: 20,
+    paddingHorizontal: 20,
+    paddingTop: 10,
   },
   menuItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 14,
+    paddingVertical: 16,
     paddingHorizontal: 16,
     borderRadius: 12,
-    marginBottom: 4,
+    marginBottom: 8,
+    backgroundColor: 'transparent',
   },
   menuItemActive: {
-    backgroundColor: '#6B46C1',
+    backgroundColor: '#62206E',
   },
   menuText: {
-    fontSize: 15,
-    marginLeft: 12,
-    color: '#333',
+    fontSize: 16,
+    marginLeft: 14,
+    color: '#4A4A4A',
+    fontWeight: '400',
   },
   menuTextActive: {
     color: '#fff',
@@ -149,21 +150,23 @@ const styles = StyleSheet.create({
   footer: {
     borderTopWidth: 1,
     borderTopColor: '#E5E7EB',
-    paddingVertical: 12,
-    paddingHorizontal: 12,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    backgroundColor: '#FAFAFA',
   },
   footerItem: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 12,
-    paddingHorizontal: 16,
+    paddingHorizontal: 0,
   },
   footerText: {
-    fontSize: 15,
-    marginLeft: 12,
-    color: '#333',
+    fontSize: 16,
+    marginLeft: 14,
+    color: '#4A4A4A',
+    fontWeight: '400',
   },
   logoutText: {
-    color: '#E53E3E',
+    color: '#EF4444',
   },
 });

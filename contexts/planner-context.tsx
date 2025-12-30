@@ -21,6 +21,8 @@ interface PlannerContextType {
   generatePlan: () => void;
   savedPlan: Task[];
   toggleTaskComplete: (id: string) => void;
+  savePlan: () => void;
+  isPlanSaved: boolean;
 }
 
 const PlannerContext = createContext<PlannerContextType | undefined>(undefined);
@@ -28,6 +30,7 @@ const PlannerContext = createContext<PlannerContextType | undefined>(undefined);
 export function PlannerProvider({ children }: { children: ReactNode }) {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [savedPlan, setSavedPlan] = useState<Task[]>([]);
+  const [isPlanSaved, setIsPlanSaved] = useState(false);
 
   const addTask = () => {
     const newTask: Task = {
@@ -73,6 +76,7 @@ export function PlannerProvider({ children }: { children: ReactNode }) {
       };
     });
     setSavedPlan(plan);
+    setIsPlanSaved(false);
   };
 
   const toggleTaskComplete = (id: string) => {
@@ -81,6 +85,12 @@ export function PlannerProvider({ children }: { children: ReactNode }) {
         task.id === id ? { ...task, isCompleted: !task.isCompleted } : task
       )
     );
+  };
+
+  const savePlan = () => {
+    // Save the plan (could be to local storage, database, etc.)
+    setIsPlanSaved(true);
+    console.log('Plan saved:', savedPlan);
   };
 
   return (
@@ -94,6 +104,8 @@ export function PlannerProvider({ children }: { children: ReactNode }) {
         generatePlan,
         savedPlan,
         toggleTaskComplete,
+        savePlan,
+        isPlanSaved,
       }}
     >
       {children}
