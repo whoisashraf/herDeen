@@ -16,13 +16,13 @@ export class AIService {
 
   constructor() {
     if (!OPENROUTER_API_KEY) {
-      throw new Error(
-        'OpenRouter API key not configured. Please add EXPO_PUBLIC_OPENROUTER_API_KEY to your .env file'
+      console.warn(
+        'OpenRouter API key not configured. AI features will not work. Please add EXPO_PUBLIC_OPENROUTER_API_KEY to your .env file'
       );
     }
 
     this.openRouter = new OpenRouter({
-      apiKey: OPENROUTER_API_KEY,
+      apiKey: OPENROUTER_API_KEY || 'dummy_key',
     });
 
     // System prompt to guide the AI
@@ -48,6 +48,10 @@ Be warm, supportive, and use Islamic greetings. Ask about:
   }
 
   async sendMessage(userMessage: string): Promise<string> {
+    if (!OPENROUTER_API_KEY) {
+      throw new Error('OpenRouter API key is missing. Please check your .env file.');
+    }
+
     // Add user message to history
     this.conversationHistory.push({
       role: 'user',
@@ -80,6 +84,10 @@ Be warm, supportive, and use Islamic greetings. Ask about:
   }
 
   async generateTasks(): Promise<Task[]> {
+    if (!OPENROUTER_API_KEY) {
+      throw new Error('OpenRouter API key is missing. Please check your .env file.');
+    }
+
     // Create a separate request for task generation (not part of chat history)
     const taskGenerationPrompt = {
       role: 'user' as const,

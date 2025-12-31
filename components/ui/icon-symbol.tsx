@@ -44,6 +44,10 @@ const MAPPING = {
   'arrow.counterclockwise': 'refresh',
   'checkmark.circle.fill': 'check-circle',
   'circle': 'radio-button-unchecked',
+  'drop.fill': 'water-drop',
+  'exclamationmark.circle.fill': 'error',
+  'arrow.triangle.2.circlepath': 'sync',
+  'xmark': 'close',
 } as IconMapping;
 
 /**

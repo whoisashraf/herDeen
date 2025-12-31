@@ -40,6 +40,12 @@ export default function DrawerLayout() {
             drawerLabel: 'Ibadah Goals',
           }}
         />
+        <Drawer.Screen
+          name="tracker"
+          options={{
+            drawerLabel: 'Menstrual Tracker',
+          }}
+        />
       </Drawer>
     </GestureHandlerRootView>
   );
