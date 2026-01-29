@@ -79,7 +79,10 @@ export function SideDrawer() {
 
       {/* Bottom Actions */}
       <View style={styles.footer}>
-        <TouchableOpacity style={styles.footerItem}>
+        <TouchableOpacity
+          style={styles.footerItem}
+          onPress={() => handleNavigate('/(drawer)/settings')}
+        >
           <IconSymbol name="gearshape" size={22} color="#4A4A4A" />
           <Text style={styles.footerText}>Settings</Text>
         </TouchableOpacity>

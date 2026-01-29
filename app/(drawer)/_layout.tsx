@@ -46,6 +46,13 @@ export default function DrawerLayout() {
             drawerLabel: 'Menstrual Tracker',
           }}
         />
+        <Drawer.Screen
+          name="settings"
+          options={{
+            drawerLabel: 'Settings',
+            drawerItemStyle: { display: 'none' },
+          }}
+        />
       </Drawer>
     </GestureHandlerRootView>
   );
