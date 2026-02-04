@@ -1,4 +1,3 @@
-import { LinearGradient } from 'expo-linear-gradient';
 import { ThemedText } from '@/components/themed-text';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -21,15 +20,15 @@ export default function EmailVerifiedScreen() {
   const insets = useSafeAreaInsets();
 
   const handlePersonalize = () => {
-    // Send user to onboarding to personalize their journey
-    router.replace('/');
+    // Navigate to onboarding form to personalize the user's journey
+    router.push('/(onboarding)/onboarding-form');
   };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}> 
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <StatusBar style="light" />
 
-      <View style={[styles.content, { paddingTop: insets.top + 12, paddingBottom: Math.max(insets.bottom, 24) }]}> 
+      <View style={[styles.content, { paddingTop: insets.top + 12, paddingBottom: Math.max(insets.bottom, 24) }]}>
         <View style={styles.illustrationWrap}>
           <Image
             source={require('@/assets/images/verify-image.png')}
@@ -59,8 +58,8 @@ const styles = StyleSheet.create({
   illustrationWrap: { alignItems: 'center', marginTop: 0, marginBottom: -80 },
   illustration: { width: '86%', height: 260 },
   textWrap: { alignItems: 'center', paddingHorizontal: 12, marginTop: -100 },
-  title: { fontSize: 36, textAlign: 'center', marginTop: 10 },
-  subtitle: { fontSize: 16, textAlign: 'center', lineHeight: 22, marginTop: 12, opacity: 0.95 },
+  title: { fontSize: 32, textAlign: 'center', marginTop: 10 },
+  subtitle: { fontSize: 16, textAlign: 'center', lineHeight: 22, marginTop: 12, opacity: 0.95, color: '#FFFFFFB2' },
   footer: { paddingHorizontal: 6, paddingTop: 12 },
   primaryButton: { height: 64, borderRadius: 36, alignItems: 'center', justifyContent: 'center' },
   primaryButtonText: { color: '#FFFFFF', fontSize: 18 }
