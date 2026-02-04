@@ -1,152 +1,158 @@
 import { ThemedText } from '@/components/themed-text';
-import { IconSymbol } from '@/components/ui/icon-symbol';
+import { Colors } from '@/constants/theme';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
-
-const prayers = [
-  { name: 'Fajr', time: '06:00', icon: 'cloud', active: false },
-  { name: 'Dhuhr', time: '06:00', icon: 'sun.max', active: false },
-  { name: 'Asr', time: '06:00', icon: 'cloud.sun', active: true },
-  { name: 'Maghrib', time: '06:00', icon: 'sunset', active: false },
-  { name: 'Ishai', time: '06:00', icon: 'moon', active: false },
-];
+import { ImageBackground, StyleSheet, View } from 'react-native';
 
 export const PrayerTimesCard = () => {
+  const colorScheme = useColorScheme() ?? 'light';
+  const colors = Colors[colorScheme];
+
   return (
-    <View style={styles.card}>
-      <View style={styles.header}>
-        <View>
-          <ThemedText type="poppins-medium" style={styles.currentPrayerName}>
-            Asr
-          </ThemedText>
-          <ThemedText type="poppins-regular" style={styles.currentPrayerTime}>
-            15:50
-          </ThemedText>
-        </View>
-        <View style={styles.dateContainer}>
-          <ThemedText type="poppins-semibold" style={styles.dateText}>
-            17 Ramadan 1446 AH
-          </ThemedText>
-          <View style={styles.countdownPill}>
-            <ThemedText type="poppins-regular" style={styles.countdownText}>
-              03:04 Minutes to Asr
-            </ThemedText>
-          </View>
-        </View>
-      </View>
-
-      <View style={styles.separator} />
-
-      <View style={styles.prayerTimesGrid}>
-        {prayers.map((prayer, index) => (
-          <View key={index} style={styles.prayerItem}>
-            <ThemedText
-              type="poppins-medium"
-              style={[styles.prayerName, prayer.active && styles.prayerNameActive]}>
-              {prayer.name}
-            </ThemedText>
-            <View style={[styles.iconContainer, prayer.active && styles.iconContainerActive]}>
-              <IconSymbol
-                name={prayer.icon as any}
-                size={20}
-                color={prayer.active ? '#62206E' : '#000000'}
-              />
+    <View style={styles.container}>
+      <View style={[styles.card, { backgroundColor: colors.primary }]}>
+        <ImageBackground
+          source={require('@/assets/images/bg-image.png')}
+          style={styles.imageBackground}
+          imageStyle={styles.mosqueImage}
+          resizeMode="cover">
+          <View style={styles.content}>
+            <View style={styles.leftContent}>
+              <ThemedText type="poppins-medium" style={styles.greetingText}>
+                Asalam Alaikum
+              </ThemedText>
+              <View style={styles.dateContainer}>
+                <ThemedText type="poppins-regular" style={styles.todayIs}>
+                  Today is
+                </ThemedText>
+                <ThemedText type="poppins-bold" style={styles.dateText}>
+                  17 Ramadan, 1447
+                </ThemedText>
+                <ThemedText type="poppins-regular" style={styles.gregorianDate}>
+                  40 Jan, 2025
+                </ThemedText>
+              </View>
             </View>
-            <ThemedText
-              type="poppins-semibold"
-              style={[styles.prayerTime, prayer.active && styles.prayerTimeActive]}>
-              {prayer.time}
-            </ThemedText>
+
+            <View style={styles.rightContent}>
+              <View style={styles.clockCircle}>
+                <View style={styles.clockContent}>
+                  <ThemedText type="poppins-medium" style={styles.prayerLabel}>
+                    Fajr
+                  </ThemedText>
+                  <ThemedText type="poppins-bold" style={styles.prayerTime}>
+                    16:14
+                  </ThemedText>
+                  <ThemedText type="poppins-regular" style={styles.countdownText}>
+                    -05:37:43
+                  </ThemedText>
+                </View>
+                {/* Circular Progress simulating the 3/4 ring */}
+                <View style={styles.progressRing} />
+                <View style={styles.progressDot} />
+              </View>
+            </View>
           </View>
-        ))}
+        </ImageBackground>
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  card: {
-    backgroundColor: 'white',
-    borderRadius: 16,
-    padding: 20,
-    marginHorizontal: 0,
-    marginBottom: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
+  container: {
+    borderRadius: 24,
+    overflow: 'hidden',
+    marginBottom: 24,
   },
-  header: {
+  card: {
+    minHeight: 160,
+  },
+  imageBackground: {
+    padding: 24,
+    flex: 1,
+  },
+  mosqueImage: {
+    opacity: 1,
+  },
+  content: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
+    alignItems: 'center',
+    flex: 1,
+  },
+  leftContent: {
+    flex: 1,
+  },
+  greetingText: {
+    fontSize: 22,
+    color: 'white',
     marginBottom: 20,
   },
-  currentPrayerName: {
-    fontSize: 16,
-    color: '#6B7280',
-    marginBottom: 4,
-  },
-  currentPrayerTime: {
-    fontSize: 36,
-    color: '#111827',
-  },
   dateContainer: {
-    alignItems: 'flex-end',
+    gap: 2,
+  },
+  todayIs: {
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.7)',
   },
   dateText: {
-    fontSize: 14,
-    color: '#374151',
-    marginBottom: 18,
+    fontSize: 16,
+    color: 'white',
   },
-  countdownPill: {
-    backgroundColor: '#FF00001F',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
+  gregorianDate: {
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.7)',
+  },
+  rightContent: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  clockCircle: {
+    width: 130,
+    height: 130,
+    borderRadius: 65,
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+  },
+  progressRing: {
+    position: 'absolute',
+    width: 130,
+    height: 130,
+    borderRadius: 65,
+    borderWidth: 4,
+    borderColor: 'white',
+    borderBottomColor: 'transparent',
+    borderRightColor: 'transparent',
+    transform: [{ rotate: '45deg' }],
+  },
+  progressDot: {
+    position: 'absolute',
+    top: -2,
+    right: 32,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: 'white',
+  },
+  clockContent: {
+    alignItems: 'center',
+  },
+  prayerLabel: {
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.8)',
+  },
+  prayerTime: {
+    fontSize: 28,
+    color: 'white',
+    lineHeight: 34,
   },
   countdownText: {
     fontSize: 12,
-    color: '#444444',
-  },
-  separator: {
-    height: 1,
-    backgroundColor: '#D6BCDB',
-    marginBottom: 20,
-  },
-  prayerTimesGrid: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  prayerItem: {
-    alignItems: 'center',
-    gap: 8,
-  },
-  prayerName: {
-    fontSize: 14,
-    color: '#000000',
-  },
-  prayerNameActive: {
-    color: '#62206E',
-  },
-  iconContainer: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: 'transparent',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  iconContainerActive: {
-    backgroundColor: 'transparent',
-  },
-  prayerTime: {
-    fontSize: 14,
-    color: '#000000',
-  },
-  prayerTimeActive: {
-    color: '#62206E',
+    color: 'rgba(255, 255, 255, 0.8)',
   },
 });
 

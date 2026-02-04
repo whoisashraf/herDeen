@@ -8,22 +8,31 @@ import { Platform } from 'react-native';
 const tintColorLight = '#0a7ea4';
 const tintColorDark = '#fff';
 
+/** Input/field background color used in auth and forms */
+export const INPUT_BACKGROUND = '#1F2125';
+
 export const Colors = {
   light: {
     text: '#11181C',
-    background: '#fff',
-    tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
-    tabIconSelected: tintColorLight,
+    textMuted: '#6B7280',
+    background: '#FFFFFF',
+    surface: '#F7F7F7',
+    inputBackground: INPUT_BACKGROUND,
+    primary: '#7F47DD',
+    primaryLight: '#F3E8FF',
+    tint: '#7F47DD',
+    icon: '#111827',
   },
   dark: {
-    text: '#ECEDEE',
-    background: '#151718',
-    tint: tintColorDark,
-    icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
-    tabIconSelected: tintColorDark,
+    text: '#FFFFFF',
+    textMuted: '#9CA3AF',
+    background: '#111111',
+    surface: '#1F2125',
+    inputBackground: INPUT_BACKGROUND,
+    primary: '#AA74E0',
+    primaryLight: '#2D1F3D',
+    tint: '#AA74E0',
+    icon: '#FFFFFF',
   },
 };
 

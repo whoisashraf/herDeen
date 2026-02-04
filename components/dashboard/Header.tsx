@@ -1,41 +1,49 @@
-
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { DrawerActions } from '@react-navigation/native';
-import { useNavigation } from 'expo-router';
-import { StyleSheet, TouchableOpacity, View, Image } from 'react-native';
+import { Colors } from '@/constants/theme';
+import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 export const Header = () => {
-  const navigation = useNavigation();
-
-  const openDrawer = () => {
-    navigation.dispatch(DrawerActions.openDrawer());
-  };
+  const colorScheme = useColorScheme() ?? 'light';
+  const colors = Colors[colorScheme];
+  const insets = useSafeAreaInsets();
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        {
+          backgroundColor: colors.background,
+          paddingTop: insets.top + 12,
+        },
+      ]}>
       <View style={styles.leftContainer}>
-        <View style={styles.avatar}>
+        <View style={[styles.avatar, colorScheme === 'dark' && styles.avatarDark]}>
           <Image
             source={require('@/assets/images/profile.jpg')}
             style={styles.profileImage}
           />
         </View>
         <View>
-          <ThemedText type="poppins-regular" style={styles.greeting}>
-            Assalamu Alaikum,
-          </ThemedText>
-          <ThemedText type="poppins-bold" style={styles.name}>
-            Aisha!
+          <View style={styles.locationContainer}>
+            <IconSymbol name="mappin.and.ellipse" size={12} color={colors.textMuted} />
+            <ThemedText type="poppins-regular" style={[styles.locationText, { color: colors.textMuted }]}>
+              Ilroin East
+            </ThemedText>
+          </View>
+          <ThemedText type="poppins-bold" style={[styles.greeting, { color: colors.text }]}>
+            Sobahul-khayr, Aishah!
           </ThemedText>
         </View>
       </View>
       <View style={styles.rightContainer}>
-        <TouchableOpacity style={styles.iconButton}>
-          <IconSymbol name="bell" size={24} color="#374151" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.iconButton} onPress={openDrawer}>
-          <IconSymbol name="line.3.horizontal" size={24} color="#374151" />
+        <TouchableOpacity style={[styles.iconButton, { backgroundColor: colors.surface }]}>
+          <View style={styles.bellContainer}>
+            <IconSymbol name="bell" size={22} color={colors.text} />
+            <View style={[styles.notificationDot, { borderColor: colors.background }]} />
+          </View>
         </TouchableOpacity>
       </View>
     </View>
@@ -48,9 +56,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 24,
-    paddingTop: 60,
     paddingBottom: 20,
-    backgroundColor: '#F8F9FA',
   },
   leftContainer: {
     flexDirection: 'row',
@@ -58,32 +64,58 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   avatar: {
-    width: 52,
-    height: 52,
-    borderRadius: 26, 
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     overflow: 'hidden',
-    borderWidth: 2,
-    borderColor: '#62206E',
+    borderWidth: 1,
+    borderColor: 'transparent',
+  },
+  avatarDark: {
+    borderColor: '#374151',
+    borderWidth: 1.5,
   },
   profileImage: {
     width: '100%',
     height: '100%',
-    borderRadius: 24,
+  },
+  locationContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    marginTop: 10,
+    marginBottom: 2,
+  },
+  locationText: {
+    fontSize: 12,
   },
   greeting: {
-    fontSize: 14,
-    color: '#6B7280',
-  },
-  name: {
-    fontSize: 20,
-    color: '#111827',
+    fontSize: 16,
   },
   rightContainer: {
     flexDirection: 'row',
-    gap: 16,
+    gap: 12,
   },
   iconButton: {
-    padding: 4,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  bellContainer: {
+    position: 'relative',
+    padding: 2,
+  },
+  notificationDot: {
+    position: 'absolute',
+    top: 0,
+    right: 2,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#FF4D4F',
+    borderWidth: 1.5,
   },
 });
 

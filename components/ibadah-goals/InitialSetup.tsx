@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
         marginBottom: 24,
     },
     overviewCard: {
-        backgroundColor: '#A855F7',
+        backgroundColor: '#AA74E0',
         borderRadius: 16,
         padding: 20,
         overflow: 'hidden',
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
         paddingVertical: 6,
     },
     progressBadgeText: {
-        color: '#A855F7',
+        color: '#AA74E0',
         fontSize: 12,
         fontWeight: 'bold',
     },
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     tabActive: {
-        backgroundColor: '#62206E',
+        backgroundColor: '#AA74E0',
     },
     tabInactive: {
         backgroundColor: 'transparent',
@@ -346,7 +346,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         paddingVertical: 16,
-        backgroundColor: '#62206E',
+        backgroundColor: '#AA74E0',
         borderRadius: 12,
     },
     saveButtonDisabled: {

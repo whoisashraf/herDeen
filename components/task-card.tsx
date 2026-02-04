@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
   },
   priorityLowActive: {
     backgroundColor: '#FEF08A',
-    borderColor: '#62206E',
+    borderColor: '#AA74E0',
   },
   priorityMedium: {
     backgroundColor: '#EDE9FE',
@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
   },
   priorityMediumActive: {
     backgroundColor: '#C4B5FD',
-    borderColor: '#62206E',
+    borderColor: '#AA74E0',
   },
   priorityHigh: {
     backgroundColor: '#FF00001F',
@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
   },
   priorityHighActive: {
     backgroundColor: '#FECACA',
-    borderColor: '#62206E',
+    borderColor: '#AA74E0',
   },
   priorityText: {
     fontSize: 13,

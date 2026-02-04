@@ -177,7 +177,7 @@ export function AIChatModal({ visible, onClose, onTasksReceived }: AIChatModalPr
             >
               {!message.isUser && (
                 <View style={styles.aiAvatar}>
-                  <IconSymbol name="brain" size={16} color="#62206E" />
+                  <IconSymbol name="brain" size={16} color="#AA74E0" />
                 </View>
               )}
               <View style={styles.messageWrapper}>
@@ -219,7 +219,7 @@ export function AIChatModal({ visible, onClose, onTasksReceived }: AIChatModalPr
           {/* Loading indicator */}
           {isLoading && (
             <View style={styles.loadingContainer}>
-              <ActivityIndicator size="small" color="#62206E" />
+              <ActivityIndicator size="small" color="#AA74E0" />
               <Text style={styles.loadingText}>AI is thinking...</Text>
             </View>
           )}
@@ -253,9 +253,9 @@ export function AIChatModal({ visible, onClose, onTasksReceived }: AIChatModalPr
             disabled={!inputText.trim() || isLoading}
           >
             {isLoading ? (
-              <ActivityIndicator size="small" color="#62206E" />
+              <ActivityIndicator size="small" color="#AA74E0" />
             ) : (
-              <IconSymbol name="arrow.up.circle.fill" size={32} color="#62206E" />
+              <IconSymbol name="arrow.up.circle.fill" size={32} color="#AA74E0" />
             )}
           </TouchableOpacity>
         </View>
@@ -288,7 +288,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: '#62206E',
+    backgroundColor: '#AA74E0',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
@@ -341,7 +341,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   userMessageContent: {
-    backgroundColor: '#62206E',
+    backgroundColor: '#AA74E0',
     borderBottomRightRadius: 4,
   },
   aiMessageContent: {
@@ -368,7 +368,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#62206E',
+    backgroundColor: '#AA74E0',
     paddingVertical: 14,
     paddingHorizontal: 24,
     borderRadius: 12,

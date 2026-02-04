@@ -1,8 +1,8 @@
-import qiblaIcon from '@/assets/icons/qibla_icon.png';
-import quranIcon from '@/assets/icons/quran_icon.png';
 import { CommunityModal } from '@/components/modals/CommunityModal';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { Colors } from '@/constants/theme';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Dimensions, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -15,19 +15,21 @@ const totalGapWidth = (numColumns - 1) * gap;
 const itemWidth = (width - containerPadding * 2 - totalGapWidth) / numColumns;
 
 const actions = [
-  { name: 'Quran', icon: 'quran_image' },
+  { name: 'Quran', icon: 'book' },
   { name: 'Adhkar', icon: 'hands.sparkles' },
-  { name: 'Prayer Times', icon: 'clock' },
-  { name: 'AI Planner', icon: 'brain.head.profile' },
-  { name: 'Qibla', icon: 'qibla_image' },
-  { name: 'Journal', icon: 'book' },
-  { name: 'Tasbih', icon: 'circle.grid.3x3' },
-  { name: 'Community', icon: 'person.3' },
+  { name: 'Prayer', icon: 'alarm' },
+  { name: 'Qibla', image: require('@/assets/images/qibla.png') },
+  { name: 'Tasbih', image: require('@/assets/images/tasbih.png') },
+  { name: 'Sukūni', image: require('@/assets/images/sukuni.png'), customColor: true },
+  { name: 'Track', icon: 'calendar' },
+  { name: 'More', icon: 'square.grid.3x3' },
 ];
 
 export const QuickActionsGrid = () => {
   const router = useRouter();
   const [isCommunityModalVisible, setIsCommunityModalVisible] = useState(false);
+  const colorScheme = useColorScheme() ?? 'light';
+  const colors = Colors[colorScheme];
 
   return (
     <>
@@ -38,37 +40,42 @@ export const QuickActionsGrid = () => {
             style={styles.actionItem}
             onPress={() => {
               if (action.name === 'Quran') {
-                router.push('/(drawer)/quran');
+                router.push('/quran');
               } else if (action.name === 'Adhkar') {
-                router.push('/(drawer)/adhkar');
-              } else if (action.name === 'Prayer Times') {
-                router.push('/(drawer)/prayer-times');
+                router.push('/adhkar');
+              } else if (action.name === 'Prayer') {
+                router.push('/prayer-times');
               } else if (action.name === 'Qibla') {
-                router.push('/(drawer)/qibla');
-              } else if (action.name === 'AI Planner') {
-                router.push('/(drawer)/planner');
+                router.push('/qibla');
               } else if (action.name === 'Tasbih') {
-                router.push('/(drawer)/tasbih');
-              } else if (action.name === 'Community') {
-                setIsCommunityModalVisible(true);
+                router.push('/tasbih');
+              } else if (action.name === 'Sukūni') {
+                // router.push('/sukuni');
+              } else if (action.name === 'Track') {
+                router.push('/tracker');
+              } else if (action.name === 'More') {
+                // open more
               }
             }}>
-            <View
-              style={[
-                styles.iconBackground,
-                (action.icon === 'qibla_image' || action.icon === 'quran_image') && {
-                  backgroundColor: '#EBE0EC',
-                },
-              ]}>
-              {action.icon === 'qibla_image' ? (
-                <Image source={qiblaIcon} style={{ width: 24, height: 24, tintColor: '#62206E' }} />
-              ) : action.icon === 'quran_image' ? (
-                <Image source={quranIcon} style={{ width: 24, height: 24, tintColor: '#62206E' }} />
+            <View style={[styles.iconBackground, { backgroundColor: colors.surface }]}>
+              {action.image ? (
+                <Image
+                  source={action.image}
+                  style={[
+                    styles.actionImage,
+                    !action.customColor && { tintColor: colors.text }
+                  ]}
+                  resizeMode="contain"
+                />
               ) : (
-                <IconSymbol name={action.icon as any} size={24} color="#6C2A75" />
+                <IconSymbol
+                  name={action.icon as any}
+                  size={28}
+                  color={colors.text}
+                />
               )}
             </View>
-            <ThemedText type="poppins-semibold" style={styles.actionText}>
+            <ThemedText type="poppins-medium" style={[styles.actionText, { color: colors.text }]}>
               {action.name}
             </ThemedText>
           </TouchableOpacity>
@@ -87,33 +94,28 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    backgroundColor: 'white',
-    borderRadius: 20,
-    paddingHorizontal: 20,
-    paddingVertical: 24,
+    paddingHorizontal: 0,
+    paddingVertical: 12,
     justifyContent: 'space-between',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 6,
-    elevation: 2,
   },
   actionItem: {
     width: itemWidth,
     alignItems: 'center',
-    marginBottom: 28,
+    marginBottom: 24,
   },
   iconBackground: {
-    width: 56,
-    height: 56,
+    width: 64,
+    height: 64,
     borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F4EAF6',
+  },
+  actionImage: {
+    width: 32,
+    height: 32,
   },
   actionText: {
-    fontSize: 12,
-    color: '#4A4A4A',
+    fontSize: 13,
     textAlign: 'center',
     marginTop: 10,
   },

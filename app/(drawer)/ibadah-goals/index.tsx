@@ -1,3 +1,4 @@
+import { BottomNav } from '@/components/dashboard/BottomNav';
 import BottomActions from '@/components/ibadah-goals/BottomActions';
 import DateCard from '@/components/ibadah-goals/DateCard';
 import GoalCard from '@/components/ibadah-goals/GoalCard';
@@ -25,7 +26,7 @@ const INITIAL_GOALS: Goal[] = [
     type: 'yesno',
     title: 'Tilawah',
     description: 'To recite 3 pages daily from the Qur\'an and memorize Suratul-Mulk',
-    completed: true, 
+    completed: true,
   },
   {
     id: '3',
@@ -106,7 +107,7 @@ export default function IbadahGoalsScreen() {
                   <Text style={styles.backText}>{selectedGoal.title} Overview</Text>
                 </TouchableOpacity>
               </View>
-              
+
               <View style={styles.progressCard}>
                 <View style={styles.detailProgressCircleContainer}>
                   <View style={styles.detailProgressCircleBackground} />
@@ -138,6 +139,7 @@ export default function IbadahGoalsScreen() {
                 ))}
               </View>
             </ScrollView>
+            <BottomNav />
           </SafeAreaView>
         );
       }
@@ -146,14 +148,14 @@ export default function IbadahGoalsScreen() {
       return (
         <SafeAreaView style={styles.container}>
           <Stack.Screen options={{ headerShown: false }} />
-          <View style={styles.detailContainer}>
+          <View style={[styles.detailContainer, { flex: 1 }]}>
             <View style={styles.detailHeader}>
               <TouchableOpacity onPress={handleBackToList} style={styles.backButton}>
                 <IconSymbol name="chevron.left" size={20} color="#1F2937" />
                 <Text style={styles.backText}>{selectedGoal.title}</Text>
               </TouchableOpacity>
             </View>
-            
+
             <View style={styles.progressCard}>
               <TouchableOpacity onPress={handleShowOverview} style={styles.detailProgressCircleContainer}>
                 <View style={styles.detailProgressCircleBackground} />
@@ -175,6 +177,7 @@ export default function IbadahGoalsScreen() {
               ))}
             </View>
           </View>
+          <BottomNav />
         </SafeAreaView>
       );
     }
@@ -190,6 +193,7 @@ export default function IbadahGoalsScreen() {
           <DateCard />
           <InitialSetup onSaveGoals={handleSaveGoals} />
         </ScrollView>
+        <BottomNav />
       </SafeAreaView>
     );
   }
@@ -204,7 +208,7 @@ export default function IbadahGoalsScreen() {
           <DateCard />
           <OverviewCard />
           <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
-          
+
           {/* Goals List with View detail buttons */}
           <View style={styles.goalsContainer}>
             {goals.map((goal) => (
@@ -225,6 +229,7 @@ export default function IbadahGoalsScreen() {
             ))}
           </View>
         </ScrollView>
+        <BottomNav />
       </SafeAreaView>
     );
   }
@@ -259,6 +264,7 @@ export default function IbadahGoalsScreen() {
         <BottomActions onCompleted={handleCompleted} />
 
       </ScrollView>
+      <BottomNav />
     </SafeAreaView>
   );
 }
@@ -585,7 +591,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     backgroundColor: '#4A0C63',
     borderRadius: 12,
-    shadowColor: '#A855F7',
+    shadowColor: '#AA74E0',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -603,7 +609,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
   },
   viewDetailText: {
-    color: '#62206E',
+    color: '#AA74E0',
     fontSize: 12,
     fontWeight: '600',
   },
@@ -694,7 +700,7 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 50,
     borderWidth: 10.47,
-    borderColor: '#62206E',
+    borderColor: '#AA74E0',
     borderRightColor: 'transparent',
     borderBottomColor: 'transparent',
     transform: [{ rotate: '0deg' }],
@@ -746,7 +752,7 @@ const styles = StyleSheet.create({
   },
   progressBarFill: {
     height: '100%',
-    backgroundColor: '#62206E',
+    backgroundColor: '#AA74E0',
     borderRadius: 4,
     width: '100%',
   },

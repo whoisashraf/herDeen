@@ -13,7 +13,7 @@ import {
     View,
 } from 'react-native';
 
-const DARK_PURPLE = '#62206E';
+const DARK_PURPLE = '#AA74E0';
 const TEXT_GRAY = '#4A4A4A';
 const BG_COLOR = '#F8F8F8';
 

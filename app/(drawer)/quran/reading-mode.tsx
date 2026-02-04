@@ -99,16 +99,16 @@ export default function ReadingModeScreen() {
             {/* Bottom Navigation Bar */}
             <View style={styles.bottomBar}>
                 <TouchableOpacity style={styles.bottomBarButton}>
-                    <IconSymbol name="chevron.left" size={24} color="#62206E" />
+                    <IconSymbol name="chevron.left" size={24} color="#AA74E0" />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.bottomBarButton} onPress={() => setModalVisible(true)}>
-                    <IconSymbol name="line.3.horizontal" size={24} color="#62206E" />
+                    <IconSymbol name="line.3.horizontal" size={24} color="#AA74E0" />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.bottomBarButton}>
-                    <IconSymbol name="bookmark" size={24} color="#62206E" />
+                    <IconSymbol name="bookmark" size={24} color="#AA74E0" />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.bottomBarButton}>
-                    <IconSymbol name="chevron.right" size={24} color="#62206E" />
+                    <IconSymbol name="chevron.right" size={24} color="#AA74E0" />
                 </TouchableOpacity>
             </View>
 
@@ -326,7 +326,7 @@ const styles = StyleSheet.create({
         width: 36,
         height: 36,
         borderWidth: 2,
-        borderColor: '#62206E',
+        borderColor: '#AA74E0',
         position: 'absolute',
         borderRadius: 4,
     },
@@ -352,6 +352,6 @@ const styles = StyleSheet.create({
     },
     modalArabicName: {
         fontSize: 20,
-        color: '#62206E',
+        color: '#AA74E0',
     },
 });

@@ -1,246 +1,185 @@
+import { BottomNav } from '@/components/dashboard/BottomNav';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { Colors } from '@/constants/theme';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Stack, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
+    Dimensions,
     Image,
     ImageBackground,
     ScrollView,
     StyleSheet,
-    Text,
     TextInput,
     TouchableOpacity,
     View
 } from 'react-native';
 
-import cardBg from '@/assets/images/card-bg.png';
-import quranOpen from '@/assets/images/quranOpen.png';
+const { width } = Dimensions.get('window');
 
 const SURAHS = [
-    { number: 1, name: 'Al-Faatiha', englishName: 'The Opening', verses: 7, arabicName: 'الفاتحة' },
-    { number: 2, name: 'Al-Baqara', englishName: 'The Cow', verses: 286, arabicName: 'البقرة' },
-    { number: 3, name: 'Al-i-Imraan', englishName: 'The Family of Imran', verses: 200, arabicName: 'آل عمران' },
-    { number: 4, name: 'An-Nisaa', englishName: 'Women', verses: 176, arabicName: 'النساء' },
-    { number: 5, name: 'Al-Maaida', englishName: 'The Food', verses: 120, arabicName: 'المائدة' },
-    { number: 5, name: 'Al-Maaida', englishName: 'The Food', verses: 120, arabicName: 'المائدة' },
-    { number: 5, name: 'Al-Maaida', englishName: 'The Food', verses: 120, arabicName: 'المائدة' },
-    { number: 5, name: 'Al-Maaida', englishName: 'The Food', verses: 120, arabicName: 'المائدة' },
-    { number: 5, name: 'Al-Maaida', englishName: 'The Food', verses: 120, arabicName: 'المائدة' },
-    { number: 5, name: 'Al-Maaida', englishName: 'The Food', verses: 120, arabicName: 'المائدة' },
-    { number: 5, name: 'Al-Maaida', englishName: 'The Food', verses: 120, arabicName: 'المائدة' },
-    { number: 5, name: 'Al-Maaida', englishName: 'The Food', verses: 120, arabicName: 'المائدة' },
+    { number: 1, name: 'Al-Faatiha', englishName: 'The Opening', verses: 7, arabicName: 'الفاتحة', location: 'Makkah' },
+    { number: 2, name: 'Al-Baqara', englishName: 'The Cow', verses: 286, arabicName: 'البقرة', location: 'Madinah' },
+    { number: 3, name: 'Al-i-Imraan', englishName: 'The Family of Imran', verses: 200, arabicName: 'آل عمران', location: 'Madinah' },
+    { number: 4, name: 'An-Nisaa', englishName: 'Women', verses: 176, arabicName: 'النساء', location: 'Madinah' },
+    { number: 5, name: 'Al-Maaida', englishName: 'The Food', verses: 120, arabicName: 'المائدة', location: 'Madinah' },
+    { number: 6, name: 'Al-An\'aam', englishName: 'The Cattle', verses: 165, arabicName: 'الأنعام', location: 'Makkah' },
+    { number: 7, name: 'Al-A\'raaf', englishName: 'The Heights', verses: 206, arabicName: 'الأعراف', location: 'Makkah' },
 ];
 
-const JUZ_DATA = [
+const JUZS = [
     {
-        title: "Juz'u 1",
-        arabicTitle: "الْجُزْءُ الْأَوَّلُ",
-        items: [
-            { id: '1-1', text: "In the name of Allah, the entire...", subtext: "The Opening (7)", arabic: "الفاتحة", badge: 1 },
-            { id: '1-2', text: "In the name of Allah, the entire...", subtext: "The Opening (7)", arabic: "الفاتحة", badge: 1 },
-            { id: '1-3', text: "In the name of Allah, the entire...", subtext: "The Opening (7)", arabic: "الفاتحة", badge: 1 },
-            { id: '1-4', text: "In the name of Allah, the entire...", subtext: "The Opening (7)", arabic: "الفاتحة", badge: 1 },
-        ]
-    },
-    {
-        title: "Juz'u 2",
-        arabicTitle: "الْجُزْءُ الثَّانِي",
-        items: [
-            { id: '2-1', text: "In the name of Allah, the entire...", subtext: "The Opening (7)", arabic: "الفاتحة", badge: 1 },
-            { id: '2-2', text: "In the name of Allah, the entire...", subtext: "The Opening (7)", arabic: "الفاتحة", badge: 1 },
+        number: 1,
+        arabicName: 'أَلْجُزْءُ أَلْأَوَّلُ',
+        name: 'Juz\'u 1',
+        verses: [
+            { text: 'بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ (1)', source: 'Al-faathia • Verse 1-7', surah: 'الفاتحة' },
+            { text: 'إِنَّ ٱللَّهَ لَا يَسْتَحْىِۦٓ أَن يَضْرِبَ مَثَلًا مَّا بَعُوضَةً فَمَا فَوْ...', source: 'Al-baqara • Verse 1-22', surah: 'البقرة' },
+            { text: 'أَتَأْمُرُونَ ٱلنَّاسَ بِٱلْبِرِّ وَتَنْسَوْنَ أَنْفُسَكُمْ وَأَنْتُمْ تَتْلُونَ أَل...', source: 'Al-baqara • Verse 1-7', surah: 'البقرة' },
+            { text: 'وَإِذِ ٱسْتَسْقَىٰ مُوسَىٰ لِقَوْمِهِۦ فَقُلْنَا ٱضْرِب بِّعَصَاكَ ٱلْحَ...', source: 'Al-baqara • Verse 1-7', surah: 'البقرة' },
         ]
     }
 ];
 
-const TABS = ['Surah', "Juz'u", 'Bookmarks'];
+const FAVORITES = [
+    { text: 'ٱلَّذِينَ يَظُنُّونَ أَنَّهُم مُّلَـٰقُوا۟ رَبِّهِمْ وَأَنَّهُمْ إِلَيْهِ رَٰجِعُونَ', source: 'Al-baqara • Verse 46', surah: 'البقرة' },
+    { text: 'ٱلَّذِينَ يَظُنُّونَ أَنَّهُم مُّلَـٰقُوا۟ رَبِّهِمْ وَأَنَّهُمْ إِلَيْهِ رَٰجِعُونَ', source: 'Al-baqara • Verse 46', surah: 'البقرة' },
+    { text: 'ٱلَّذِينَ يَظُنُّونَ أَنَّهُم مُّلَـٰقُوا۟ رَبِّهِمْ وَأَنَّهُمْ إِلَيْهِ رَٰجِعُونَ', source: 'Al-baqara • Verse 46', surah: 'البقرة' },
+];
+
+const TABS = ['Surah', "Juz", 'Favorites'];
 
 export default function QuranScreen() {
     const router = useRouter();
     const [activeTab, setActiveTab] = useState('Surah');
-    const [searchQuery, setSearchQuery] = useState('');
+    const [isSearching, setIsSearching] = useState(false);
+    const [searchText, setSearchText] = useState('');
+    const colorScheme = useColorScheme() ?? 'light';
+    const colors = Colors[colorScheme];
 
-    const renderSurahItem = ({ item }: { item: typeof SURAHS[0] }) => (
-        <TouchableOpacity style={styles.surahItem} onPress={() => router.push(`/(drawer)/quran/${item.number}`)}>
-            <View style={styles.surahNumberContainer}>
-                {/* Simulating the 8-pointed star with a specific icon or shape. 
-                Using 'seal' or similar if available, else standard star */}
-                <IconSymbol name="seal" size={42} color="#FFFFFF" style={{ position: 'absolute' }} />
-                {/* Outline trick or just use a specific color. If 'seal' is filled, we need an outline. 
-                If no outline icon, we might need a custom View shape. 
-                Let's use a View with border for now as it's reliable without assets. */}
-                <View style={styles.starShape}>
-                    <View style={[styles.starSquare, styles.starSquareRotated]} />
-                    <View style={styles.starSquare} />
+    const renderSurahItem = (item: typeof SURAHS[0], index: number) => (
+        <TouchableOpacity
+            key={index}
+            style={styles.surahItem}
+            onPress={() => router.push(`/(drawer)/quran/${item.number}`)}
+        >
+            <View style={styles.surahLeft}>
+                <View style={styles.surahNumberContainer}>
+                    <View style={styles.starShape}>
+                        <View style={[styles.starSquare, styles.starSquareRotated]} />
+                        <View style={styles.starSquare} />
+                    </View>
+                    <ThemedText type="poppins-bold" style={styles.surahNumber}>{item.number}</ThemedText>
                 </View>
-                <ThemedText type="poppins-bold" style={styles.surahNumber}>{item.number}</ThemedText>
-            </View>
-            <View style={styles.surahInfo}>
-                <View style={styles.surahNameRow}>
-                    <ThemedText type="poppins-medium" style={styles.surahName}>
+                <View style={styles.surahInfo}>
+                    <ThemedText type="poppins-bold" style={[styles.surahName, { color: 'white' }]}>
                         {item.name}
                     </ThemedText>
-                    <ThemedText type="amiri-bold" style={styles.arabicName}>
-                        {item.arabicName}
-                    </ThemedText>
-                </View>
-                <ThemedText type="poppins-regular" style={styles.englishName}>
-                    {item.englishName} ({item.verses})
-                </ThemedText>
-            </View>
-        </TouchableOpacity>
-    );
-
-    const renderJuzItem = ({ item, index }: { item: any, index: number }) => (
-        <TouchableOpacity style={styles.surahItem} onPress={() => router.push(`/(drawer)/quran/juz-${index}`)}>
-            <View style={styles.surahNumberContainer}>
-                <IconSymbol name="seal" size={42} color="#FFFFFF" style={{ position: 'absolute' }} />
-                <View style={styles.starShape}>
-                    <View style={[styles.starSquare, styles.starSquareRotated]} />
-                    <View style={styles.starSquare} />
-                </View>
-                <ThemedText type="poppins-bold" style={styles.surahNumber}>{index + 1}</ThemedText>
-            </View>
-            <View style={styles.surahInfo}>
-                <View style={styles.surahNameRow}>
-                    <ThemedText type="poppins-medium" style={styles.juzText} numberOfLines={1}>
-                        {item.text}
-                    </ThemedText>
-                    <View style={styles.badgeContainer}>
-                        {/* Badge shape simulation */}
-                        <View style={[styles.badgeShape, styles.badgeShapeRotated]} />
-                        <View style={styles.badgeShape} />
-                        <Text style={styles.badgeText}>{item.badge}</Text>
-                    </View>
-                </View>
-                <View style={styles.surahNameRow}>
                     <ThemedText type="poppins-regular" style={styles.englishName}>
-                        {item.subtext}
-                    </ThemedText>
-                    <ThemedText type="amiri-bold" style={styles.arabicNameSmall}>
-                        {item.arabic}
+                        {item.verses} verses • {item.location}
                     </ThemedText>
                 </View>
             </View>
+            <ThemedText type="amiri-bold" style={styles.arabicName}>
+                {item.arabicName}
+            </ThemedText>
         </TouchableOpacity>
     );
 
-    const renderContent = () => {
-        if (activeTab === 'Surah') {
-            return (
-                <View style={styles.listContainer}>
-                    {SURAHS.map((item, index) => (
-                        <View key={index}>
-                            {renderSurahItem({ item })}
-                            {index < SURAHS.length - 1 && <View style={styles.separator} />}
+    const renderJuzItem = (juz: typeof JUZS[0]) => (
+        <View key={juz.number}>
+            <View style={styles.juzHeaderRow}>
+                <ThemedText type="poppins-medium" style={styles.juzTitle}>{juz.name}</ThemedText>
+                <ThemedText type="amiri-bold" style={styles.juzArabicTitle}>{juz.arabicName}</ThemedText>
+            </View>
+            {juz.verses.map((verse, idx) => (
+                <View key={idx} style={styles.verseListItem}>
+                    <View style={styles.verseListLeft}>
+                        <View style={styles.verseStarContainer}>
+                            <IconSymbol name="star" size={32} color="#1C1C1E" />
+                            <ThemedText style={styles.verseNumberInsideStar}>{idx + 1}</ThemedText>
                         </View>
-                    ))}
-                </View>
-            );
-        } else if (activeTab === "Juz'u") {
-            return (
-                <View style={styles.juzListContainer}>
-                    {JUZ_DATA.map((juz, sectionIndex) => (
-                        <View key={sectionIndex}>
-                            <View style={styles.juzHeader}>
-                                <ThemedText type="poppins-medium" style={styles.juzHeaderTitle}>{juz.title}</ThemedText>
-                                <ThemedText type="amiri-bold" style={styles.juzHeaderArabic}>{juz.arabicTitle}</ThemedText>
-                            </View>
-                            <View style={styles.listContainer}>
-                                {juz.items.map((item, index) => (
-                                    <View key={item.id}>
-                                        {renderJuzItem({ item, index })}
-                                        {index < juz.items.length - 1 && <View style={styles.separator} />}
-                                    </View>
-                                ))}
-                            </View>
-                        </View>
-                    ))}
-                </View>
-            );
-        } else {
-            return (
-                <View style={styles.emptyContainer}>
-                    <View style={styles.emptyIconContainer}>
-                        <IconSymbol name="seal" size={80} color="#FFFFFF" style={{ position: 'absolute' }} />
-                        <View style={styles.emptyStarShape}>
-                            <View style={[styles.emptyStarSquare, styles.emptyStarSquareRotated]} />
-                            <View style={styles.emptyStarSquare} />
-                        </View>
-                        <Text style={styles.emptyExclamation}>!</Text>
                     </View>
-                    <ThemedText type="poppins-medium" style={styles.emptyText}>No Bookmark Yet!</ThemedText>
+                    <View style={styles.verseListContent}>
+                        <ThemedText type="amiri-bold" style={styles.verseListArabic}>{verse.text}</ThemedText>
+                        <View style={styles.verseListSourceRow}>
+                            <ThemedText type="poppins-regular" style={styles.verseListSource}>{verse.source}</ThemedText>
+                            <ThemedText type="amiri-bold" style={styles.verseListSurah}>{verse.surah}</ThemedText>
+                        </View>
+                    </View>
                 </View>
-            );
-        }
-    };
+            ))}
+        </View>
+    );
+
+    const renderFavoriteItem = (fav: typeof FAVORITES[0], index: number) => (
+        <View key={index} style={styles.verseListItem}>
+            <View style={styles.verseListLeft}>
+                <IconSymbol name="star.fill" size={24} color="#AA74E0" />
+            </View>
+            <View style={styles.verseListContent}>
+                <ThemedText type="amiri-bold" style={styles.verseListArabic}>{fav.text}</ThemedText>
+                <View style={styles.verseListSourceRow}>
+                    <ThemedText type="poppins-regular" style={styles.verseListSource}>{fav.source}</ThemedText>
+                    <ThemedText type="amiri-bold" style={styles.verseListSurah}>{fav.surah}</ThemedText>
+                </View>
+            </View>
+        </View>
+    );
+
+    if (isSearching) {
+        return (
+            <View style={[styles.container, { backgroundColor: '#111111' }]}>
+                <Stack.Screen options={{ headerShown: false }} />
+                <View style={styles.searchHeader}>
+                    <TouchableOpacity onPress={() => setIsSearching(false)} style={styles.searchHeaderButton}>
+                        <IconSymbol name="arrow.left" size={24} color="white" />
+                    </TouchableOpacity>
+                    <View style={styles.searchBar}>
+                        <IconSymbol name="magnifyingglass" size={20} color="#8E8E93" />
+                        <TextInput
+                            autoFocus
+                            placeholder="Search by surahs, juz, verses..."
+                            placeholderTextColor="#8E8E93"
+                            style={styles.searchBarInput}
+                            value={searchText}
+                            onChangeText={setSearchText}
+                        />
+                        {searchText.length > 0 && (
+                            <TouchableOpacity onPress={() => setSearchText('')}>
+                                <IconSymbol name="xmark.circle.fill" size={20} color="#8E8E93" />
+                            </TouchableOpacity>
+                        )}
+                    </View>
+                </View>
+                <ScrollView contentContainerStyle={styles.scrollContent}>
+                    {/* Search results would go here */}
+                </ScrollView>
+            </View>
+        );
+    }
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: '#090909' }]}>
             <Stack.Screen options={{ headerShown: false }} />
 
             {/* Header */}
             <View style={styles.header}>
-                <View style={styles.headerLeft}>
-                    <TouchableOpacity onPress={() => router.back()} style={styles.headerButton}>
-                        <IconSymbol name="arrow.left" size={24} color="#000" />
+                <ThemedText type="poppins-bold" style={[styles.headerTitle, { color: 'white' }]}>
+                    Quran
+                </ThemedText>
+                <View style={styles.headerRight}>
+                    <TouchableOpacity style={styles.headerIconButton} onPress={() => setIsSearching(true)}>
+                        <IconSymbol name="magnifyingglass" size={24} color="white" />
                     </TouchableOpacity>
-                    <ThemedText type="poppins-medium" style={styles.headerTitle}>
-                        Al-Quran
-                    </ThemedText>
+                    <TouchableOpacity style={styles.headerIconButton}>
+                        <IconSymbol name="hexagon" size={24} color="white" />
+                    </TouchableOpacity>
                 </View>
-                <TouchableOpacity style={styles.headerButton}>
-                    {/* Custom hamburger menu roughly approximated with 'line.3.horizontal' or similar */}
-                    <IconSymbol name="line.3.horizontal" size={24} color="#000" />
-                </TouchableOpacity>
             </View>
 
             <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-                {/* Search Bar */}
-                <View style={styles.searchContainer}>
-                    <TextInput
-                        style={styles.searchInput}
-                        placeholder="Search"
-                        placeholderTextColor="#9CA3AF"
-                        value={searchQuery}
-                        onChangeText={setSearchQuery}
-                    />
-                    <IconSymbol name="magnifyingglass" size={22} color="#4B5563" />
-                </View>
-
-                {/* Last Read Banner */}
-                <View style={styles.bannerContainer}>
-                    <ImageBackground
-                        source={cardBg}
-                        style={styles.bannerGradient}
-                        imageStyle={{ borderRadius: 20 }}
-                        resizeMode="cover"
-                    >
-                        {/* Background decorative patterns could go here as absolute positioned images */}
-                        <View style={styles.bannerContent}>
-                            <View style={styles.lastReadInfo}>
-                                <View style={styles.lastReadHeader}>
-                                    <IconSymbol name="book.fill" size={14} color="white" />
-                                    <Text style={styles.lastReadLabel}>Last Read</Text>
-                                </View>
-                                <ThemedText type="amiri-bold" style={styles.lastReadSurahArabic}>
-                                    الفاتحة
-                                </ThemedText>
-                                <Text style={styles.lastReadAyah}>Ayah No: 1</Text>
-                            </View>
-
-                            <View style={styles.bannerImageContainer}>
-                                <Image source={quranOpen} style={styles.quranImage} resizeMode="contain" />
-                            </View>
-                        </View>
-
-                        {/* Continue Button floating absolute */}
-                        <TouchableOpacity style={styles.continueButton} onPress={() => router.push('/(drawer)/quran/1')}>
-                            <Text style={styles.continueButtonText}>Continue</Text>
-                            <IconSymbol name="arrow.right" size={24} color="#62206E" />
-                        </TouchableOpacity>
-                    </ImageBackground>
-                </View>
-
                 {/* Tabs */}
                 <View style={styles.tabsContainer}>
                     {TABS.map((tab) => {
@@ -253,7 +192,7 @@ export default function QuranScreen() {
                             >
                                 <ThemedText
                                     type="poppins-medium"
-                                    style={[styles.tabText, isActive && styles.activeTabText]}
+                                    style={[styles.tabText, isActive ? styles.activeTabText : { color: '#8E8E93' }]}
                                 >
                                     {tab}
                                 </ThemedText>
@@ -262,9 +201,72 @@ export default function QuranScreen() {
                     })}
                 </View>
 
-                {/* Content based on Active Tab */}
-                {renderContent()}
+                {/* Banner - Last Read (Only on Surah and Juz tabs) */}
+                {activeTab !== 'Favorites' && (
+                    <View style={styles.bannerContainer}>
+                        <ImageBackground
+                            source={require('@/assets/images/card-bg.png')}
+                            style={styles.bannerBackground}
+                            imageStyle={{ borderRadius: 20, opacity: 0.15 }}
+                            resizeMode="cover"
+                        >
+                            <View style={styles.bannerContent}>
+                                <View style={styles.bannerLeft}>
+                                    <View style={styles.lastReadRow}>
+                                        <IconSymbol name="book" size={18} color="white" />
+                                        <ThemedText type="poppins-medium" style={styles.lastReadLabel}>Last Read</ThemedText>
+                                    </View>
+                                    <View style={styles.lastReadInfoRow}>
+                                        <ThemedText type="poppins-regular" style={styles.lastReadVerse}>Ayah No: 12</ThemedText>
+                                        <ThemedText type="amiri-bold" style={styles.lastReadSurahName}>الفاتحة</ThemedText>
+                                    </View>
+                                </View>
+
+                                <View style={styles.bannerRight}>
+                                    <Image
+                                        source={require('@/assets/images/quranOpen.png')}
+                                        style={styles.quranImage}
+                                        resizeMode="contain"
+                                    />
+                                    <TouchableOpacity style={styles.continueButton}>
+                                        <ThemedText type="poppins-medium" style={styles.continueText}>Continue</ThemedText>
+                                        <IconSymbol name="arrow.right" size={16} color="white" />
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </ImageBackground>
+                    </View>
+                )}
+
+                {/* Content based on Tab */}
+                <View style={styles.contentContainer}>
+                    {activeTab === 'Surah' && SURAHS.map((item, index) => (
+                        <View key={index}>
+                            {renderSurahItem(item, index)}
+                            <View style={[styles.separator, { backgroundColor: '#1C1C1E' }]} />
+                        </View>
+                    ))}
+
+                    {activeTab === 'Juz' && JUZS.map(juz => renderJuzItem(juz))}
+
+                    {activeTab === 'Favorites' && (
+                        FAVORITES.length > 0 ? (
+                            FAVORITES.map((fav, index) => (
+                                <View key={index}>
+                                    {renderFavoriteItem(fav, index)}
+                                    <View style={[styles.separator, { backgroundColor: '#1C1C1E' }]} />
+                                </View>
+                            ))
+                        ) : (
+                            <View style={styles.emptyContainer}>
+                                <IconSymbol name="star.slash.fill" size={80} color="#1C1C1E" />
+                                <ThemedText type="poppins-medium" style={styles.emptyText}>No favorites yet!</ThemedText>
+                            </View>
+                        )
+                    )}
+                </View>
             </ScrollView>
+            <BottomNav />
         </View>
     );
 }
@@ -272,7 +274,6 @@ export default function QuranScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#FAFAFA',
         paddingTop: 60,
     },
     header: {
@@ -280,180 +281,150 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingHorizontal: 24,
-        marginBottom: 24,
+        marginBottom: 20,
     },
-    headerLeft: {
+    headerTitle: {
+        fontSize: 32,
+    },
+    headerRight: {
         flexDirection: 'row',
         alignItems: 'center',
         gap: 12,
     },
-    headerButton: {
-        padding: 4,
-    },
-    headerTitle: {
-        fontSize: 20,
-        color: '#374151',
-    },
-    scrollContent: {
-        paddingHorizontal: 24,
-        paddingBottom: 40,
-    },
-    searchContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#FFFFFF',
-        borderRadius: 14,
-        paddingHorizontal: 16,
-        paddingVertical: 14,
-        marginBottom: 24,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.03,
-        shadowRadius: 8,
-        elevation: 2,
-    },
-    searchInput: {
-        flex: 1,
-        fontSize: 16,
-        color: '#1F2937',
-        marginRight: 10,
-    },
-    bannerContainer: {
-        marginBottom: 28,
-        borderRadius: 20,
-        overflow: 'hidden',
-        height: 150,
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 10,
-        elevation: 8,
-    },
-    bannerGradient: {
-        flex: 1,
-        padding: 20,
-        position: 'relative',
-    },
-    bannerContent: {
-        flex: 1,
-        flexDirection: 'row',
-    },
-    lastReadInfo: {
-        flex: 1,
-        paddingTop: 8,
-    },
-    lastReadHeader: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 20,
-        gap: 6,
-    },
-    lastReadLabel: {
-        color: 'white',
-        fontSize: 16,
-    },
-    lastReadSurahArabic: {
-        color: 'white',
-        fontSize: 22,
-        marginBottom: 4,
-        textAlign: 'left',
-    },
-    lastReadAyah: {
-        color: 'white',
-        fontSize: 14,
-        opacity: 0.9,
-    },
-    bannerImageContainer: {
-        width: 190,
-        position: 'relative',
+    headerIconButton: {
+        width: 44,
+        height: 44,
+        borderRadius: 22,
+        backgroundColor: '#1C1C1E',
         justifyContent: 'center',
         alignItems: 'center',
     },
-    quranImage: {
-        width: 230,
-        height: 140,
-        marginLeft: 20,
-
-    },
-    continueButton: {
-        position: 'absolute',
-        bottom: 20,
-        right: 20,
-        backgroundColor: 'white',
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingHorizontal: 26,
-        paddingVertical: 8,
-        borderRadius: 8,
-        gap: 6,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 3,
-    },
-    continueButtonText: {
-        color: '#62206E',
-        fontSize: 18,
+    scrollContent: {
+        paddingHorizontal: 20,
+        paddingBottom: 100,
     },
     tabsContainer: {
         flexDirection: 'row',
-        padding: 4,
-        backgroundColor: '#FFFFFF',
-        borderRadius: 16,
-        borderWidth: 1,
-        borderColor: '#E5E7EB',
-        marginBottom: 24,
+        marginBottom: 30,
+        gap: 8,
     },
     tab: {
         flex: 1,
+        paddingVertical: 12,
+        borderRadius: 25,
         alignItems: 'center',
         justifyContent: 'center',
-        paddingVertical: 12,
-        borderRadius: 12,
     },
     activeTab: {
-        backgroundColor: '#62206E',
+        backgroundColor: '#1C1C1E',
     },
     tabText: {
         fontSize: 16,
-        color: '#62206E',
-        fontWeight: '500',
     },
     activeTabText: {
-        color: 'white',
-        fontWeight: '600',
+        color: '#AA74E0',
     },
-    listContainer: {
-        backgroundColor: 'white',
-        borderRadius: 16,
+    bannerContainer: {
+        height: 156,
+        borderRadius: 20,
+        overflow: 'hidden',
+        marginBottom: 32,
+        backgroundColor: '#AA74E01A',
+    },
+    bannerBackground: {
+        flex: 1,
+        padding: 20,
+    },
+    bannerContent: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        flex: 1,
+    },
+    bannerLeft: {
+        justifyContent: 'center',
+    },
+    lastReadRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 8,
+        marginBottom: 12,
+    },
+    lastReadLabel: {
+        fontSize: 15,
+        color: 'white',
+    },
+    lastReadInfoRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 12,
+    },
+    lastReadSurahName: {
+        fontSize: 24,
+        color: 'white',
+    },
+    lastReadVerse: {
+        fontSize: 14,
+        color: '#8E8E93',
+    },
+    bannerRight: {
+        alignItems: 'flex-end',
+        justifyContent: 'center',
+    },
+    quranImage: {
+        width: 100,
+        height: 80,
+        position: 'absolute',
+        top: -10,
+        right: -10,
+    },
+    continueButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+        paddingVertical: 10,
         paddingHorizontal: 16,
-        marginTop: 10,
+        borderRadius: 20,
+        gap: 8,
+        marginTop: 40,
+        borderWidth: 1,
+        borderColor: 'rgba(255, 255, 255, 0.1)',
+    },
+    continueText: {
+        fontSize: 14,
+        color: 'white',
+    },
+    contentContainer: {
+        gap: 0,
     },
     surahItem: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingVertical: 18,
+        justifyContent: 'space-between',
+        paddingVertical: 20,
+    },
+    surahLeft: {
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     surahNumberContainer: {
-        width: 42,
-        height: 42,
+        width: 44,
+        height: 44,
         justifyContent: 'center',
         alignItems: 'center',
         marginRight: 16,
-        position: 'relative',
     },
     starShape: {
         position: 'absolute',
-        width: 36,
-        height: 36,
+        width: 40,
+        height: 40,
         justifyContent: 'center',
         alignItems: 'center',
     },
     starSquare: {
-        width: 36,
-        height: 36,
-        borderWidth: 2,
-        borderColor: '#62206E',
+        width: 30,
+        height: 30,
+        borderWidth: 1.5,
+        borderColor: '#444',
         position: 'absolute',
         borderRadius: 4,
     },
@@ -461,131 +432,123 @@ const styles = StyleSheet.create({
         transform: [{ rotate: '45deg' }],
     },
     surahNumber: {
-        fontSize: 12,
-        color: '#000',
-        zIndex: 1,
+        fontSize: 14,
+        color: 'white',
     },
     surahInfo: {
-        flex: 1,
-    },
-    surahNameRow: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 4,
+        gap: 2,
     },
     surahName: {
-        fontSize: 16,
-        color: '#1F2937',
-    },
-    arabicName: {
-        fontSize: 20,
-        color: '#62206E',
-        fontFamily: 'Amiri-Bold',
+        fontSize: 18,
     },
     englishName: {
-        fontSize: 12,
-        color: '#9CA3AF',
-        textTransform: 'uppercase',
+        fontSize: 13,
+        color: '#8E8E93',
+    },
+    arabicName: {
+        fontSize: 22,
+        color: 'white',
     },
     separator: {
         height: 1,
-        backgroundColor: '#F3F4F6',
-        marginLeft: 58,
+        width: '100%',
     },
-    // Juz Styles
-    juzListContainer: {
-        marginTop: 10,
-    },
-    juzHeader: {
+    juzHeaderRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 12,
-        marginTop: 16,
-        paddingHorizontal: 4,
+        paddingVertical: 16,
+        marginBottom: 8,
     },
-    juzHeaderTitle: {
+    juzTitle: {
         fontSize: 18,
-        color: '#62206E',
+        color: 'white',
     },
-    juzHeaderArabic: {
-        fontSize: 18,
-        color: '#62206E',
+    juzArabicTitle: {
+        fontSize: 22,
+        color: 'white',
     },
-    juzText: {
-        fontSize: 14,
-        color: '#1F2937',
-        flex: 1,
-        marginRight: 8,
+    verseListItem: {
+        flexDirection: 'row',
+        paddingVertical: 20,
+        gap: 16,
     },
-    arabicNameSmall: {
-        fontSize: 14,
-        color: '#62206E',
-    },
-    badgeContainer: {
-        width: 24,
-        height: 24,
-        justifyContent: 'center',
+    verseListLeft: {
         alignItems: 'center',
-        position: 'relative',
+        justifyContent: 'center',
+        width: 48,
     },
-    badgeShape: {
+    verseStarContainer: {
+        width: 48,
+        height: 48,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    verseNumberInsideStar: {
         position: 'absolute',
-        width: 24,
-        height: 24,
-        backgroundColor: '#D6BCDB', // Light purple
-        borderRadius: 4,
-    },
-    badgeShapeRotated: {
-        transform: [{ rotate: '45deg' }],
-    },
-    badgeText: {
-        fontSize: 10,
+        color: '#8E8E93',
+        fontSize: 12,
         fontWeight: 'bold',
-        color: '#62206E',
-        zIndex: 1,
     },
-    // Empty State Styles
+    verseListContent: {
+        flex: 1,
+        gap: 8,
+    },
+    verseListArabic: {
+        fontSize: 20,
+        color: 'white',
+        lineHeight: 32,
+    },
+    verseListSourceRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    verseListSource: {
+        fontSize: 13,
+        color: '#8E8E93',
+    },
+    verseListSurah: {
+        fontSize: 16,
+        color: 'white',
+    },
     emptyContainer: {
         alignItems: 'center',
-        marginTop: 60,
-    },
-    emptyIconContainer: {
-        width: 80,
-        height: 80,
         justifyContent: 'center',
-        alignItems: 'center',
-        marginBottom: 16,
-        position: 'relative',
+        paddingVertical: 60,
+        gap: 20,
     },
-    emptyStarShape: {
-        position: 'absolute',
-        width: 70,
-        height: 70,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    emptyStarSquare: {
-        width: 60,
-        height: 60,
-        borderWidth: 3,
-        borderColor: '#62206E',
-        position: 'absolute',
-        borderRadius: 8,
-    },
-    emptyStarSquareRotated: {
-        transform: [{ rotate: '45deg' }],
-    },
-    emptyExclamation: {
-        fontSize: 32,
-        color: '#62206E',
-        fontWeight: 'bold',
-        zIndex: 1,
-    },
+
     emptyText: {
+        fontSize: 18,
+        color: 'white',
+    },
+    searchHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 20,
+        paddingTop: 10,
+        paddingBottom: 20,
+        gap: 16,
+    },
+    searchHeaderButton: {
+        padding: 8,
+        borderRadius: 22,
+        backgroundColor: '#1C1C1E',
+    },
+    searchBar: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#1C1C1E',
+        borderRadius: 25,
+        paddingHorizontal: 16,
+        height: 50,
+        gap: 12,
+    },
+    searchBarInput: {
+        flex: 1,
+        color: 'white',
         fontSize: 16,
-        color: '#1F2937',
     },
 });
-
