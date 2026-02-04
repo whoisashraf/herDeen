@@ -1,7 +1,7 @@
 // components/onboarding/SelectOptionCard.tsx
+import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons'; // Assuming Ionicons for checkbox
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 interface SelectOptionCardProps {
   label: string;
@@ -12,51 +12,77 @@ interface SelectOptionCardProps {
 export default function SelectOptionCard({ label, isSelected, onPress }: SelectOptionCardProps) {
   return (
     <TouchableOpacity
-      style={[styles.card, isSelected && styles.cardSelected]}
+      style={styles.container}
       onPress={onPress}
-      activeOpacity={0.8}
+      activeOpacity={0.85}
     >
-      <Text style={[styles.cardText, isSelected && styles.cardTextSelected]}>{label}</Text>
-      <View style={[styles.checkbox, isSelected && styles.checkboxSelected]}>
-        {isSelected && <Ionicons name="checkmark" size={18} color="#FFFFFF" />}
+      <View style={styles.textPart}>
+        <Text style={[styles.cardText, isSelected && styles.cardTextActive]} numberOfLines={1}>
+          {label}
+        </Text>
+      </View>
+
+      <View style={styles.checkPart}>
+        <View style={[styles.checkboxContainer, isSelected && styles.checkboxActive]}>
+          {isSelected ? (
+            <Ionicons name="checkmark" size={18} color="#FFFFFF" />
+          ) : (
+            <View style={styles.checkboxEmpty} />
+          )}
+        </View>
       </View>
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
-  card: {
+  container: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#374151', // Inactive background
-    borderRadius: 12,
-    paddingVertical: 18,
-    paddingHorizontal: 20,
-    minHeight: 60,
+    marginBottom: 16,
+    height: 60,
+    width: 365,
+    maxWidth: '100%',
+    alignSelf: 'center',
   },
-  cardSelected: {
-    backgroundColor: '#AA74E0', // Active background
+  textPart: {
+    flex: 1,
+    backgroundColor: '#1E1E20',
+    borderRadius: 8,
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+    marginRight: 6, // Gap: 6px
+  },
+  checkPart: {
+    width: 50, // Square-ish
+    backgroundColor: '#1E1E20',
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   cardText: {
     color: '#FFFFFF',
     fontSize: 16,
-    fontWeight: '500',
+    fontFamily: 'Poppins_500Medium',
   },
-  cardTextSelected: {
-    color: '#FFFFFF',
+  cardTextActive: {
+    fontFamily: 'Poppins_600SemiBold',
   },
-  checkbox: {
+  checkboxContainer: {
     width: 24,
     height: 24,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: '#6B7280', // Inactive border
+    borderRadius: 6,
+    borderWidth: 1.5,
+    borderColor: '#FFFFFFB2',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  checkboxSelected: {
-    backgroundColor: '#9333EA', // Checkmark background
-    borderColor: '#9333EA', // Active border
+  checkboxActive: {
+    backgroundColor: '#AA74E0',
+    borderColor: '#AA74E0',
+  },
+  checkboxEmpty: {
+    // Empty state border
   },
 });
+
+

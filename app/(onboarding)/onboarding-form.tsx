@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
-import { SafeAreaView, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
+import SelectOptionCard from '@/components/onboarding/SelectOptionCard';
+import { ThemedText } from '@/components/themed-text';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import SelectOptionCard from '@/components/onboarding/SelectOptionCard'; // Import the new component
+import { useRouter } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import React, { useState } from 'react';
+import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function OnboardingFormScreen() {
+  const router = useRouter();
   const colorScheme = useColorScheme() ?? 'dark';
   const colors = Colors[colorScheme];
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
@@ -18,27 +21,43 @@ export default function OnboardingFormScreen() {
     'Other',
   ];
 
+  const handleContinue = () => {
+    if (!selectedOption) return;
+    router.push('/(onboarding)/onboarding-step2');
+  };
+
+  const handleSkip = () => {
+    router.push('/(drawer)');
+  };
+
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: '#111111' }]}>
       <StatusBar style="light" />
       <View style={styles.content}>
-        {/* Top bar with time and progress indicators */}
+
+        {/* Top bar with step indicators */}
         <View style={styles.header}>
-          <Text style={styles.timeText}>9:41</Text>
+          <View />
           <View style={styles.progressIndicators}>
-            <View style={[styles.progressCircle, styles.progressActive]} />
-            <View style={styles.progressCircle} />
-            <View style={styles.progressCircle} />
+            <View style={[styles.progressCircle, styles.progressActive]}>
+              <Text style={styles.progressTextActive}>1</Text>
+            </View>
+            <View style={styles.progressCircle}>
+              <Text style={styles.progressText}>2</Text>
+            </View>
+            <View style={styles.progressCircle}>
+              <Text style={styles.progressText}>3</Text>
+            </View>
           </View>
         </View>
 
-        {/* Title and Subtitle */}
-        <View style={styles.textContainer}>
+        {/* Title + subtitle */}
+        <View style={styles.textSection}>
           <Text style={styles.title}>Tell Us About You</Text>
           <Text style={styles.subtitle}>So HerDeen fits your lifestyle and pace.</Text>
         </View>
 
-        {/* Options go here */}
+        {/* Options */}
         <View style={styles.optionsContainer}>
           {options.map((option) => (
             <SelectOptionCard
@@ -50,21 +69,19 @@ export default function OnboardingFormScreen() {
           ))}
         </View>
 
-        {/* Footer with buttons */}
+        {/* Footer */}
         <View style={styles.footer}>
           <TouchableOpacity
-            style={styles.continueButton}
-            onPress={() => console.log('Continue with:', selectedOption)}
-            activeOpacity={0.8}
-            disabled={!selectedOption} // Disable if no option is selected
+            style={[styles.continueButton, !selectedOption && styles.continueButtonDisabled]}
+            onPress={handleContinue}
+            activeOpacity={0.85}
+            disabled={!selectedOption}
           >
-            <Text style={styles.continueButtonText}>Continue</Text>
+            <ThemedText type="poppins-semibold" style={styles.continueButtonText}>Continue</ThemedText>
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => console.log('Skip pressed')} // Implement skip logic
-            activeOpacity={0.7}
-          >
-            <Text style={styles.skipButtonText}>Skip this</Text>
+
+          <TouchableOpacity onPress={handleSkip} activeOpacity={0.7} style={{ marginTop: 16 }}>
+            <ThemedText type="poppins-regular" style={styles.skipButtonText}>Skip this</ThemedText>
           </TouchableOpacity>
         </View>
       </View>
@@ -78,71 +95,82 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    paddingHorizontal: 20,
-    paddingTop: 10, // Adjust as needed
-    justifyContent: 'space-between',
+    paddingHorizontal: 32,
+    paddingTop: 24,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 30, // Adjust as needed
-  },
-  timeText: {
-    color: '#FFFFFF', // Assuming white for time
-    fontSize: 15,
-    fontWeight: '600',
+    marginBottom: 40,
   },
   progressIndicators: {
     flexDirection: 'row',
-    gap: 8,
+    gap: -10, // Overlap indicators
   },
   progressCircle: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#374151', // Inactive color
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#333336',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#1C1C1E',
   },
   progressActive: {
-    backgroundColor: '#AA74E0', // Active color for '1'
+    backgroundColor: '#AA74E01A', // Semi-transparent purple for active
+    borderWidth: 0, // No border for active
   },
-  textContainer: {
-    marginBottom: 40, // Adjust as needed
+  progressText: {
+    color: '#9CA3AF',
+    fontSize: 14,
+    fontFamily: 'Poppins_500Medium',
+  },
+  progressTextActive: {
+    color: '#AA74E0', // Purple text on semi-transparent background
+    fontSize: 14,
+    fontFamily: 'Poppins_600SemiBold',
+  },
+  textSection: {
+    marginBottom: 32,
   },
   title: {
-    fontSize: 28,
-    fontWeight: 'bold',
+    fontSize: 32,
     color: '#FFFFFF',
-    marginBottom: 8,
+    marginBottom: 4,
+    fontFamily: 'Amiri_700Bold', // Serif font as requested/shown
   },
   subtitle: {
     fontSize: 16,
     color: '#FFFFFFB2',
+    fontFamily: 'Poppins_400Regular',
   },
   optionsContainer: {
-    // flex: 1, // Removed to allow content to naturally size options
-    gap: 12,
+    flex: 1,
   },
   footer: {
     alignItems: 'center',
-    marginBottom: 20, // Adjust as needed
+    marginBottom: 32,
+    width: '100%'
   },
   continueButton: {
-    backgroundColor: '#AA74E0', // Purple color from image
-    borderRadius: 30, // Highly rounded
-    paddingVertical: 18,
+    backgroundColor: '#AA74E0',
+    borderRadius: 100, // Pill shape
+    paddingVertical: 20,
     width: '100%',
     alignItems: 'center',
-    marginBottom: 12, // Space between continue and skip buttons
+  },
+  continueButtonDisabled: {
+    opacity: 0.5,
   },
   continueButtonText: {
     color: '#FFFFFF',
     fontSize: 18,
-    fontWeight: '600', // Poppins-semibold equivalent
   },
   skipButtonText: {
-    color: '#FFFFFF', // Assuming white for skip button text
+    color: '#FFFFFF',
     fontSize: 16,
-    fontWeight: '500', // Assuming medium boldness
+    opacity: 0.8,
   },
 });

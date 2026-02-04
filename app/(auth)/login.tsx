@@ -7,6 +7,7 @@ import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
 import {
+  Image,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -106,7 +107,7 @@ export default function LoginScreen() {
           </View>
 
           <View style={styles.forgotPasswordRow}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push('/(auth)/forgot-password')}>
               <ThemedText type="poppins-medium" style={[styles.forgotPasswordText, { color: '#FEA1CD' }]}>Forgot password?</ThemedText>
             </TouchableOpacity>
           </View>
@@ -134,7 +135,11 @@ export default function LoginScreen() {
 
           <View style={styles.socialRow}>
             <TouchableOpacity style={[styles.socialButton, { borderColor: dividerColor }]}>
-              <Ionicons name="logo-google" size={28} color="#FFFFFF" />
+              <Image
+                source={require('@/assets/icons/google_icon.png')}
+                style={styles.socialIcon}
+                resizeMode="contain"
+              />
             </TouchableOpacity>
             <TouchableOpacity style={[styles.socialButton, { borderColor: dividerColor }]}>
               <Ionicons name="logo-apple" size={28} color="#FFFFFF" />
@@ -181,5 +186,6 @@ const styles = StyleSheet.create({
   forgotPasswordRow: { flexDirection: 'row', justifyContent: 'flex-end', marginBottom: 20 },
   forgotPasswordText: { fontSize: 14 },
   errorText: { fontSize: 14 },
+  socialIcon: { width: 24, height: 24 },
 });
 
