@@ -7,6 +7,7 @@ import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
 import {
+  Image,
   KeyboardAvoidingView,
   Linking,
   Platform,
@@ -45,7 +46,7 @@ export default function SignUpScreen() {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      router.push('/confirm-email');
+      router.push('/(auth)/confirm-email');
     }, 800);
   };
 
@@ -155,7 +156,11 @@ export default function SignUpScreen() {
 
           <View style={styles.socialRow}>
             <TouchableOpacity style={[styles.socialButton, { borderColor: dividerColor }]}>
-              <Ionicons name="logo-google" size={28} color="#FFFFFF" />
+              <Image
+                source={require('@/assets/icons/google_icon.png')}
+                style={styles.socialIcon}
+                resizeMode="contain"
+              />
             </TouchableOpacity>
             <TouchableOpacity style={[styles.socialButton, { borderColor: dividerColor }]}>
               <Ionicons name="logo-apple" size={28} color="#FFFFFF" />
@@ -207,5 +212,6 @@ const styles = StyleSheet.create({
   loginLinkText: { fontSize: 15 },
   textWhiteOpacity70: { color: '#FFFFFFB2' },
   textPinkish: { color: '#FEA1CD', fontWeight: '600' },
+  socialIcon: { width: 24, height: 24 },
 });
 

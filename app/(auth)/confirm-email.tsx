@@ -57,7 +57,7 @@ export default function ConfirmEmailScreen() {
   const handleVerify = () => {
     if (codeString.length !== CODE_LENGTH) return;
     setLoading(true);
-    setTimeout(() => { setLoading(false); router.replace('/'); }, 800);
+    setTimeout(() => { setLoading(false); router.replace('/(auth)/email-verified'); }, 800);
   };
 
   const handleResend = () => {
