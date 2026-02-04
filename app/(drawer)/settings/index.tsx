@@ -1,3 +1,4 @@
+import { BOTTOM_NAV_HEIGHT, BottomNav } from '@/components/dashboard/BottomNav';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { AntDesign } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -16,6 +17,9 @@ import {
     TouchableOpacity,
     View
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+import { useAuth } from '@/contexts/auth-context'; // Import useAuth
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const PURPLE = '#5C1E68';
@@ -60,6 +64,8 @@ const SettingsGroup: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 
 export default function SettingsScreen() {
     const router = useRouter();
+    const insets = useSafeAreaInsets();
+    const { signOut } = useAuth(); // Call useAuth
     const [activeModal, setActiveModal] = React.useState<null | 'hijri' | 'time' | 'prayer' | 'location' | 'manualLocation' | 'manualLocationSearch'>(null);
     const [hijriAdjustment, setHijriAdjustment] = React.useState(0);
     const [timeFormat, setTimeFormat] = React.useState('12 hours');
@@ -89,7 +95,7 @@ export default function SettingsScreen() {
     const cities = ['Lagos', 'Lafia', 'Lagos, Ikeja'];
 
     return (
-        <View style={styles.container}>
+        <View style={{ flex: 1 }}>
             <StatusBar barStyle="dark-content" />
             <ImageBackground
                 source={require('@/assets/images/bg-settings.jpg')}
@@ -100,7 +106,12 @@ export default function SettingsScreen() {
                 <View
                     style={styles.imageOverlay}
                 >
-                    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+                    <ScrollView
+                        showsVerticalScrollIndicator={false}
+                        contentContainerStyle={[
+                            styles.scrollContent,
+                            { paddingBottom: 40 + BOTTOM_NAV_HEIGHT + insets.bottom },
+                        ]}>
                         <SafeAreaView>
                             <View style={styles.header}>
                                 <View style={styles.profileSection}>
@@ -232,6 +243,7 @@ export default function SettingsScreen() {
                     </ScrollView>
                 </View>
             </ImageBackground>
+            <BottomNav />
 
             {/* Dynamic Settings Modal */}
             <Modal
@@ -446,7 +458,7 @@ export default function SettingsScreen() {
                             style={styles.confirmLogoutButton}
                             onPress={() => {
                                 setIsLogoutModalVisible(false);
-
+                                signOut(); // Call signOut
                             }}
                         >
                             <Text style={styles.confirmLogoutText}>Yes, see you soon!</Text>

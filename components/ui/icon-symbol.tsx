@@ -1,19 +1,19 @@
 // Fallback for using MaterialIcons on Android and web.
 
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { SymbolViewProps, SymbolWeight } from 'expo-symbols';
-import { ComponentProps } from 'react';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { SymbolWeight } from 'expo-symbols';
 import { OpaqueColorValue, type StyleProp, type TextStyle } from 'react-native';
 
-type IconMapping = Partial<Record<SymbolViewProps['name'], ComponentProps<typeof MaterialIcons>['name']>>;
-type IconSymbolName = keyof typeof MAPPING;
+type IconMapping = Record<string, any>;
+type IconSymbolName = string;
 
 /**
  * Add your SF Symbols to Material Icons mappings here.
  * - see Material Icons in the [Icons Directory](https://icons.expo.fyi).
  * - see SF Symbols in the [SF Symbols](https://developer.apple.com/sf-symbols/) app.
  */
-const MAPPING = {
+const MAPPING: IconMapping = {
   'house.fill': 'home',
   'house': 'home',
   'arrow.left': 'arrow-back',
@@ -42,6 +42,7 @@ const MAPPING = {
   'arrow.right.square': 'logout',
   'sparkles': 'auto_awesome',
   'checkmark': 'check',
+  'checkmark.done': 'done-all',
   'pencil': 'edit',
   'arrow.counterclockwise': 'refresh',
   'checkmark.circle.fill': 'check-circle',
@@ -55,8 +56,15 @@ const MAPPING = {
   'translate': 'translate',
   'moon': 'nights_stay',
   'clock': 'access_time',
+  'alarm': 'access-alarm',
+  'compass': 'explore',
+  'circle.grid.2x2': 'apps',
+  'square.grid.3x3': 'grid-view',
+  'grain': 'grain',
+  'gesture': 'gesture',
   'location': 'location_on',
   'place': 'location_on',
+  'mappin.and.ellipse': 'location-pin',
   'phone': 'phone_in_talk',
   'questionmark.circle': 'help',
   'info.circle': 'info-outline',
@@ -81,6 +89,7 @@ const MAPPING = {
   'hexagon': 'hexagon',
   'prayer_mat': 'curtains',
   'prayer-mat': 'curtains',
+  'leaf': 'eco',
 } as IconMapping;
 
 
@@ -96,5 +105,11 @@ export function IconSymbol({
   style?: StyleProp<TextStyle>;
   weight?: SymbolWeight;
 }) {
+  if (name === 'apple') {
+    return <Ionicons color={color} size={size} name="logo-apple" style={style} />;
+  }
+  if (name === 'google') {
+    return <Ionicons color={color} size={size} name="logo-google" style={style} />;
+  }
   return <MaterialIcons color={color} size={size} name={MAPPING[name]} style={style} />;
 }

@@ -1,3 +1,4 @@
+import { BottomNav } from '@/components/dashboard/BottomNav';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Stack, useRouter } from 'expo-router';
@@ -7,35 +8,28 @@ import {
     ImageBackground,
     ScrollView,
     StyleSheet,
-    TextInput,
     TouchableOpacity,
     View
 } from 'react-native';
 
-import cardBg from '@/assets/images/card-bg.png';
-
 import { ADHKAR_CATEGORIES } from '@/constants/adhkar-data';
-
-// Import all required assets
-
 
 export default function AdhkarScreen() {
     const router = useRouter();
 
     const renderCategoryItem = ({ item }: { item: typeof ADHKAR_CATEGORIES[0] }) => {
-        const hasSpecialBg = ['1', '4', '5', '8', '9', '12'].includes(item.id);
         return (
             <TouchableOpacity
-                style={[styles.card, hasSpecialBg && { backgroundColor: '#F2EAF3' }]}
+                style={styles.card}
                 onPress={() => router.push(`/(drawer)/adhkar/${item.id}`)}
             >
                 <View style={styles.cardContent}>
                     <View style={styles.textContainer}>
-                        <ThemedText type="poppins-semibold" style={styles.cardTitle}>
+                        <ThemedText type="poppins-bold" style={styles.cardTitle}>
                             {item.title}
                         </ThemedText>
                         <ThemedText type="poppins-regular" style={styles.cardCount}>
-                            {item.count}
+                            {item.count} Adhkar
                         </ThemedText>
                     </View>
 
@@ -48,56 +42,52 @@ export default function AdhkarScreen() {
     };
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: '#090909' }]}>
             <Stack.Screen options={{ headerShown: false }} />
 
+            {/* Header */}
             <View style={styles.header}>
-                <TouchableOpacity onPress={() => router.back()} style={styles.iconButton}>
-                    <IconSymbol name="arrow.left" size={24} color="#000" />
+                <TouchableOpacity onPress={() => router.back()} style={styles.headerIconButton}>
+                    <IconSymbol name="arrow.left" size={24} color="white" />
                 </TouchableOpacity>
-                <ThemedText type="poppins-semibold" style={styles.headerTitle}>Adhkar</ThemedText>
-                <TouchableOpacity style={styles.iconButton}>
-                    <IconSymbol name="line.3.horizontal.decrease" size={24} color="#000" />
+                <View style={styles.headerTitleContainer}>
+                    <ThemedText type="poppins-bold" style={styles.headerTitle}>Adhkar</ThemedText>
+                    <ThemedText type="poppins-regular" style={styles.headerSubtitle}>Daily Remembrance</ThemedText>
+                </View>
+                <TouchableOpacity style={styles.headerIconButton}>
+                    <IconSymbol name="magnifyingglass" size={24} color="white" />
                 </TouchableOpacity>
             </View>
 
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-                {/* Search Bar */}
-                <View style={styles.searchContainer}>
-                    <TextInput
-                        placeholder="Search"
-                        placeholderTextColor="#9CA3AF"
-                        style={styles.searchInput}
-                    />
-                    <IconSymbol name="magnifyingglass" size={20} color="#9CA3AF" style={styles.searchIcon} />
+                {/* Banner */}
+                <View style={styles.bannerContainer}>
+                    <ImageBackground
+                        source={require('@/assets/images/card-bg.png')}
+                        style={styles.bannerBackground}
+                        imageStyle={{ borderRadius: 24, opacity: 0.1 }}
+                        resizeMode="cover"
+                    >
+                        <View style={styles.bannerContent}>
+                            <View style={styles.bannerLeft}>
+                                <ThemedText type="poppins-medium" style={styles.bannerSubtitle}>Remember Allah</ThemedText>
+                                <ThemedText type="poppins-bold" style={styles.bannerTitle}>Morning & Evening Adhkar</ThemedText>
+                                <TouchableOpacity style={styles.startBtn} onPress={() => router.push('/tasbih')}>
+                                    <ThemedText type="poppins-medium" style={styles.startBtnText}>Start Now</ThemedText>
+                                    <IconSymbol name="arrow.right" size={16} color="white" />
+                                </TouchableOpacity>
+                            </View>
+                            <Image
+                                source={require('@/assets/images/adhkar.png')}
+                                style={styles.bannerImage}
+                                resizeMode="contain"
+                            />
+                        </View>
+                    </ImageBackground>
                 </View>
 
-                {/* Banner */}
-                <ImageBackground
-                    source={cardBg}
-                    style={styles.banner}
-                    imageStyle={{ borderRadius: 20 }}
-                    resizeMode="cover"
-                >
-                    <View style={styles.bannerContent}>
-                        <View style={styles.bannerTextContainer}>
-                            <ThemedText type="poppins-medium" style={styles.bannerSubtitle}>Remember Allah</ThemedText>
-                            <ThemedText type="poppins-bold" style={styles.bannerTitle}>Start Tasbih Counter</ThemedText>
-                        </View>
-                        <TouchableOpacity style={styles.startBtn}>
-                            <ThemedText type="poppins-medium" style={styles.startBtnText}>Start Now</ThemedText>
-                            <IconSymbol name="arrow.right" size={16} color="#62206E" />
-                        </TouchableOpacity>
-                    </View>
-                    {/* Hands image for banner */}
-                    <View style={styles.bannerImageContainer}>
-                        <Image
-                            source={require('@/assets/images/adhkar.png')}
-                            style={styles.bannerImage}
-
-                        />
-                    </View>
-                </ImageBackground>
+                {/* Section Title */}
+                <ThemedText type="poppins-medium" style={styles.sectionLabel}>CATEGORIES</ThemedText>
 
                 {/* Categories Grid */}
                 <View style={styles.gridContainer}>
@@ -108,6 +98,7 @@ export default function AdhkarScreen() {
                     ))}
                 </View>
             </ScrollView>
+            <BottomNav />
         </View>
     );
 }
@@ -115,7 +106,6 @@ export default function AdhkarScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#FAFAFA',
         paddingTop: 60,
     },
     header: {
@@ -123,138 +113,124 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingHorizontal: 24,
-        marginBottom: 20,
+        marginBottom: 24,
+    },
+    headerIconButton: {
+        width: 44,
+        height: 44,
+        borderRadius: 22,
+        backgroundColor: '#1C1C1E',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    headerTitleContainer: {
+        alignItems: 'center',
     },
     headerTitle: {
-        fontSize: 20,
-        color: '#1F2937',
+        fontSize: 18,
+        color: 'white',
     },
-    iconButton: {
-        padding: 4,
+    headerSubtitle: {
+        fontSize: 12,
+        color: '#8E8E93',
     },
     scrollContent: {
-        paddingHorizontal: 24,
-        paddingBottom: 40,
+        paddingHorizontal: 20,
+        paddingBottom: 100,
     },
-    searchContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#FFFFFF',
-        borderRadius: 16,
-        paddingHorizontal: 16,
-        height: 52,
-        marginBottom: 24,
-        borderWidth: 1,
-        borderColor: '#F3F4F6',
+    bannerContainer: {
+        height: 160,
+        borderRadius: 24,
+        overflow: 'hidden',
+        marginBottom: 32,
+        backgroundColor: '#1C1C1E',
     },
-    searchIcon: {
-        marginLeft: 'auto',
-    },
-    searchInput: {
+    bannerBackground: {
         flex: 1,
-        fontFamily: 'Poppins-Regular',
-        fontSize: 14,
-        color: '#1F2937',
-        height: '100%',
-    },
-    banner: {
-        borderRadius: 20,
-        padding: 16,
-        marginBottom: 24,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        height: 110,
-        position: 'relative',
     },
     bannerContent: {
+        flexDirection: 'row',
+        padding: 24,
+        flex: 1,
+        alignItems: 'center',
+    },
+    bannerLeft: {
         flex: 1,
         zIndex: 1,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'flex-end',
     },
     bannerSubtitle: {
-        color: 'white',
-        fontSize: 16,
-        marginBottom: 8,
-        opacity: 0.9,
+        color: '#AA74E0',
+        fontSize: 14,
+        marginBottom: 4,
     },
     bannerTitle: {
         color: 'white',
-        fontSize: 18,
-        lineHeight: 24,
+        fontSize: 20,
+        marginBottom: 16,
     },
     startBtn: {
-        backgroundColor: 'white',
-        paddingVertical: 8,
-        paddingHorizontal: 22,
-        borderRadius: 10,
+        backgroundColor: '#AA74E0',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 20,
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 6,
-    },
-    bannerTextContainer: {
-        flex: 1,
-        paddingRight: 8,
+        alignSelf: 'flex-start',
+        gap: 8,
     },
     startBtnText: {
-        color: '#62206E',
+        color: 'white',
         fontSize: 14,
     },
-    bannerImageContainer: {
-        position: 'absolute',
-        right: 4,
-        bottom: 1,
-        width: 140,
-        height: 120,
-        justifyContent: 'flex-end',
-        alignItems: 'flex-end',
-    },
     bannerImage: {
-        width: '100%',
-        height: '100%',
+        width: 120,
+        height: 120,
+        opacity: 0.8,
+    },
+    sectionLabel: {
+        fontSize: 12,
+        color: '#8E8E93',
+        letterSpacing: 1,
+        marginBottom: 16,
     },
     gridContainer: {
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'space-between',
+        gap: 12,
     },
     gridItemWrapper: {
         width: '48%',
-        marginBottom: 16,
     },
     card: {
-        backgroundColor: '#FFFFFF',
-        borderRadius: 20,
+        backgroundColor: '#1C1C1E',
+        borderRadius: 24,
         padding: 16,
-        height: 96,
+        height: 120,
         justifyContent: 'center',
         borderWidth: 1,
-        borderColor: '#F2EAF3',
-    }, cardContent: {
-        flexDirection: 'row',
-        alignItems: 'center',
+        borderColor: '#262626',
+    },
+    cardContent: {
         justifyContent: 'space-between',
+        height: '100%',
     },
     textContainer: {
         flex: 1,
-        paddingRight: 8,
     },
     cardTitle: {
-        fontSize: 16,
-        color: '#1F2937',
+        fontSize: 15,
+        color: 'white',
         marginBottom: 4,
     },
     cardCount: {
         fontSize: 12,
-        color: '#6B7280',
+        color: '#8E8E93',
     },
     iconContainer: {
-        width: 50,
-        height: 50,
-        justifyContent: 'center',
-        alignItems: 'center',
+        alignSelf: 'flex-end',
+        width: 40,
+        height: 40,
     },
     categoryIcon: {
         width: '100%',

@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     whatsappButton: {
         backgroundColor: 'white',
         borderWidth: 2,
-        borderColor: '#62206E',
+        borderColor: '#AA74E0',
     },
     buttonContent: {
         flexDirection: 'row',
@@ -176,6 +176,6 @@ const styles = StyleSheet.create({
         color: 'white',
     },
     whatsappText: {
-        color: '#62206E',
+        color: '#AA74E0',
     },
 });

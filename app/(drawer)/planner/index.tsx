@@ -1,5 +1,6 @@
 
 import { AIChatModal } from '@/components/ai-chat-modal';
+import { BottomNav } from '@/components/dashboard/BottomNav';
 import { TaskCard } from '@/components/task-card';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { usePlanner } from '@/contexts/planner-context';
@@ -61,7 +62,7 @@ export default function PlannerScreen() {
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
 
-      
+
         {/* Hero Card */}
         <ImageBackground
           source={require('@/assets/images/card-bg.png')}
@@ -77,7 +78,7 @@ export default function PlannerScreen() {
             </View>
             <TouchableOpacity style={styles.planButton} onPress={() => setShowAIChat(true)}>
               <Text style={styles.planButtonText}>Plan my day for me</Text>
-              <IconSymbol name="sparkles" size={16} color="#62206E" />
+              <IconSymbol name="sparkles" size={16} color="#AA74E0" />
             </TouchableOpacity>
           </View>
           <Image
@@ -123,6 +124,7 @@ export default function PlannerScreen() {
         onClose={() => setShowAIChat(false)}
         onTasksReceived={handleAITasksReceived}
       />
+      <BottomNav />
     </View>
   );
 }
@@ -170,7 +172,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   heroCard: {
-    backgroundColor: '#62206E',
+    backgroundColor: '#AA74E0',
     marginHorizontal: 20,
     marginTop: 20,
     borderRadius: 20,
@@ -214,12 +216,12 @@ const styles = StyleSheet.create({
   planButtonText: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#62206E',
+    color: '#AA74E0',
   },
   heroIcon: {
     width: 120,
     height: 80,
-    top:20,
+    top: 20,
   },
   tasksContainer: {
     paddingHorizontal: 20,
@@ -240,7 +242,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   generateButton: {
-    backgroundColor: '#62206E',
+    backgroundColor: '#AA74E0',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',

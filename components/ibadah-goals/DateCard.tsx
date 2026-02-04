@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
     separator: { height: 1, backgroundColor: '#F3E8F6', marginVertical: 12 },
     calendarStrip: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 8 },
     dayButton: { alignItems: 'center', justifyContent: 'center', paddingHorizontal: 8, paddingVertical: 8, borderRadius: 8, minWidth: 40, minHeight: 48 },
-    dayButtonActive: { backgroundColor: '#62206E', borderRadius: 8 },
+    dayButtonActive: { backgroundColor: '#AA74E0', borderRadius: 8 },
     dayButtonInactive: { backgroundColor: 'transparent' },
     dayText: { fontSize: 16, fontWeight: '600', marginBottom: 2, color: '#374151' },
     dayTextActive: { color: 'white', fontSize: 16, fontWeight: '600' },

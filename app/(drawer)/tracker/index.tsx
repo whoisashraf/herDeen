@@ -1,56 +1,70 @@
+import { BottomNav } from '@/components/dashboard/BottomNav';
+import { ThemedText } from '@/components/themed-text';
 import { ActionGrid } from '@/components/tracker/ActionGrid';
 import { CycleHistory } from '@/components/tracker/CycleHistory';
 import { CycleStatusCard } from '@/components/tracker/CycleStatusCard';
 import { MyCycles } from '@/components/tracker/MyCycles';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { DrawerActions } from '@react-navigation/native';
-import { Image } from 'expo-image';
-import { useNavigation } from 'expo-router';
+import { Colors } from '@/constants/theme';
+import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useRouter } from 'expo-router';
 import React from 'react';
-import { Dimensions, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Dimensions, ImageBackground, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 const { width } = Dimensions.get('window');
 
 export default function TrackerScreen() {
-    const navigation = useNavigation();
-
-    const openDrawer = () => {
-        navigation.dispatch(DrawerActions.openDrawer());
-    };
+    const router = useRouter();
+    const colorScheme = useColorScheme() ?? 'light';
+    const colors = Colors[colorScheme];
 
     return (
-        <View style={styles.container}>
-            {/* Background with pattern - using header_bg but masking it with gradient if needed */}
-            <ImageBackground
-                source={require('@/assets/images/header_bg.jpg')}
-                style={styles.headerBackground}
-                imageStyle={{ opacity: 0.1 }}
-            >
-                <View style={styles.safeArea}>
-                    {/* Header */}
-                    <View style={styles.header}>
-                        <View style={styles.headerLeft}>
-                            <View style={styles.avatarContainer}>
-                                <Image source={require('@/assets/images/profile.jpg')} style={styles.avatar} contentFit="cover" />
-                            </View>
-                            <View>
-                                <Text style={styles.greetingGreeting}>Assalamu Alaikum,</Text>
-                                <Text style={styles.greetingName}>Aisha!</Text>
-                            </View>
-                        </View>
-                        <TouchableOpacity style={styles.menuButton} onPress={openDrawer}>
-                            <IconSymbol name="line.3.horizontal" size={24} color="#1F2937" />
-                        </TouchableOpacity>
+        <View style={[styles.container, { backgroundColor: '#090909' }]}>
+            <View style={styles.safeArea}>
+                {/* Header */}
+                <View style={styles.header}>
+                    <TouchableOpacity onPress={() => router.back()} style={styles.headerIconButton}>
+                        <IconSymbol name="arrow.left" size={24} color="white" />
+                    </TouchableOpacity>
+
+                    <View style={styles.headerTitleContainer}>
+                        <ThemedText type="poppins-bold" style={styles.headerTitle}>Menstrual Tracker</ThemedText>
+                        <ThemedText type="poppins-regular" style={styles.headerSubtitle}>Day 12 • Follicular Phase</ThemedText>
                     </View>
 
-                    <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
-                        <CycleStatusCard />
-                        <ActionGrid />
-                        <MyCycles />
-                        <CycleHistory />
-                    </ScrollView>
+                    <TouchableOpacity style={styles.headerIconButton}>
+                        <IconSymbol name="hexagon" size={24} color="white" />
+                    </TouchableOpacity>
                 </View>
-            </ImageBackground>
+
+                <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
+                    {/* Banner similar to Quran */}
+                    <View style={styles.bannerContainer}>
+                        <ImageBackground
+                            source={require('@/assets/images/header_bg.jpg')}
+                            style={styles.bannerBackground}
+                            imageStyle={{ borderRadius: 24, opacity: 0.1 }}
+                        >
+                            <View style={styles.bannerContent}>
+                                <View>
+                                    <ThemedText type="poppins-medium" style={styles.bannerLabel}>PERIOD IN</ThemedText>
+                                    <ThemedText type="poppins-bold" style={styles.bannerMainText}>14 Days</ThemedText>
+                                    <ThemedText type="poppins-regular" style={styles.bannerSubText}>Low chance of pregnancy</ThemedText>
+                                </View>
+                                <View style={styles.bannerIconContainer}>
+                                    <IconSymbol name="drop.fill" size={40} color="#AA74E0" />
+                                </View>
+                            </View>
+                        </ImageBackground>
+                    </View>
+
+                    <CycleStatusCard />
+                    <ActionGrid />
+                    <MyCycles />
+                    <CycleHistory />
+                </ScrollView>
+            </View>
+            <BottomNav />
         </View>
     );
 }
@@ -58,57 +72,79 @@ export default function TrackerScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F8F9FA',
-    },
-    headerBackground: {
-        flex: 1,
-        width: '100%',
     },
     safeArea: {
         flex: 1,
         paddingTop: 60,
     },
+    header: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingHorizontal: 24,
+        marginBottom: 24,
+    },
+    headerIconButton: {
+        width: 44,
+        height: 44,
+        borderRadius: 22,
+        backgroundColor: '#1C1C1E',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    headerTitleContainer: {
+        alignItems: 'center',
+    },
+    headerTitle: {
+        fontSize: 18,
+        color: 'white',
+    },
+    headerSubtitle: {
+        fontSize: 12,
+        color: '#8E8E93',
+    },
     scrollView: {
         flex: 1,
         paddingHorizontal: 20,
     },
-
-    // Header
-    header: {
+    bannerContainer: {
+        height: 140,
+        borderRadius: 24,
+        overflow: 'hidden',
+        marginBottom: 24,
+        backgroundColor: '#1C1C1E',
+    },
+    bannerBackground: {
+        flex: 1,
+        padding: 24,
+    },
+    bannerContent: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 24,
-        paddingHorizontal: 20,
+        flex: 1,
     },
-    headerLeft: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 12,
-    },
-    avatarContainer: {
-        width: 50,
-        height: 50,
-        borderRadius: 25,
-        borderWidth: 1.5,
-        borderColor: '#7F47DD',
-        padding: 2,
-    },
-    avatar: {
-        width: '100%',
-        height: '100%',
-        borderRadius: 22,
-    },
-    greetingGreeting: {
+    bannerLabel: {
         fontSize: 12,
-        color: '#6B7280',
+        color: '#8E8E93',
+        letterSpacing: 1,
+        marginBottom: 4,
     },
-    greetingName: {
-        fontSize: 18,
-        fontWeight: '600',
-        color: '#1F2937',
+    bannerMainText: {
+        fontSize: 28,
+        color: 'white',
+        marginBottom: 4,
     },
-    menuButton: {
-        padding: 4,
+    bannerSubText: {
+        fontSize: 12,
+        color: '#AA74E0',
+    },
+    bannerIconContainer: {
+        width: 64,
+        height: 64,
+        borderRadius: 32,
+        backgroundColor: '#AA74E01A',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 });

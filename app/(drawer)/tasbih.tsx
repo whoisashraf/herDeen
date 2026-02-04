@@ -1,11 +1,11 @@
-import resetIcon from '@/assets/icons/reset_icon.png';
+import { BottomNav } from '@/components/dashboard/BottomNav';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { Dimensions, Image, Pressable, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Dimensions, Pressable, StyleSheet, TouchableOpacity, View } from 'react-native';
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 interface Dhikr {
     id: number;
@@ -53,14 +53,11 @@ export default function TasbihScreen() {
     const [rounds, setRounds] = useState(1);
 
     const currentDhikr = dhikrList[currentDhikrIndex];
-    const progress = count / currentDhikr.target;
-    const beadsToShow = Math.min(count, 8);
 
     const handleCount = () => {
         if (count < currentDhikr.target) {
             setCount(count + 1);
         } else {
-
             setCount(0);
             setRounds(rounds + 1);
         }
@@ -88,149 +85,70 @@ export default function TasbihScreen() {
     };
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: '#090909' }]}>
             {/* Header */}
             <View style={styles.header}>
-                <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-                    <IconSymbol name="chevron.left" size={24} color="#1A1A1A" />
+                <TouchableOpacity onPress={() => router.back()} style={styles.headerIconButton}>
+                    <IconSymbol name="arrow.left" size={24} color="white" />
                 </TouchableOpacity>
-                <ThemedText type="poppins-semibold" style={styles.headerTitle}>
-                    Tasbih
-                </ThemedText>
-                <TouchableOpacity onPress={handleReset} style={styles.resetButton}>
-                    <Image source={resetIcon} style={styles.resetIcon} />
+                <View style={styles.headerTitleContainer}>
+                    <ThemedText type="poppins-bold" style={styles.headerTitle}>Tasbih</ThemedText>
+                    <ThemedText type="poppins-regular" style={styles.headerSubtitle}>Counter</ThemedText>
+                </View>
+                <TouchableOpacity onPress={handleReset} style={styles.headerIconButton}>
+                    <IconSymbol name="arrow.clockwise" size={24} color="white" />
                 </TouchableOpacity>
             </View>
 
             {/* Content */}
             <Pressable style={styles.content} onPress={handleCount}>
-                {/* Dhikr Card */}
                 <View style={styles.dhikrCard}>
-                    {/* Arabic Text at Top */}
-                    <View style={styles.arabicSection}>
-                        <ThemedText type="amiri-bold" style={styles.arabicText}>
-                            {currentDhikr.arabic}
-                        </ThemedText>
-                    </View>
+                    <ThemedText type="amiri-bold" style={styles.arabicText}>
+                        {currentDhikr.arabic}
+                    </ThemedText>
+                    <ThemedText type="poppins-medium" style={styles.transliteration}>
+                        {currentDhikr.transliteration}
+                    </ThemedText>
+                    <ThemedText type="poppins-regular" style={styles.translation}>
+                        {currentDhikr.translation}
+                    </ThemedText>
 
-                    {/* Dashed Separator */}
-                    <View style={styles.separator} />
-
-                    {/* Navigation Row with Transliteration */}
-                    <View style={styles.navigationRow}>
+                    <View style={styles.navRow}>
                         <TouchableOpacity
                             onPress={handlePrevious}
                             disabled={currentDhikrIndex === 0}
-                            style={[styles.navButton, currentDhikrIndex === 0 && styles.navButtonDisabled]}
+                            style={[styles.navBtn, currentDhikrIndex === 0 && { opacity: 0.3 }]}
                         >
-                            <IconSymbol
-                                name="chevron.left"
-                                size={32}
-                                color={currentDhikrIndex === 0 ? '#E0E0E0' : '#1A1A1A'}
-                            />
+                            <IconSymbol name="chevron.left" size={24} color="white" />
                         </TouchableOpacity>
-
-                        <View style={styles.dhikrTextContainer}>
-                            {/* Transliteration */}
-                            <ThemedText type="poppins-medium" style={styles.transliteration}>
-                                {currentDhikr.transliteration}
-                            </ThemedText>
-                        </View>
-
+                        <ThemedText type="poppins-medium" style={styles.dhikrNavText}>
+                            {currentDhikrIndex + 1} / {dhikrList.length}
+                        </ThemedText>
                         <TouchableOpacity
                             onPress={handleNext}
                             disabled={currentDhikrIndex === dhikrList.length - 1}
-                            style={[
-                                styles.navButton,
-                                currentDhikrIndex === dhikrList.length - 1 && styles.navButtonDisabled,
-                            ]}
+                            style={[styles.navBtn, currentDhikrIndex === dhikrList.length - 1 && { opacity: 0.3 }]}
                         >
-                            <IconSymbol
-                                name="chevron.right"
-                                size={32}
-                                color={currentDhikrIndex === dhikrList.length - 1 ? '#E0E0E0' : '#1A1A1A'}
-                            />
+                            <IconSymbol name="chevron.right" size={24} color="white" />
                         </TouchableOpacity>
                     </View>
+                </View>
 
-                    {/* Dashed Separator */}
-                    <View style={styles.separator} />
-
-                    {/* Translation at Bottom */}
-                    <View style={styles.translationSection}>
-                        <ThemedText type="poppins-regular" style={styles.translation}>
-                            {currentDhikr.translation}
-                        </ThemedText>
+                {/* Main Counter Display */}
+                <View style={styles.counterWrapper}>
+                    <View style={styles.mainCircle}>
+                        <ThemedText type="poppins-bold" style={styles.countText}>{count}</ThemedText>
+                        <ThemedText type="poppins-medium" style={styles.targetText}>target: {currentDhikr.target}</ThemedText>
+                    </View>
+                    <View style={styles.roundBadge}>
+                        <ThemedText type="poppins-bold" style={styles.roundText}>Round {rounds}</ThemedText>
                     </View>
                 </View>
 
-                {/* Counter Display */}
-                <View style={styles.counterContainer}>
-                    <View style={styles.counterDisplay}>
-                        <ThemedText type="poppins-medium" style={styles.countNumber}>
-                            {count}
-                        </ThemedText>
-                        <ThemedText type="poppins-regular" style={styles.countTarget}>
-                            /{currentDhikr.target}
-                        </ThemedText>
-                    </View>
-                    <ThemedText type="poppins-medium" style={styles.roundsText}>
-                        Rounds: {rounds}
-                    </ThemedText>
-                </View>
-
-                {/* Beads Visualization */}
-                <ScrollView
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    style={styles.beadsContainer}
-                    contentContainerStyle={styles.beadsContent}
-                    ref={(ref) => {
-                        if (ref && count > 0) {
-                            ref.scrollTo({ x: (count - 1) * 50, animated: true });
-                        }
-                    }}
-                >
-                    <View style={styles.beadsWrapper}>
-                        {[...Array(currentDhikr.target)].map((_, index) => {
-                            const isActive = index < count;
-
-                            // Create a prominent Arch/Hump curve
-                            const totalBeads = currentDhikr.target;
-                            const progress = index / (totalBeads - 1); // 0 to 1
-
-                            // Use Sine for a perfect semi-circle arch
-                            // sin(0)=0, sin(PI/2)=1, sin(PI)=0
-                            const angle = progress * Math.PI;
-                            const amplitude = 80; // significant height for the curve
-                            const yFactor = Math.sin(angle);
-
-                            // High in middle (low marginTop), Low at ends (high marginTop)
-                            // Base margin is where the peak sits
-                            const baseTop = 10;
-                            const additionalOffset = amplitude * (1 - yFactor);
-
-                            return (
-                                <View
-                                    key={index}
-                                    style={[
-                                        styles.bead,
-                                        {
-                                            marginTop: baseTop + additionalOffset,
-                                        },
-                                        isActive ? styles.beadActive : styles.beadInactive,
-                                    ]}
-                                />
-                            );
-                        })}
-                    </View>
-                </ScrollView>
-
-                {/* Instruction Text */}
-                <ThemedText type="poppins-regular" style={styles.instructionText}>
-                    Click or swipe to count
-                </ThemedText>
+                <ThemedText type="poppins-regular" style={styles.tapTip}>Tap anywhere to count</ThemedText>
             </Pressable>
+
+            <BottomNav />
         </View>
     );
 }
@@ -238,166 +156,125 @@ export default function TasbihScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F5F5F5',
+        paddingTop: 60,
     },
     header: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingHorizontal: 16,
-        paddingTop: 60,
-        paddingBottom: 16,
+        paddingHorizontal: 24,
+        marginBottom: 24,
     },
-    backButton: {
-        width: 40,
-        height: 40,
+    headerIconButton: {
+        width: 44,
+        height: 44,
+        borderRadius: 22,
+        backgroundColor: '#1C1C1E',
         justifyContent: 'center',
-        alignItems: 'flex-start',
+        alignItems: 'center',
+    },
+    headerTitleContainer: {
+        alignItems: 'center',
     },
     headerTitle: {
         fontSize: 18,
-        color: '#1A1A1A',
-
+        color: 'white',
     },
-    resetButton: {
-        width: 40,
-        height: 40,
-        justifyContent: 'center',
-        alignItems: 'flex-end',
-    },
-    resetIcon: {
-        width: 24,
-        height: 24,
-        tintColor: '#62206E',
+    headerSubtitle: {
+        fontSize: 12,
+        color: '#8E8E93',
     },
     content: {
         flex: 1,
-        paddingHorizontal: 20,
-        paddingTop: 20,
+        paddingHorizontal: 24,
+        alignItems: 'center',
     },
     dhikrCard: {
-        backgroundColor: '#FFFFFF',
-        borderRadius: 20,
-        padding: 0,
-        marginBottom: 20,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.05,
-        shadowRadius: 8,
-        elevation: 2,
-        overflow: 'hidden',
-    },
-    arabicSection: {
-        paddingVertical: 24,
-        paddingHorizontal: 20,
+        width: '100%',
+        backgroundColor: '#1C1C1E',
+        borderRadius: 32,
+        padding: 32,
         alignItems: 'center',
-    },
-    separator: {
-        height: 1,
-        backgroundColor: 'transparent',
-        borderStyle: 'dashed',
+        marginBottom: 60,
+        gap: 12,
         borderWidth: 1,
-        borderColor: '#E0E0E0',
-        marginHorizontal: 20,
+        borderColor: '#262626',
     },
-    navigationRow: {
+    arabicText: {
+        fontSize: 32,
+        color: 'white',
+        textAlign: 'center',
+    },
+    transliteration: {
+        fontSize: 18,
+        color: '#AA74E0',
+        textAlign: 'center',
+    },
+    translation: {
+        fontSize: 14,
+        color: '#8E8E93',
+        textAlign: 'center',
+    },
+    navRow: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingVertical: 20,
-        paddingHorizontal: 10,
+        marginTop: 20,
+        gap: 24,
     },
-    navButton: {
-        width: 50,
-        height: 50,
+    navBtn: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        backgroundColor: '#090909',
         justifyContent: 'center',
         alignItems: 'center',
     },
-    navButtonDisabled: {
-        opacity: 1,
+    dhikrNavText: {
+        color: 'white',
+        fontSize: 14,
     },
-    dhikrTextContainer: {
-        flex: 1,
+    counterWrapper: {
         alignItems: 'center',
-        paddingHorizontal: 10,
+        justifyContent: 'center',
     },
-    arabicText: {
-        fontSize: 24,
-        color: '#62206E',
-        textAlign: 'center',
-        lineHeight: 40,
+    mainCircle: {
+        width: 220,
+        height: 220,
+        borderRadius: 110,
+        borderWidth: 8,
+        borderColor: '#1C1C1E',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#090909',
+        shadowColor: 'white',
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.05,
+        shadowRadius: 20,
     },
-    transliteration: {
-        fontSize: 22,
-        color: '#1A1A1A',
-        fontStyle: 'italic',
+    countText: {
+        fontSize: 72,
+        color: 'white',
     },
-    translationSection: {
-        paddingVertical: 24,
+    targetText: {
+        fontSize: 14,
+        color: '#8E8E93',
+        marginTop: -10,
+    },
+    roundBadge: {
+        position: 'absolute',
+        bottom: -15,
+        backgroundColor: '#AA74E0',
         paddingHorizontal: 20,
-        alignItems: 'center',
+        paddingVertical: 8,
+        borderRadius: 20,
     },
-    translation: {
-        fontSize: 16,
-        color: '#1A1A1A',
-        textAlign: 'center',
+    roundText: {
+        color: 'white',
+        fontSize: 14,
     },
-    counterContainer: {
-        alignItems: 'center',
-        marginTop: 40,
-        marginBottom: 20,
-    },
-    counterDisplay: {
-        flexDirection: 'row',
-        alignItems: 'baseline',
-        marginBottom: 8,
-    },
-    countNumber: {
-        fontSize: 48,
-        color: '#2B0E30',
-    },
-    countTarget: {
-        fontSize: 32,
-        color: '#2B0E30',
-    },
-    roundsText: {
-        fontSize: 16,
-        color: '#2B0E30',
-    },
-    beadsContainer: {
-        height: 150,
-        marginTop: 40,
-        marginBottom: 20,
-    },
-    beadsContent: {
-        paddingHorizontal: 20,
-    },
-    beadsWrapper: {
-        flexDirection: 'row',
-        alignItems: 'flex-start',
-        gap: 14,
-    },
-    bead: {
-        width: 36,
-        height: 36,
-        borderRadius: 18,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.2,
-        shadowRadius: 4,
-        elevation: 4,
-    },
-    beadInactive: {
-        backgroundColor: '#D4C5D8',
-    },
-    beadActive: {
-        backgroundColor: '#62206E',
-    },
-    instructionText: {
-        fontSize: 16,
-        color: '#999999',
-        textAlign: 'center',
+    tapTip: {
         marginTop: 60,
-        fontStyle: 'italic',
+        fontSize: 14,
+        color: '#8E8E93',
     },
 });

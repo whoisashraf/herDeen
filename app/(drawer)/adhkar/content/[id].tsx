@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     arabicText: {
         fontSize: 20,
         lineHeight: 48,
-        color: '#62206E',
+        color: '#AA74E0',
         textAlign: 'right',
         marginBottom: 24,
     },

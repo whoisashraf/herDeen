@@ -1,43 +1,54 @@
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { Colors } from '@/constants/theme';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
 const tasks = [
-  { id: 1, title: 'Pray 5 Times', completed: true },
+  { id: 1, title: 'pray 5 times', completed: true },
   { id: 2, title: 'Read Surah Yaseen', completed: true },
-  { id: 3, title: 'Take A 5-Min Dhikr Break', completed: false },
-  { id: 4, title: 'Write A Reflection', completed: false },
-  { id: 5, title: 'Complete Your Daily Plan', completed: false },
+  { id: 3, title: 'Take a 5-min dhikr break', completed: false },
+  { id: 4, title: 'Write a reflection', completed: false },
+  { id: 5, title: 'Complete your daily plan', completed: false },
 ];
 
 export const TasksList = () => {
+  const colorScheme = useColorScheme() ?? 'light';
+  const colors = Colors[colorScheme];
+
   return (
-    <View style={styles.card}>
-      <ThemedText type="poppins-bold" style={styles.cardTitle}>
+    <View style={styles.container}>
+      <ThemedText type="poppins-medium" style={[styles.sectionTitle, { color: colors.text }]}>
         Today&apos;s Tasks
       </ThemedText>
 
       <View style={styles.tasksContainer}>
         {tasks.map((task) => (
-          <View key={task.id} style={styles.taskItem}>
+          <View
+            key={task.id}
+            style={[styles.taskItem, { backgroundColor: colors.surface }]}>
             <View style={styles.taskLeftContent}>
               <View
                 style={[
                   styles.taskBullet,
-                  task.completed ? styles.taskBulletCompleted : styles.taskBulletPending,
+                  { backgroundColor: task.completed ? colors.textMuted : colors.text }
                 ]}
               />
               <ThemedText
                 type="poppins-medium"
                 style={[
                   styles.taskTitle,
-                  task.completed ? styles.taskTitleCompleted : styles.taskTitlePending,
+                  task.completed
+                    ? [styles.taskTitleCompleted, { color: colors.textMuted }]
+                    : { color: colors.text },
                 ]}>
                 {task.title}
               </ThemedText>
             </View>
-            {task.completed && <IconSymbol name="checkmark" size={16} color="#9CA3AF" />}
+            {task.completed && (
+              <IconSymbol name="checkmark" size={24} color={colors.textMuted} />
+            )}
           </View>
         ))}
       </View>
@@ -46,59 +57,39 @@ export const TasksList = () => {
 };
 
 const styles = StyleSheet.create({
-  card: {
-    backgroundColor: 'white',
-    borderRadius: 16,
-    padding: 20,
-    marginHorizontal: 0,
-    margin: 30,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
+  container: {
+    paddingBottom: 40,
+    marginTop: 8,
   },
-  cardTitle: {
-    fontSize: 18,
-    color: '#111827',
-    marginBottom: 16,
+  sectionTitle: {
+    fontSize: 20,
+    marginBottom: 20,
   },
   tasksContainer: {
-    gap: 16,
+    gap: 12,
   },
   taskItem: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 16,
-    paddingHorizontal: 16,
-    backgroundColor: '#F9F9F9',
-    borderRadius: 12,
+    paddingVertical: 18,
+    paddingHorizontal: 24,
+    borderRadius: 16,
   },
   taskLeftContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: 14,
   },
   taskBullet: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-  },
-  taskBulletPending: {
-    backgroundColor: '#6B7280',
-  },
-  taskBulletCompleted: {
-    backgroundColor: '#9CA3AF',
+    width: 5,
+    height: 5,
+    borderRadius: 2.5,
   },
   taskTitle: {
-    fontSize: 14,
-  },
-  taskTitlePending: {
-    color: '#374151',
+    fontSize: 16,
   },
   taskTitleCompleted: {
-    color: '#9CA3AF',
     textDecorationLine: 'line-through',
   },
 });
