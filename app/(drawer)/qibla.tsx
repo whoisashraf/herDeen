@@ -1,269 +1,268 @@
-import { BottomNav } from '@/components/dashboard/BottomNav';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 import * as Location from 'expo-location';
-import { useRouter } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
+import { Magnetometer } from 'expo-sensors';
 import React, { useEffect, useState } from 'react';
-import { Dimensions, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Dimensions, SafeAreaView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
 const { width } = Dimensions.get('window');
+const COMPASS_SIZE = width * 0.85;
 
 export default function QiblaScreen() {
     const router = useRouter();
-    const [location, setLocation] = useState<Location.LocationObject | null>(null);
-    const [qiblaDirection, setQiblaDirection] = useState(0);
-    const [distance, setDistance] = useState(0);
+    const colorScheme = useColorScheme() ?? 'light';
+    const isDark = colorScheme === 'dark';
+
+    const [qiblaAngle, setQiblaAngle] = useState(0);
+    const [heading, setHeading] = useState(0);
+
+    const rotation = useSharedValue(0);
 
     useEffect(() => {
         (async () => {
-            let { status } = await Location.requestForegroundPermissionsAsync();
-            if (status !== 'granted') {
-                return;
+            let { status: locStatus } = await Location.requestForegroundPermissionsAsync();
+            if (locStatus === 'granted') {
+                let location = await Location.getCurrentPositionAsync({});
+                // Kaaba coordinates: 21.4225, 39.8262
+                const kaabaLat = 21.4225;
+                const kaabaLon = 39.8262;
+                const userLat = location.coords.latitude;
+                const userLon = location.coords.longitude;
+
+                const dLon = (kaabaLon - userLon) * Math.PI / 180;
+                const lat1 = userLat * Math.PI / 180;
+                const lat2 = kaabaLat * Math.PI / 180;
+
+                const y = Math.sin(dLon) * Math.cos(lat2);
+                const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
+                const bearing = Math.atan2(y, x) * 180 / Math.PI;
+                setQiblaAngle((bearing + 360) % 360);
             }
-
-            let location = await Location.getCurrentPositionAsync({});
-            setLocation(location);
-
-            // Calculate Qibla direction (Kaaba coordinates: 21.4225, 39.8262)
-            const kaabaLat = 21.4225;
-            const kaabaLon = 39.8262;
-            const userLat = location.coords.latitude;
-            const userLon = location.coords.longitude;
-
-            const dLon = (kaabaLon - userLon) * Math.PI / 180;
-            const lat1 = userLat * Math.PI / 180;
-            const lat2 = kaabaLat * Math.PI / 180;
-
-            const y = Math.sin(dLon) * Math.cos(lat2);
-            const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
-            const bearing = Math.atan2(y, x) * 180 / Math.PI;
-
-            setQiblaDirection((bearing + 360) % 360);
-
-            const R = 6371;
-            const dLat = (kaabaLat - userLat) * Math.PI / 180;
-            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                Math.cos(lat1) * Math.cos(lat2) *
-                Math.sin(dLon / 2) * Math.sin(dLon / 2);
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            const distance = R * c;
-
-            setDistance(distance);
         })();
+
+        const subscription = Magnetometer.addListener(data => {
+            let angle = Math.atan2(data.y, data.x) * (180 / Math.PI);
+            angle = (angle + 360) % 360;
+            // Adjust for device orientation if needed, but standard magnetometer is usually enough
+            setHeading(Math.round(angle));
+            rotation.value = withSpring(-angle, { damping: 20, stiffness: 100 });
+        });
+
+        Magnetometer.setUpdateInterval(100);
+
+        return () => subscription.remove();
     }, []);
 
+    const animatedCompassStyle = useAnimatedStyle(() => ({
+        transform: [{ rotate: `${rotation.value}deg` }],
+    }));
+
+    const getDirectionText = (degree: number) => {
+        const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+        return directions[Math.round(degree / 45) % 8];
+    };
+
+    const renderTicks = () => {
+        const ticks = [];
+        for (let i = 0; i < 360; i += 30) {
+            ticks.push(
+                <View key={i} style={[styles.tickContainer, { transform: [{ rotate: `${i}deg` }] }]}>
+                    <ThemedText style={[styles.tickText, { color: isDark ? '#636366' : '#9CA3AF' }]}>
+                        {i}°
+                    </ThemedText>
+                </View>
+            );
+        }
+        return ticks;
+    };
+
     return (
-        <View style={[styles.container, { backgroundColor: '#090909' }]}>
-            {/* Header */}
-            <View style={styles.header}>
-                <TouchableOpacity onPress={() => router.back()} style={styles.headerIconButton}>
-                    <IconSymbol name="arrow.left" size={24} color="white" />
-                </TouchableOpacity>
-                <View style={styles.headerTitleContainer}>
-                    <ThemedText type="poppins-bold" style={styles.headerTitle}>Qibla</ThemedText>
-                    <ThemedText type="poppins-regular" style={styles.headerSubtitle}>Compass</ThemedText>
-                </View>
-                <TouchableOpacity style={styles.headerIconButton}>
-                    <IconSymbol name="location.fill" size={24} color="white" />
-                </TouchableOpacity>
-            </View>
+        <SafeAreaView style={[styles.safeArea, { backgroundColor: isDark ? '#0F1011' : '#FAFAFA' }]}>
+            <Stack.Screen options={{ headerShown: false }} />
 
-            {/* Main Compass UI */}
-            <View style={styles.content}>
-                <View style={styles.directionInfo}>
-                    <ThemedText type="poppins-bold" style={styles.directionDegrees}>{qiblaDirection.toFixed(0)}°</ThemedText>
-                    <ThemedText type="poppins-medium" style={styles.directionText}>North East</ThemedText>
+            <View style={styles.container}>
+                {/* Header */}
+                <View style={styles.header}>
+                    <TouchableOpacity onPress={() => router.back()} style={[styles.backButton, { backgroundColor: isDark ? '#1C1C1E' : '#FFFFFF' }]}>
+                        <IconSymbol name="arrow.left" size={24} color={isDark ? 'white' : 'black'} />
+                    </TouchableOpacity>
+                    <ThemedText type="poppins-bold" style={[styles.headerTitle, { color: isDark ? 'white' : 'black' }]}>
+                        Qibla Direction
+                    </ThemedText>
                 </View>
 
-                <View style={styles.compassContainer}>
-                    <View style={styles.outerGlow} />
-                    <View style={styles.outerRing}>
-                        <View style={styles.innerRing}>
-                            <View style={styles.cardinalRow}>
-                                <ThemedText type="poppins-bold" style={styles.cardinalText}>N</ThemedText>
-                            </View>
-                            <View style={[styles.cardinalRow, styles.cardinalRowE]}>
-                                <ThemedText type="poppins-bold" style={styles.cardinalText}>E</ThemedText>
-                            </View>
-                            <View style={[styles.cardinalRow, styles.cardinalRowS]}>
-                                <ThemedText type="poppins-bold" style={styles.cardinalText}>S</ThemedText>
-                            </View>
-                            <View style={[styles.cardinalRow, styles.cardinalRowW]}>
-                                <ThemedText type="poppins-bold" style={styles.cardinalText}>W</ThemedText>
-                            </View>
+                {/* Compass Container */}
+                <View style={styles.compassMainContainer}>
+                    <Animated.View style={[styles.compassWrapper, animatedCompassStyle]}>
+                        {/* Outer Labels */}
+                        <View style={styles.cardinalContainer}>
+                            <ThemedText style={[styles.cardinalN, { color: '#FF3B30' }]}>N</ThemedText>
+                            <ThemedText style={[styles.cardinalE, { color: isDark ? '#8E8E93' : '#4B5563' }]}>E</ThemedText>
+                            <ThemedText style={[styles.cardinalS, { color: isDark ? '#8E8E93' : '#4B5563' }]}>S</ThemedText>
+                            <ThemedText style={[styles.cardinalW, { color: isDark ? '#8E8E93' : '#4B5563' }]}>W</ThemedText>
+                        </View>
 
-                            {/* Rotation needed for compass effect */}
-                            <View
-                                style={[
-                                    styles.needleContainer,
-                                    { transform: [{ rotate: `${qiblaDirection}deg` }] }
-                                ]}
-                            >
-                                <View style={styles.needlePointer} />
-                                <View style={styles.kaabaIconBox}>
-                                    <IconSymbol name="building.2.fill" size={24} color="white" />
-                                </View>
-                            </View>
+                        {/* Outer Ring with ticks */}
+                        <View style={[styles.outerRing, { borderColor: isDark ? '#1C1C1E' : '#E5E7EB' }]}>
+                            {renderTicks()}
+                        </View>
+
+                        {/* Qibla Pointer */}
+                        <View style={[styles.qiblaPointerContainer, { transform: [{ rotate: `${qiblaAngle}deg` }] }]}>
+                            <View style={styles.qiblaPointer} />
+                        </View>
+                    </Animated.View>
+
+                    {/* Static Inner Display */}
+                    <View style={[styles.innerDisplay, { backgroundColor: isDark ? '#1C1C1E' : '#FFFFFF' }]}>
+                        <View style={styles.innerDisplayTextContainer}>
+                            <ThemedText style={[styles.headingDegree, { color: isDark ? 'white' : 'black' }]}>
+                                {heading}°
+                            </ThemedText>
+                            <ThemedText style={[styles.headingDirection, { color: isDark ? '#8E8E93' : '#6B7280' }]}>
+                                {getDirectionText(heading)}
+                            </ThemedText>
                         </View>
                     </View>
                 </View>
 
-                <View style={styles.bottomInfo}>
-                    <View style={styles.infoPill}>
-                        <IconSymbol name="map.fill" size={16} color="#AA74E0" />
-                        <ThemedText type="poppins-medium" style={styles.infoPillText}>
-                            Distance: {distance.toFixed(0)} KM
-                        </ThemedText>
-                    </View>
+                {/* Bottom Instructions */}
+                <View style={styles.footer}>
+                    <ThemedText type="poppins-regular" style={[styles.instructionText, { color: isDark ? 'white' : 'black' }]}>
+                        To find the Qibla, hold your phone flat and follow the arrow.
+                    </ThemedText>
                 </View>
             </View>
-
-            <BottomNav />
-        </View>
+        </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
+    safeArea: {
+        flex: 1,
+    },
     container: {
         flex: 1,
-        paddingTop: 60,
+        paddingHorizontal: 20,
     },
     header: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingHorizontal: 24,
-        marginBottom: 24,
+        marginTop: 20,
+        marginBottom: 40,
     },
-    headerIconButton: {
+    backButton: {
         width: 44,
         height: 44,
         borderRadius: 22,
-        backgroundColor: '#1C1C1E',
         justifyContent: 'center',
         alignItems: 'center',
-    },
-    headerTitleContainer: {
-        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.05,
+        shadowRadius: 4,
+        elevation: 2,
     },
     headerTitle: {
-        fontSize: 18,
-        color: 'white',
+        fontSize: 22,
+        marginLeft: 16,
     },
-    headerSubtitle: {
-        fontSize: 12,
-        color: '#8E8E93',
-    },
-    content: {
+    compassMainContainer: {
         flex: 1,
-        alignItems: 'center',
-        paddingTop: 40,
-    },
-    directionInfo: {
-        alignItems: 'center',
-        marginBottom: 40,
-    },
-    directionDegrees: {
-        fontSize: 48,
-        color: 'white',
-    },
-    directionText: {
-        fontSize: 16,
-        color: '#AA74E0',
-    },
-    compassContainer: {
-        width: width * 0.8,
-        height: width * 0.8,
         justifyContent: 'center',
         alignItems: 'center',
     },
-    outerGlow: {
+    compassWrapper: {
+        width: COMPASS_SIZE,
+        height: COMPASS_SIZE,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    cardinalContainer: {
         position: 'absolute',
         width: '100%',
         height: '100%',
-        borderRadius: width * 0.4,
-        backgroundColor: '#AA74E0',
-        opacity: 0.05,
     },
+    cardinalN: { position: 'absolute', top: -30, left: '50%', transform: [{ translateX: -6 }], fontSize: 20, fontWeight: '700' },
+    cardinalE: { position: 'absolute', right: -30, top: '50%', transform: [{ translateY: -12 }], fontSize: 20, fontWeight: '700' },
+    cardinalS: { position: 'absolute', bottom: -30, left: '50%', transform: [{ translateX: -6 }], fontSize: 20, fontWeight: '700' },
+    cardinalW: { position: 'absolute', left: -30, top: '50%', transform: [{ translateY: -12 }], fontSize: 20, fontWeight: '700' },
     outerRing: {
         width: '90%',
         height: '90%',
-        borderRadius: width * 0.36,
-        borderWidth: 2,
-        borderColor: '#1C1C1E',
+        borderRadius: COMPASS_SIZE * 0.45,
+        borderWidth: 1,
         justifyContent: 'center',
         alignItems: 'center',
     },
-    innerRing: {
-        width: '95%',
-        height: '95%',
-        borderRadius: width * 0.34,
-        backgroundColor: '#111111',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    cardinalRow: {
+    tickContainer: {
         position: 'absolute',
-        top: 20,
+        height: '110%',
+        width: 40,
+        alignItems: 'center',
+        paddingTop: 0,
     },
-    cardinalRowE: {
-        top: '50%',
-        right: 20,
-        transform: [{ translateY: -10 }],
+    tickText: {
+        fontSize: 10,
+        fontFamily: 'Poppins-Regular',
     },
-    cardinalRowS: {
-        bottom: 20,
-        top: 'auto',
-    },
-    cardinalRowW: {
-        top: '50%',
-        left: 20,
-        transform: [{ translateY: -10 }],
-    },
-    cardinalText: {
-        color: '#8E8E93',
-        fontSize: 16,
-    },
-    needleContainer: {
+    qiblaPointerContainer: {
+        position: 'absolute',
         width: '100%',
         height: '100%',
         justifyContent: 'center',
         alignItems: 'center',
     },
-    needlePointer: {
-        width: 4,
-        height: '80%',
-        backgroundColor: '#1C1C1E',
-        borderRadius: 2,
-    },
-    kaabaIconBox: {
+    qiblaPointer: {
         position: 'absolute',
-        top: 20,
-        width: 48,
-        height: 48,
-        borderRadius: 24,
-        backgroundColor: '#AA74E0',
+        top: '15%',
+        width: 0,
+        height: 0,
+        backgroundColor: 'transparent',
+        borderStyle: 'solid',
+        borderLeftWidth: 10,
+        borderRightWidth: 10,
+        borderBottomWidth: 25,
+        borderLeftColor: 'transparent',
+        borderRightColor: 'transparent',
+        borderBottomColor: '#AA74E0',
+    },
+    innerDisplay: {
+        position: 'absolute',
+        width: 140,
+        height: 140,
+        borderRadius: 70,
         justifyContent: 'center',
         alignItems: 'center',
-        borderWidth: 4,
-        borderColor: '#090909',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.1,
+        shadowRadius: 10,
+        elevation: 5,
     },
-    bottomInfo: {
-        marginTop: 60,
-    },
-    infoPill: {
-        flexDirection: 'row',
+    innerDisplayTextContainer: {
         alignItems: 'center',
-        backgroundColor: '#1C1C1E',
-        paddingHorizontal: 20,
-        paddingVertical: 10,
-        borderRadius: 20,
-        gap: 8,
-        borderWidth: 1,
-        borderColor: '#262626',
     },
-    infoPillText: {
-        color: 'white',
-        fontSize: 14,
+    headingDegree: {
+        fontSize: 32,
+        fontFamily: 'Poppins-Bold',
+    },
+    headingDirection: {
+        fontSize: 16,
+        fontFamily: 'Poppins-Medium',
+        marginTop: -5,
+    },
+    footer: {
+        paddingBottom: 40,
+        alignItems: 'center',
+    },
+    instructionText: {
+        fontSize: 18,
+        textAlign: 'center',
+        lineHeight: 26,
+        paddingHorizontal: 30,
     },
 });

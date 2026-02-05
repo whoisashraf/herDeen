@@ -4,17 +4,13 @@ import { ADHKAR_CATEGORIES, ADHKAR_CHAPTERS } from '@/constants/adhkar-data';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import React from 'react';
 import {
-    Image,
-    ImageBackground,
+    SafeAreaView,
     ScrollView,
     StyleSheet,
     TextInput,
     TouchableOpacity,
-    View,
+    View
 } from 'react-native';
-
-import cardBg from '@/assets/images/card-bg.png';
-
 
 export default function AdhkarCategoryScreen() {
     const { id } = useLocalSearchParams();
@@ -31,159 +27,135 @@ export default function AdhkarCategoryScreen() {
     }
 
     return (
-        <View style={styles.container}>
-            <Stack.Screen options={{ headerShown: false }} />
+        <SafeAreaView style={styles.safeArea}>
+            <View style={styles.container}>
+                <Stack.Screen options={{ headerShown: false }} />
 
-            <View style={styles.header}>
-                <TouchableOpacity onPress={() => router.back()} style={styles.iconButton}>
-                    <IconSymbol name="arrow.left" size={24} color="#000" />
-                </TouchableOpacity>
-                <ThemedText type="poppins-semibold" style={styles.headerTitle}>Adhkar</ThemedText>
-            </View>
-
-            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-                <View style={styles.searchContainer}>
-                    <TextInput
-                        placeholder="Search"
-                        placeholderTextColor="#9CA3AF"
-                        style={styles.searchInput}
-                    />
-                    <IconSymbol name="magnifyingglass" size={20} color="#9CA3AF" style={styles.searchIcon} />
-                </View>
-
-                {/* Banner */}
-                <ImageBackground
-                    source={cardBg}
-                    style={[styles.banner, { backgroundColor: '#8B2C9A' }]}
-                    imageStyle={{ borderRadius: 20 }}
-                    resizeMode="cover"
-                >
-                    <View style={styles.bannerContent}>
-                        <View>
-                            <ThemedText type="poppins-bold" style={styles.bannerTitle}>{category.title}</ThemedText>
-                            <ThemedText type="poppins-regular" style={styles.bannerSubtitle}>{category.count}</ThemedText>
+                {/* Header */}
+                <View style={styles.header}>
+                    <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+                        <IconSymbol name="arrow.left" size={24} color="white" />
+                    </TouchableOpacity>
+                    <View style={styles.headerTitleContainer}>
+                        <View style={styles.titleWithIcon}>
+                            <ThemedText type="poppins-semibold" style={styles.headerTitle}>{category.title}</ThemedText>
+                            <IconSymbol name="chevron.down" size={16} color="white" style={styles.chevronDown} />
                         </View>
-                        <View style={styles.bannerIconContainer}>
-                            <Image source={category.icon} style={styles.bannerIcon} resizeMode="contain" />
-                        </View>
+                        <ThemedText type="poppins-regular" style={styles.headerSubtitle}>{category.count}</ThemedText>
                     </View>
-                </ImageBackground>
-
-                {/* Chapters List */}
-                <View style={styles.listContainer}>
-                    {ADHKAR_CHAPTERS.map((chapter, index) => (
-                        <TouchableOpacity
-                            key={chapter.id}
-                            style={[
-                                styles.chapterItem,
-                                index !== ADHKAR_CHAPTERS.length - 1 && styles.chapterItemBorder
-                            ]}
-                            onPress={() => router.push(`/(drawer)/adhkar/content/${chapter.id}`)}
-                        >
-                            <ThemedText type="poppins-medium" style={styles.chapterTitle}>{chapter.title}</ThemedText>
-                            <IconSymbol name="chevron.right" size={20} color="#1F2937" />
-                        </TouchableOpacity>
-                    ))}
                 </View>
-            </ScrollView>
-        </View>
+
+                <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+                    {/* Search Bar */}
+                    <View style={styles.searchContainer}>
+                        <IconSymbol name="magnifyingglass" size={20} color="#636366" style={styles.searchIcon} />
+                        <TextInput
+                            placeholder="Search duas"
+                            placeholderTextColor="#636366"
+                            style={styles.searchInput}
+                        />
+                    </View>
+
+                    {/* Chapters List */}
+                    <View style={styles.listContainer}>
+                        {ADHKAR_CHAPTERS.map((chapter) => (
+                            <TouchableOpacity
+                                key={chapter.id}
+                                style={styles.chapterItem}
+                                onPress={() => router.push(`/(drawer)/adhkar/content/${chapter.id}`)}
+                            >
+                                <ThemedText type="poppins-medium" style={styles.chapterTitle}>{chapter.title}</ThemedText>
+                                <IconSymbol name="chevron.right" size={20} color="#3A3A3C" />
+                            </TouchableOpacity>
+                        ))}
+                    </View>
+                </ScrollView>
+            </View>
+        </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
+    safeArea: {
+        flex: 1,
+        backgroundColor: '#0F1011',
+    },
     container: {
         flex: 1,
-        backgroundColor: '#FAFAFA',
-        paddingTop: 60,
     },
     header: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingHorizontal: 24,
+        paddingHorizontal: 20,
+        paddingTop: 10,
         marginBottom: 20,
-        gap: 16,
+    },
+    backButton: {
+        width: 44,
+        height: 44,
+        borderRadius: 22,
+        backgroundColor: '#1C1C1E',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: 16,
+    },
+    headerTitleContainer: {
+        flex: 1,
+        marginTop: 10,
+    },
+    titleWithIcon: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 8,
     },
     headerTitle: {
-        fontSize: 20,
-        color: '#1F2937',
+        fontSize: 18,
+        color: 'white',
     },
-    iconButton: {
-        padding: 4,
+    chevronDown: {
+        marginTop: 2,
+    },
+    headerSubtitle: {
+        fontSize: 12,
+        color: '#FFFFFFB2',
+        marginTop: 2,
     },
     scrollContent: {
-        paddingHorizontal: 24,
+        paddingHorizontal: 20,
         paddingBottom: 40,
     },
     searchContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#FFFFFF',
-        borderRadius: 16,
+        backgroundColor: '#1C1C1E',
+        borderRadius: 25,
         paddingHorizontal: 16,
-        height: 52,
-        marginBottom: 24,
-        borderWidth: 1,
-        borderColor: '#F3F4F6',
+        paddingVertical: 14,
+        marginBottom: 32,
     },
     searchIcon: {
-        marginLeft: 'auto',
+        marginRight: 12,
     },
     searchInput: {
         flex: 1,
+        color: 'white',
+        fontSize: 16,
         fontFamily: 'Poppins-Regular',
-        fontSize: 14,
-        color: '#1F2937',
-        height: '100%',
-    },
-    banner: {
-        borderRadius: 20,
-        padding: 20,
-        marginBottom: 24,
-        height: 100,
-        justifyContent: 'center',
-        overflow: 'hidden',
-    },
-    bannerContent: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-    },
-    bannerTitle: {
-        color: 'white',
-        fontSize: 24,
-        marginBottom: 4,
-    },
-    bannerSubtitle: {
-        color: 'white',
-        fontSize: 14,
-        opacity: 0.9,
-    },
-    bannerIconContainer: {
-        width: 60,
-        height: 60,
-    },
-    bannerIcon: {
-        width: '100%',
-        height: '100%',
     },
     listContainer: {
-        backgroundColor: 'white',
-        borderRadius: 20,
-        paddingHorizontal: 20,
-        paddingVertical: 10,
+        marginTop: 8,
     },
     chapterItem: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingVertical: 16,
-    },
-    chapterItemBorder: {
+        paddingVertical: 20,
         borderBottomWidth: 1,
-        borderBottomColor: '#F3F4F6',
+        borderBottomColor: '#1C1C1E',
     },
     chapterTitle: {
-        fontSize: 14,
-        color: '#1F2937',
+        fontSize: 16,
+        color: 'white',
+        flex: 1,
     },
 });

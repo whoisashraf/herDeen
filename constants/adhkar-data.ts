@@ -9,7 +9,7 @@ export const ADHKAR_CATEGORIES = [
     { 
         id: '2', 
         title: 'Morning & Evening', 
-        count: '100 Chapters', 
+        count: '12 Chapters', 
         icon: require('@/assets/icons/Crescent & Star - 3D Ramadhan Illustration Pack (Perspective).png') 
     },
     { 

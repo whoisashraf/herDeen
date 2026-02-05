@@ -4,10 +4,11 @@ import { ADHKAR_CHAPTERS, ADHKAR_CONTENT } from '@/constants/adhkar-data';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import React from 'react';
 import {
+    SafeAreaView,
     ScrollView,
     StyleSheet,
     TouchableOpacity,
-    View,
+    View
 } from 'react-native';
 
 export default function AdhkarDetailScreen() {
@@ -27,99 +28,109 @@ export default function AdhkarDetailScreen() {
     }
 
     return (
-        <View style={styles.container}>
-            <Stack.Screen options={{ headerShown: false }} />
+        <SafeAreaView style={styles.safeArea}>
+            <View style={styles.container}>
+                <Stack.Screen options={{ headerShown: false }} />
 
-            <View style={styles.header}>
-                <TouchableOpacity onPress={() => router.back()} style={styles.iconButton}>
-                    <IconSymbol name="arrow.left" size={24} color="#000" />
-                </TouchableOpacity>
-                <ThemedText type="poppins-semibold" style={styles.headerTitle}>{chapter.title}</ThemedText>
-            </View>
+                {/* Header */}
+                <View style={styles.header}>
+                    <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+                        <IconSymbol name="arrow.left" size={24} color="white" />
+                    </TouchableOpacity>
+                    <ThemedText type="poppins-bold" style={styles.headerTitle}>{chapter.title}</ThemedText>
+                </View>
 
-            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-                {content.map((item, index) => (
-                    <View key={item.id} style={styles.card}>
-                        <ThemedText style={styles.arabicText}>{item.arabic}</ThemedText>
-                        <ThemedText type="poppins-italic" style={styles.transliterationText}>
-                            {item.transliteration}
-                        </ThemedText>
-                        <ThemedText type="poppins-regular" style={styles.translationText}>
-                            {item.translation}
-                        </ThemedText>
+                <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+                    {content.map((item, index) => (
+                        <View key={item.id} style={[
+                            styles.contentItem,
+                            index !== content.length - 1 && styles.separator
+                        ]}>
+                            <ThemedText style={styles.arabicText}>{item.arabic}</ThemedText>
+                            <ThemedText type="poppins-italic" style={styles.transliterationText}>
+                                {item.transliteration}
+                            </ThemedText>
+                            <ThemedText type="poppins-regular" style={styles.translationText}>
+                                {item.translation}
+                            </ThemedText>
+                        </View>
+                    ))}
+                </ScrollView>
+
+                <View style={styles.footerContainer}>
+                    <View style={styles.footer}>
+                        <TouchableOpacity style={styles.footerButton}>
+                            <IconSymbol name="arrow.left" size={20} color="white" />
+                        </TouchableOpacity>
+                        <ThemedText type="poppins-medium" style={styles.footerTitle}>{chapter.title}</ThemedText>
+                        <TouchableOpacity style={styles.footerButton}>
+                            <IconSymbol name="arrow.right" size={20} color="white" />
+                        </TouchableOpacity>
                     </View>
-                ))}
-            </ScrollView>
-
-            <View style={styles.footerContainer}>
-                <View style={styles.footer}>
-                    <TouchableOpacity style={styles.footerButton}>
-                        <IconSymbol name="chevron.left" size={20} color="#1F2937" />
-                    </TouchableOpacity>
-                    <ThemedText type="poppins-medium" style={styles.footerTitle}>{chapter.title}</ThemedText>
-                    <TouchableOpacity style={styles.footerButton}>
-                        <IconSymbol name="chevron.right" size={20} color="#1F2937" />
-                    </TouchableOpacity>
                 </View>
             </View>
-        </View>
+        </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
+    safeArea: {
+        flex: 1,
+        backgroundColor: '#0F1011',
+    },
     container: {
         flex: 1,
-        backgroundColor: '#FAFAFA',
-        paddingTop: 60,
     },
     header: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingHorizontal: 24,
+        paddingHorizontal: 20,
+        paddingTop: 10,
         marginBottom: 20,
-        gap: 16,
+    },
+    backButton: {
+        width: 44,
+        height: 44,
+        borderRadius: 22,
+        backgroundColor: '#1C1C1E',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: 16,
     },
     headerTitle: {
-        fontSize: 20,
-        color: '#1F2937',
-    },
-    iconButton: {
-        padding: 4,
+        fontSize: 22,
+        color: 'white',
+        flex: 1,
+        fontFamily: 'Poppins-Regular',
     },
     scrollContent: {
-        paddingHorizontal: 24,
-        paddingBottom: 100, // Space for footer
+        paddingHorizontal: 20,
+        paddingBottom: 120,
     },
-    card: {
-        backgroundColor: '#FFFFFF',
-        borderRadius: 20,
-        padding: 24,
-        marginBottom: 16,
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.05,
-        shadowRadius: 3,
-        elevation: 2,
+    contentItem: {
+        paddingVertical: 32,
+    },
+    separator: {
+        borderBottomWidth: 1,
+        borderBottomColor: '#1C1C1E',
     },
     arabicText: {
-        fontSize: 20,
+        fontSize: 24,
         lineHeight: 48,
-        color: '#AA74E0',
+        color: 'white',
         textAlign: 'right',
         marginBottom: 24,
+        fontFamily: 'Amiri-Bold',
     },
     transliterationText: {
-        fontSize: 14,
-        color: '#4B5563',
+        fontSize: 15,
+        color: '#8E8E93',
         marginBottom: 16,
         lineHeight: 24,
     },
     translationText: {
         fontSize: 16,
-        color: '#1F2937',
+        color: '#FFFFFFB2',
         lineHeight: 24,
     },
     footerContainer: {
@@ -127,32 +138,29 @@ const styles = StyleSheet.create({
         bottom: 0,
         left: 0,
         right: 0,
-        padding: 24,
-        backgroundColor: 'transparent', // Let it float over background? Or solid?
-        // Design usually has it pinned.
+        padding: 20,
+        paddingBottom: 40,
     },
     footer: {
-        backgroundColor: 'white',
-        borderRadius: 16,
-        height: 56,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingHorizontal: 16,
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 4,
-        },
-        shadowOpacity: 0.05,
-        shadowRadius: 10,
-        elevation: 4,
     },
     footerButton: {
-        padding: 8,
+        width: 44,
+        height: 44,
+        borderRadius: 22,
+        backgroundColor: '#1C1C1E',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     footerTitle: {
-        fontSize: 14,
-        color: '#1F2937',
+        fontSize: 18,
+        color: 'white',
+        flex: 1,
+        textAlign: 'center',
+        marginHorizontal: 10,
+        fontFamily: 'Poppins-Regular',
     },
 });
