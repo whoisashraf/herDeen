@@ -46,7 +46,8 @@ export default function SignUpScreen() {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      router.push('/(auth)/confirm-email');
+      // Skip verification, go directly to app
+      router.replace('/(drawer)');
     }, 800);
   };
 

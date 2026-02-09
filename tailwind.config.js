@@ -5,7 +5,13 @@ module.exports = {
     "./components/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        'zysk-navy': '#1B2B3A',
+        'zysk-gold': '#D48C45',
+        'gemini-purple': '#AA74E0',
+      },
+    },
   },
   plugins: [],
 }

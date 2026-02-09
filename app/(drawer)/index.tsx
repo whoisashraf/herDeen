@@ -1,5 +1,5 @@
 import { AdhkarBanner } from '@/components/dashboard/AdhkarBanner';
-import { BottomNav, BOTTOM_NAV_HEIGHT } from '@/components/dashboard/BottomNav';
+import { BOTTOM_NAV_HEIGHT, BottomNav } from '@/components/dashboard/BottomNav';
 import { Header } from '@/components/dashboard/Header';
 import { PrayerTimesCard } from '@/components/dashboard/PrayerTimesCard';
 import { QuickActionsGrid } from '@/components/dashboard/QuickActionsGrid';
@@ -7,8 +7,8 @@ import { TasksList } from '@/components/dashboard/TasksList';
 import { ThemedView } from '@/components/themed-view';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ImageBackground, ScrollView, StyleSheet } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function HomeScreen() {
   const colorScheme = useColorScheme() ?? 'light';

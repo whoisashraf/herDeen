@@ -1,7 +1,7 @@
 // Fallback for using MaterialIcons on Android and web.
 
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { SymbolWeight } from 'expo-symbols';
 import { OpaqueColorValue, type StyleProp, type TextStyle } from 'react-native';
 
@@ -19,11 +19,12 @@ const MAPPING: IconMapping = {
   'arrow.left': 'arrow-back',
   'chevron.left': 'arrow-back',
   'chevron.right': 'chevron-right',
-  'chevron.up': 'expand_less',
-  'chevron.down': 'expand_more',
+  'chevron.up': 'expand-less',
+  'chevron.down': 'expand-more',
   'qibla_icon': 'explore',
-  'bell': 'notifications_none',
+  'bell': 'notifications-none',
   'bell.fill': 'notifications',
+  'bell.slash.fill': 'notifications-off',
   'line.3.horizontal': 'menu',
   'target': 'track-changes',
   'plus': 'add',
@@ -33,7 +34,7 @@ const MAPPING: IconMapping = {
   'heart': 'favorite_border',
   'heart.fill': 'favorite',
   'hands.sparkles': 'auto_awesome',
-  'moon.stars': 'dark_mode',
+  'moon.stars': 'dark-mode',
   'calendar': 'calendar-today',
   'flag': 'flag',
   'book.closed': 'menu-book',
@@ -51,21 +52,22 @@ const MAPPING: IconMapping = {
   'exclamationmark.circle.fill': 'error-outline',
   'arrow.triangle.2.circlepath': 'sync',
   'xmark': 'close',
-  'person': 'person_outline',
-  'lock': 'lock_outline',
+  'person': 'person-outline',
+  'lock': 'lock-outline',
   'translate': 'translate',
-  'moon': 'nights_stay',
-  'clock': 'access_time',
+  'moon': 'nights-stay',
+  'clock': 'access-time',
   'alarm': 'access-alarm',
   'compass': 'explore',
   'circle.grid.2x2': 'apps',
   'square.grid.3x3': 'grid-view',
   'grain': 'grain',
   'gesture': 'gesture',
-  'location': 'location_on',
-  'place': 'location_on',
+  'location': 'location-on',
+  'location.fill': 'near-me',
+  'place': 'location-on',
   'mappin.and.ellipse': 'location-pin',
-  'phone': 'phone_in_talk',
+  'phone': 'phone-in-talk',
   'questionmark.circle': 'help',
   'info.circle': 'info-outline',
   'camera': 'camera-alt',
@@ -75,20 +77,24 @@ const MAPPING: IconMapping = {
   'question_answer': 'question_answer',
   'volunteer_activism': 'volunteer_activism',
   'volunteer-activism': 'volunteer_activism',
-  'logout': 'logout',
-  'mosque': 'mosque',
-  'bathtub': 'bathtub',
-  'wb_sunny': 'wb_sunny',
-  'wb-sunny': 'wb_sunny',
-  'wb_twilight': 'wb_twilight',
-  'wb-twilight': 'wb_twilight',
-  'cloud': 'cloud_queue',
-  'cloud-queue': 'cloud_queue',
-  'nights_stay': 'nights_stay',
-  'nights-stay': 'nights_stay',
+  'wb-sunny': 'wb-sunny',
+  'sun': 'wb-sunny',
+  'sunny': 'wb-sunny',
+  'sun.max': 'wb-sunny',
+  'sun.min': 'wb-sunny',
+  'sun.sunset': 'wb-sunny',
+  'sunrise': 'wb-twilight',
+  'near-me': 'near-me',
+  'cloud': 'cloud-outline',
+  'nights-stay': 'nights-stay',
   'hexagon': 'hexagon',
-  'prayer_mat': 'curtains',
-  'prayer-mat': 'curtains',
+  'speaker.wave.2.fill': 'volume-up',
+  'speaker.slash.fill': 'volume-off',
+  'paperplane': 'near-me',
+  'mosque': 'mosque',
+  'calculate': 'calculate',
+  'vibration': 'vibration',
+  'bed': 'bed',
   'leaf': 'eco',
 } as IconMapping;
 
@@ -111,5 +117,8 @@ export function IconSymbol({
   if (name === 'google') {
     return <Ionicons color={color} size={size} name="logo-google" style={style} />;
   }
-  return <MaterialIcons color={color} size={size} name={MAPPING[name]} style={style} />;
+
+  const iconName = MAPPING[name] || name;
+
+  return <MaterialIcons color={color} size={size} name={iconName as any} style={style} />;
 }

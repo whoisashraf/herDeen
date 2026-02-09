@@ -28,8 +28,8 @@ export const BottomNav = () => {
             style={[
                 styles.container,
                 {
-                    backgroundColor: '#090909',
-                    borderTopColor: '#1C1C1E',
+                    backgroundColor: colors.background,
+                    borderTopColor: colors.surface,
                     zIndex: 999,
                     paddingBottom: 12 + insets.bottom,
                 },

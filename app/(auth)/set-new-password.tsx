@@ -59,17 +59,6 @@ export default function SetNewPasswordScreen() {
                         <TouchableOpacity onPress={handleClose} style={styles.closeButton}>
                             <Ionicons name="close" size={28} color="#FFFFFF" />
                         </TouchableOpacity>
-                        <View style={styles.progressIndicators}>
-                            <View style={styles.progressCircle}>
-                                <Text style={styles.progressText}>1</Text>
-                            </View>
-                            <View style={styles.progressCircle}>
-                                <Text style={styles.progressText}>2</Text>
-                            </View>
-                            <View style={[styles.progressCircle, styles.progressActive]}>
-                                <Text style={styles.progressTextActive}>3</Text>
-                            </View>
-                        </View>
                     </View>
 
                     {/* Title and subtitle */}

@@ -30,8 +30,8 @@ export default function ForgotPasswordScreen() {
 
     const handleSendCode = () => {
         setLoading(true);
-        // TODO: Implement password reset logic
-        router.push('/(auth)/reset-password');
+        // Skip code verification, go directly to set new password
+        router.push('/(auth)/set-new-password');
     };
 
     const handleClose = () => {
@@ -51,17 +51,6 @@ export default function ForgotPasswordScreen() {
                         <TouchableOpacity onPress={handleClose} style={styles.closeButton}>
                             <Ionicons name="close" size={28} color="#FFFFFF" />
                         </TouchableOpacity>
-                        <View style={styles.progressIndicators}>
-                            <View style={[styles.progressCircle, styles.progressActive]}>
-                                <Text style={styles.progressTextActive}>1</Text>
-                            </View>
-                            <View style={styles.progressCircle}>
-                                <Text style={styles.progressText}>2</Text>
-                            </View>
-                            <View style={styles.progressCircle}>
-                                <Text style={styles.progressText}>3</Text>
-                            </View>
-                        </View>
                     </View>
 
                     {/* Title and subtitle */}
