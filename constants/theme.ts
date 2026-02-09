@@ -18,9 +18,9 @@ export const Colors = {
     background: '#FFFFFF',
     surface: '#F7F7F7',
     inputBackground: INPUT_BACKGROUND,
-    primary: '#7F47DD',
+    primary: '#AA74E0',
     primaryLight: '#F3E8FF',
-    tint: '#7F47DD',
+    tint: '#AA74E0',
     icon: '#111827',
   },
   dark: {

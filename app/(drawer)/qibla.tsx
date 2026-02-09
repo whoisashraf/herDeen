@@ -1,5 +1,6 @@
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import * as Location from 'expo-location';
 import { Stack, useRouter } from 'expo-router';
@@ -7,6 +8,7 @@ import { Magnetometer } from 'expo-sensors';
 import React, { useEffect, useState } from 'react';
 import { Dimensions, SafeAreaView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const { width } = Dimensions.get('window');
 const COMPASS_SIZE = width * 0.85;
@@ -15,6 +17,8 @@ export default function QiblaScreen() {
     const router = useRouter();
     const colorScheme = useColorScheme() ?? 'light';
     const isDark = colorScheme === 'dark';
+    const colors = Colors[colorScheme];
+    const insets = useSafeAreaInsets();
 
     const [qiblaAngle, setQiblaAngle] = useState(0);
     const [heading, setHeading] = useState(0);
@@ -70,7 +74,7 @@ export default function QiblaScreen() {
         for (let i = 0; i < 360; i += 30) {
             ticks.push(
                 <View key={i} style={[styles.tickContainer, { transform: [{ rotate: `${i}deg` }] }]}>
-                    <ThemedText style={[styles.tickText, { color: isDark ? '#636366' : '#9CA3AF' }]}>
+                    <ThemedText style={[styles.tickText, { color: colors.textMuted }]}>
                         {i}°
                     </ThemedText>
                 </View>
@@ -80,18 +84,25 @@ export default function QiblaScreen() {
     };
 
     return (
-        <SafeAreaView style={[styles.safeArea, { backgroundColor: isDark ? '#0F1011' : '#FAFAFA' }]}>
+        <SafeAreaView style={[styles.safeArea, { backgroundColor: colors.background }]}>
             <Stack.Screen options={{ headerShown: false }} />
 
             <View style={styles.container}>
                 {/* Header */}
-                <View style={styles.header}>
-                    <TouchableOpacity onPress={() => router.back()} style={[styles.backButton, { backgroundColor: isDark ? '#1C1C1E' : '#FFFFFF' }]}>
-                        <IconSymbol name="arrow.left" size={24} color={isDark ? 'white' : 'black'} />
+                <View style={[styles.header, { paddingTop: insets.top + 10 }]}>
+                    <TouchableOpacity onPress={() => router.back()} style={[styles.headerBtn, { backgroundColor: colors.surface }]}>
+                        <IconSymbol name="arrow.left" size={20} color={colors.text} />
                     </TouchableOpacity>
-                    <ThemedText type="poppins-bold" style={[styles.headerTitle, { color: isDark ? 'white' : 'black' }]}>
+                    <ThemedText type="poppins-bold" style={[styles.headerTitle, { color: colors.text }]}>
                         Qibla Direction
                     </ThemedText>
+                    <View style={{ flex: 1 }} />
+                    <TouchableOpacity
+                        onPress={() => router.push('/settings/prayer-settings')}
+                        style={[styles.headerBtn, { backgroundColor: colors.surface }]}
+                    >
+                        <IconSymbol name="hexagon" size={20} color={colors.text} />
+                    </TouchableOpacity>
                 </View>
 
                 {/* Compass Container */}
@@ -100,13 +111,13 @@ export default function QiblaScreen() {
                         {/* Outer Labels */}
                         <View style={styles.cardinalContainer}>
                             <ThemedText style={[styles.cardinalN, { color: '#FF3B30' }]}>N</ThemedText>
-                            <ThemedText style={[styles.cardinalE, { color: isDark ? '#8E8E93' : '#4B5563' }]}>E</ThemedText>
-                            <ThemedText style={[styles.cardinalS, { color: isDark ? '#8E8E93' : '#4B5563' }]}>S</ThemedText>
-                            <ThemedText style={[styles.cardinalW, { color: isDark ? '#8E8E93' : '#4B5563' }]}>W</ThemedText>
+                            <ThemedText style={[styles.cardinalE, { color: colors.textMuted }]}>E</ThemedText>
+                            <ThemedText style={[styles.cardinalS, { color: colors.textMuted }]}>S</ThemedText>
+                            <ThemedText style={[styles.cardinalW, { color: colors.textMuted }]}>W</ThemedText>
                         </View>
 
                         {/* Outer Ring with ticks */}
-                        <View style={[styles.outerRing, { borderColor: isDark ? '#1C1C1E' : '#E5E7EB' }]}>
+                        <View style={[styles.outerRing, { borderColor: colors.surface }]}>
                             {renderTicks()}
                         </View>
 
@@ -117,12 +128,12 @@ export default function QiblaScreen() {
                     </Animated.View>
 
                     {/* Static Inner Display */}
-                    <View style={[styles.innerDisplay, { backgroundColor: isDark ? '#1C1C1E' : '#FFFFFF' }]}>
+                    <View style={[styles.innerDisplay, { backgroundColor: colors.surface }]}>
                         <View style={styles.innerDisplayTextContainer}>
-                            <ThemedText style={[styles.headingDegree, { color: isDark ? 'white' : 'black' }]}>
+                            <ThemedText style={[styles.headingDegree, { color: colors.text }]}>
                                 {heading}°
                             </ThemedText>
-                            <ThemedText style={[styles.headingDirection, { color: isDark ? '#8E8E93' : '#6B7280' }]}>
+                            <ThemedText style={[styles.headingDirection, { color: colors.textMuted }]}>
                                 {getDirectionText(heading)}
                             </ThemedText>
                         </View>
@@ -131,7 +142,7 @@ export default function QiblaScreen() {
 
                 {/* Bottom Instructions */}
                 <View style={styles.footer}>
-                    <ThemedText type="poppins-regular" style={[styles.instructionText, { color: isDark ? 'white' : 'black' }]}>
+                    <ThemedText type="poppins-regular" style={[styles.instructionText, { color: colors.text }]}>
                         To find the Qibla, hold your phone flat and follow the arrow.
                     </ThemedText>
                 </View>
@@ -151,23 +162,22 @@ const styles = StyleSheet.create({
     header: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: 20,
         marginBottom: 40,
     },
-    backButton: {
+    headerBtn: {
         width: 44,
         height: 44,
         borderRadius: 22,
         justifyContent: 'center',
         alignItems: 'center',
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
+        shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.05,
-        shadowRadius: 4,
-        elevation: 2,
+        shadowRadius: 2,
+        elevation: 1,
     },
     headerTitle: {
-        fontSize: 22,
+        fontSize: 20,
         marginLeft: 16,
     },
     compassMainContainer: {

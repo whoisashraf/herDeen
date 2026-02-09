@@ -22,7 +22,7 @@ import {
   Poppins_700Bold,
 } from '@expo-google-fonts/poppins';
 
-import { AuthProvider, useAuth } from '@/contexts/auth-context'; // Import AuthProvider and useAuth
+import { AuthProvider, useAuth } from '@/contexts/auth-context';
 import { PlannerProvider } from '@/contexts/planner-context';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
@@ -39,7 +39,7 @@ const InitialLayout = () => {
     Poppins_700Bold,
   });
 
-  const { isAuthenticated } = useAuth(); // Use isAuthenticated from AuthContext
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     if (loaded) {
@@ -47,7 +47,7 @@ const InitialLayout = () => {
     }
   }, [loaded]);
 
-  // Sync root native background with theme so dark mode shows correctly in simulator/dev builds
+  // Sync root native background with theme
   useEffect(() => {
     const bg = colorScheme === 'dark' ? Colors.dark.background : Colors.light.background;
     SystemUI.setBackgroundColorAsync(bg);

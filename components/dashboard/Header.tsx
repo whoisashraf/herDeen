@@ -5,7 +5,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 
-export const Header = () => {
+export const Header = ({ showGreeting = true, showNotifications = true }: { showGreeting?: boolean, showNotifications?: boolean }) => {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const insets = useSafeAreaInsets();
@@ -33,18 +33,22 @@ export const Header = () => {
               Ilroin East
             </ThemedText>
           </View>
-          <ThemedText type="poppins-bold" style={[styles.greeting, { color: colors.text }]}>
-            Sobahul-khayr, Aishah!
-          </ThemedText>
+          {showGreeting && (
+            <ThemedText type="poppins-bold" style={[styles.greeting, { color: colors.text }]}>
+              Sobahul-khayr, Aishah!
+            </ThemedText>
+          )}
         </View>
       </View>
       <View style={styles.rightContainer}>
-        <TouchableOpacity style={[styles.iconButton, { backgroundColor: colors.surface }]}>
-          <View style={styles.bellContainer}>
-            <IconSymbol name="bell" size={22} color={colors.text} />
-            <View style={[styles.notificationDot, { borderColor: colors.background }]} />
-          </View>
-        </TouchableOpacity>
+        {showNotifications && (
+          <TouchableOpacity style={[styles.iconButton, { backgroundColor: colors.surface }]}>
+            <View style={styles.bellContainer}>
+              <IconSymbol name="bell" size={22} color={colors.text} />
+              <View style={[styles.notificationDot, { borderColor: colors.background }]} />
+            </View>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
