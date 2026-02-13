@@ -13,6 +13,6 @@ export default function BottomActions({ onCompleted }: { onCompleted?: () => voi
 
 const styles = StyleSheet.create({
     bottomActions: { paddingHorizontal: 20, paddingBottom: 32 },
-    saveButton: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingVertical: 16, backgroundColor: '#AA74E0', borderRadius: 12 },
+    saveButton: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingVertical: 16, backgroundColor: '#E18DFF', borderRadius: 12 },
     saveButtonText: { color: 'white', fontWeight: 'bold', fontSize: 16 },
 });

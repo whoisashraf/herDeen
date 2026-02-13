@@ -2,6 +2,7 @@ import telegramIcon from '@/assets/icons/telegram_icon.png';
 import whatsappIcon from '@/assets/icons/whatsapp_icon.png';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useAppColors } from '@/hooks/use-app-colors';
 import React from 'react';
 import { Image, Linking, Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
 
@@ -11,6 +12,8 @@ interface CommunityModalProps {
 }
 
 export const CommunityModal: React.FC<CommunityModalProps> = ({ visible, onClose }) => {
+    const { colors, isDark } = useAppColors();
+
     const handleTelegramPress = () => {
         Linking.openURL('https://t.me/your_group_link');
     };
@@ -26,14 +29,14 @@ export const CommunityModal: React.FC<CommunityModalProps> = ({ visible, onClose
             animationType="slide"
             onRequestClose={onClose}
         >
-            <View style={styles.overlay}>
-                <View style={styles.modalContainer}>
+            <View style={[styles.overlay, { backgroundColor: colors.overlay }]}>
+                <View style={[styles.modalContainer, { backgroundColor: colors.surface }]}>
                     {/* Handle Indicator */}
-                    <View style={styles.handle} />
+                    <View style={[styles.handle, { backgroundColor: colors.textFaint }]} />
 
                     {/* Close Button */}
-                    <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-                        <IconSymbol name="xmark" size={24} color="#4A4A4A" />
+                    <TouchableOpacity style={[styles.closeButton, { backgroundColor: isDark ? colors.surfaceSoft : '#F5F5F5' }]} onPress={onClose}>
+                        <IconSymbol name="xmark" size={24} color={colors.text} />
                     </TouchableOpacity>
 
                     {/* Community Image */}
@@ -44,12 +47,12 @@ export const CommunityModal: React.FC<CommunityModalProps> = ({ visible, onClose
                     />
 
                     {/* Title */}
-                    <ThemedText type="poppins-bold" style={styles.title}>
+                    <ThemedText type="poppins-bold" style={[styles.title, { color: colors.text }]}>
                         Join the HerDeen Sisterhood 💞
                     </ThemedText>
 
                     {/* Subtitle */}
-                    <ThemedText type="poppins-regular" style={styles.subtitle}>
+                    <ThemedText type="poppins-regular" style={[styles.subtitle, { color: colors.textMuted }]}>
                         Connect with supportive Muslimah sisters who are also striving to balance Deen and Dunya — just like you.
                     </ThemedText>
 
@@ -68,7 +71,7 @@ export const CommunityModal: React.FC<CommunityModalProps> = ({ visible, onClose
 
                     {/* WhatsApp Button */}
                     <TouchableOpacity
-                        style={[styles.button, styles.whatsappButton]}
+                        style={[styles.button, styles.whatsappButton, { backgroundColor: isDark ? colors.surfaceSoft : 'white', borderColor: '#E18DFF' }]}
                         onPress={handleWhatsappPress}
                     >
                         <View style={styles.buttonContent}>
@@ -131,13 +134,11 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 22,
-        color: '#1A1A1A',
         textAlign: 'center',
         marginBottom: 12,
     },
     subtitle: {
         fontSize: 14,
-        color: '#666666',
         textAlign: 'center',
         lineHeight: 24,
         marginBottom: 32,
@@ -159,7 +160,7 @@ const styles = StyleSheet.create({
     whatsappButton: {
         backgroundColor: 'white',
         borderWidth: 2,
-        borderColor: '#AA74E0',
+        borderColor: '#E18DFF',
     },
     buttonContent: {
         flexDirection: 'row',
@@ -176,6 +177,6 @@ const styles = StyleSheet.create({
         color: 'white',
     },
     whatsappText: {
-        color: '#AA74E0',
+        color: '#E18DFF',
     },
 });

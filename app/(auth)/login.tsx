@@ -18,9 +18,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { useAuth } from '@/contexts/auth-context';
-import { authService } from '@/services/auth-service';
-// const PRIMARY = '#AA74E0';
+// const PRIMARY = '#E18DFF';
 // const LEAF_GREEN = '#34C759';
 
 export default function LoginScreen() {
@@ -32,32 +30,26 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null); // Add error state
-
-  const { signIn } = useAuth(); // Call useAuth
 
   const isDark = colorScheme === 'dark';
-  const inputBg = INPUT_BACKGROUND;
-  const textColor = isDark ? '#FFFFFF' : '#11181C';
-  const placeholderColor = isDark ? '#9CA3AF' : '#6B7280';
-  const dividerColor = isDark ? '#374151' : '#E5E7EB';
+  const screenBg = isDark ? colors.background : '#ECECEE';
+  const inputBg = isDark ? INPUT_BACKGROUND : '#E4E4E6';
+  const textColor = isDark ? '#FFFFFF' : '#1E2330';
+  const subtitleColor = isDark ? colors.textMuted : '#656971';
+  const placeholderColor = isDark ? '#9CA3AF' : '#A7A9AE';
+  const dividerColor = isDark ? '#374151' : '#D8D9DD';
 
-  const handleLogin = async () => { // Make function async
+  const handleLogin = async () => {
     setLoading(true);
-    setError(null); // Clear previous errors
-    try {
-      const response = await authService.login(email, password);
-      signIn(response.token);
-    } catch (err: any) {
-      setError(err.message || 'Login failed');
-      console.error('Login error:', err);
-    } finally {
+    // Endpoint is not ready yet; continue through UI flow without API validation.
+    setTimeout(() => {
       setLoading(false);
-    }
+      router.replace('/(drawer)');
+    }, 400);
   };
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <StatusBar style="light" />
+    <View style={[styles.container, { backgroundColor: screenBg }]}>
+      <StatusBar style={isDark ? 'light' : 'dark'} />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={[styles.keyboard, { paddingTop: insets.top }]}
@@ -71,7 +63,7 @@ export default function LoginScreen() {
             <ThemedText type="poppins-semibold" style={[styles.title, { color: textColor }]}>
               Welcome Back
             </ThemedText>
-            <ThemedText type="poppins-regular" style={[styles.subtitle, { color: colors.textMuted }]}>
+            <ThemedText type="poppins-regular" style={[styles.subtitle, { color: subtitleColor }]}>
               Pick up right where you left off.
             </ThemedText>
           </View>
@@ -108,15 +100,10 @@ export default function LoginScreen() {
 
           <View style={styles.forgotPasswordRow}>
             <TouchableOpacity onPress={() => router.push('/(auth)/forgot-password')}>
-              <ThemedText type="poppins-medium" style={[styles.forgotPasswordText, { color: '#FEA1CD' }]}>Forgot password?</ThemedText>
+              <ThemedText type="poppins-medium" style={[styles.forgotPasswordText, { color: '#E18DFF' }]}>Forgot password?</ThemedText>
             </TouchableOpacity>
           </View>
 
-          {error && (
-            <ThemedText type="poppins-regular" style={[styles.errorText, { color: 'red', marginBottom: 12 }]}>
-              {error}
-            </ThemedText>
-          )}
           <TouchableOpacity
             style={styles.primaryButton}
             onPress={handleLogin}
@@ -127,7 +114,7 @@ export default function LoginScreen() {
 
           <View style={[styles.dividerRow, { marginVertical: 24 }]}>
             <View style={[styles.dividerLine, { backgroundColor: dividerColor }]} />
-            <ThemedText type="poppins-regular" style={[styles.dividerText, { color: colors.textMuted }]}>
+            <ThemedText type="poppins-regular" style={[styles.dividerText, { color: subtitleColor }]}>
               Or continue with
             </ThemedText>
             <View style={[styles.dividerLine, { backgroundColor: dividerColor }]} />
@@ -142,18 +129,18 @@ export default function LoginScreen() {
               />
             </TouchableOpacity>
             <TouchableOpacity style={[styles.socialButton, { borderColor: dividerColor }]}>
-              <Ionicons name="logo-apple" size={28} color="#FFFFFF" />
+              <Ionicons name="logo-apple" size={28} color={isDark ? '#FFFFFF' : '#11181C'} />
             </TouchableOpacity>
           </View>
 
         </ScrollView>
       </KeyboardAvoidingView>
       <View style={[styles.loginRow, { paddingBottom: insets.bottom > 0 ? insets.bottom : 24, paddingTop: 12 }]}>
-        <ThemedText type="poppins-regular" style={[styles.loginPrompt, { color: colors.textMuted }]}>
+        <ThemedText type="poppins-regular" style={[styles.loginPrompt, { color: subtitleColor }]}>
           Don&lsquo;t have an account?{' '}
         </ThemedText>
         <TouchableOpacity onPress={() => router.replace('/(auth)/sign-up')}>
-          <ThemedText type="poppins-semibold" style={[styles.loginLinkText, { color: '#FEA1CD' }]}>Sign up</ThemedText>
+          <ThemedText type="poppins-semibold" style={[styles.loginLinkText, { color: '#E18DFF' }]}>Sign up</ThemedText>
         </TouchableOpacity>
       </View>
     </View>
@@ -172,7 +159,7 @@ const styles = StyleSheet.create({
   passwordWrapper: { position: 'relative', marginBottom: 20 },
   passwordInput: { marginBottom: 0, paddingRight: 48 },
   eyeButton: { position: 'absolute', right: 14, top: 0, bottom: 0, justifyContent: 'center' },
-  primaryButton: { backgroundColor: '#AA74E0', height: 56, borderRadius: 28, alignItems: 'center', justifyContent: 'center' },
+  primaryButton: { backgroundColor: '#E18DFF', height: 56, borderRadius: 28, alignItems: 'center', justifyContent: 'center' },
   primaryButtonDisabled: { opacity: 0.6 },
   primaryButtonText: { color: '#FFFFFF', fontSize: 18 },
   dividerRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
@@ -185,7 +172,5 @@ const styles = StyleSheet.create({
   loginLinkText: { fontSize: 15 },
   forgotPasswordRow: { flexDirection: 'row', justifyContent: 'flex-end', marginBottom: 20 },
   forgotPasswordText: { fontSize: 14 },
-  errorText: { fontSize: 14 },
   socialIcon: { width: 24, height: 24 },
 });
-

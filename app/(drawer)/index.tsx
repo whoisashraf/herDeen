@@ -24,7 +24,7 @@ export default function HomeScreen() {
         imageStyle={[
           styles.waveImage,
           {
-            tintColor: colorScheme === 'dark' ? '#FFFFFF' : '#AA74E0',
+            tintColor: colorScheme === 'dark' ? '#FFFFFF' : '#E18DFF',
             opacity: colorScheme === 'dark' ? 0.05 : 0.03
           }
         ]}

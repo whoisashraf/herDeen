@@ -1,3 +1,4 @@
+import StepIndicators from '@/components/auth/StepIndicators';
 import { ThemedText } from '@/components/themed-text';
 import { Colors, INPUT_BACKGROUND } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -24,14 +25,19 @@ export default function ForgotPasswordScreen() {
     const [loading, setLoading] = useState(false);
 
     const isDark = colorScheme === 'dark';
-    const inputBg = INPUT_BACKGROUND;
-    const textColor = isDark ? '#FFFFFF' : '#11181C';
-    const placeholderColor = isDark ? '#9CA3AF' : '#6B7280';
+    const screenBg = isDark ? colors.background : '#ECECEE';
+    const inputBg = isDark ? INPUT_BACKGROUND : '#E4E4E6';
+    const textColor = isDark ? '#FFFFFF' : '#1E2330';
+    const subtitleColor = isDark ? '#FFFFFFB2' : '#656971';
+    const placeholderColor = isDark ? '#9CA3AF' : '#A7A9AE';
 
     const handleSendCode = () => {
         setLoading(true);
-        // Skip code verification, go directly to set new password
-        router.push('/(auth)/set-new-password');
+        // Endpoint is not ready; allow moving through auth screens without validation.
+        setTimeout(() => {
+            setLoading(false);
+            router.push('/(auth)/reset-password');
+        }, 300);
     };
 
     const handleClose = () => {
@@ -39,8 +45,8 @@ export default function ForgotPasswordScreen() {
     };
 
     return (
-        <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
-            <StatusBar style="light" />
+        <SafeAreaView style={[styles.container, { backgroundColor: screenBg }]}>
+            <StatusBar style={isDark ? 'light' : 'dark'} />
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 style={styles.keyboard}
@@ -49,14 +55,15 @@ export default function ForgotPasswordScreen() {
                     {/* Header with close button and step indicators */}
                     <View style={styles.header}>
                         <TouchableOpacity onPress={handleClose} style={styles.closeButton}>
-                            <Ionicons name="close" size={28} color="#FFFFFF" />
+                            <Ionicons name="close" size={28} color={textColor} />
                         </TouchableOpacity>
+                        <StepIndicators currentStep={1} isDark={isDark} />
                     </View>
 
                     {/* Title and subtitle */}
                     <View style={styles.textSection}>
-                        <Text style={styles.title}>Forgot Your Password?</Text>
-                        <Text style={styles.subtitle}>No worries — we'll help you reset it.</Text>
+                        <Text style={[styles.title, { color: textColor }]}>Forgot Your Password?</Text>
+                        <Text style={[styles.subtitle, { color: subtitleColor }]}>No worries — we'll help you reset it.</Text>
                     </View>
 
                     {/* Email input */}
@@ -73,10 +80,10 @@ export default function ForgotPasswordScreen() {
 
                     {/* Send code button */}
                     <TouchableOpacity
-                        style={[styles.sendButton, !email && styles.sendButtonDisabled]}
+                        style={styles.sendButton}
                         onPress={handleSendCode}
                         activeOpacity={0.85}
-                        disabled={!email || loading}
+                        disabled={loading}
                     >
                         <ThemedText type="poppins-semibold" style={styles.sendButtonText}>
                             Send code
@@ -112,34 +119,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'flex-start',
     },
-    progressIndicators: {
-        flexDirection: 'row',
-        gap: -10,
-    },
-    progressCircle: {
-        width: 32,
-        height: 32,
-        borderRadius: 16,
-        borderWidth: 1,
-        borderColor: '#333336',
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#1C1C1E',
-    },
-    progressActive: {
-        backgroundColor: '#AA74E01A',
-        borderWidth: 0,
-    },
-    progressText: {
-        color: '#9CA3AF',
-        fontSize: 14,
-        fontFamily: 'Poppins_500Medium',
-    },
-    progressTextActive: {
-        color: '#AA74E0',
-        fontSize: 14,
-        fontFamily: 'Poppins_600SemiBold',
-    },
     textSection: {
         marginBottom: 32,
     },
@@ -163,7 +142,7 @@ const styles = StyleSheet.create({
         fontFamily: 'Poppins_400Regular',
     },
     sendButton: {
-        backgroundColor: '#AA74E0',
+        backgroundColor: '#E18DFF',
         borderRadius: 100,
         paddingVertical: 20,
         width: '100%',

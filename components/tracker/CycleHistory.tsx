@@ -1,60 +1,66 @@
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useAppColors } from '@/hooks/use-app-colors';
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export function CycleHistory() {
+    const { colors, isDark } = useAppColors();
+
     return (
         <View style={styles.sectionContainer}>
             <View style={styles.sectionHeader}>
-                <Text style={styles.sectionTitle}>Cycle History</Text>
+                <Text style={[styles.sectionTitle, { color: colors.text }]}>Cycle History</Text>
                 <TouchableOpacity>
                     <Text style={styles.seeAllText}>See all</Text>
                 </TouchableOpacity>
             </View>
 
-            <View style={styles.historyCard}>
+            <View style={[styles.historyCard, { backgroundColor: isDark ? colors.surface : '#FFF' }]}>
                 <HistoryItem
                     dateRange="Apr 25 - May 28"
                     periodLength="4days"
                     cycleLength="24 days"
+                    textColor={colors.text}
                 />
-                <View style={styles.divider} />
+                <View style={[styles.divider, { backgroundColor: isDark ? colors.border : '#F3F4F6' }]} />
                 <HistoryItem
                     dateRange="Apr 25 - May 28"
                     periodLength="4days"
                     cycleLength="24 days"
                     isComplete
+                    textColor={colors.text}
                 />
-                <View style={styles.divider} />
+                <View style={[styles.divider, { backgroundColor: isDark ? colors.border : '#F3F4F6' }]} />
                 <HistoryItem
                     dateRange="Apr 25 - May 28"
                     periodLength="4days"
                     cycleLength="24 days"
                     isComplete
+                    textColor={colors.text}
                 />
             </View>
         </View>
     );
 }
 
-function HistoryItem({ dateRange, periodLength, cycleLength, isComplete }: { dateRange: string, periodLength: string, cycleLength: string, isComplete?: boolean }) {
+function HistoryItem({ dateRange, periodLength, cycleLength, isComplete, textColor }: { dateRange: string, periodLength: string, cycleLength: string, isComplete?: boolean; textColor: string }) {
     return (
         <View style={styles.historyItem}>
             <View>
-                <Text style={styles.historyDate}>{dateRange}</Text>
+                <Text style={[styles.historyDate, { color: textColor }]}>{dateRange}</Text>
                 <View style={styles.historyStatsRow}>
                     <View style={styles.historyStatTag}>
                         <IconSymbol name="drop.fill" size={12} color="#EF4444" />
-                        <Text style={styles.historyStatText}>{periodLength}</Text>
+                        <Text style={[styles.historyStatText, { color: textColor }]}>{periodLength}</Text>
                     </View>
                     <View style={styles.historyStatTag}>
                         <IconSymbol name="arrow.triangle.2.circlepath" size={14} color="#3B82F6" />
-                        <Text style={styles.historyStatText}>{cycleLength}</Text>
+                        <Text style={[styles.historyStatText, { color: textColor }]}>{cycleLength}</Text>
                     </View>
                 </View>
             </View>
             {isComplete && (
-                <IconSymbol name="checkmark" size={18} color="#5E2C7E" />
+                <IconSymbol name="checkmark" size={18} color="#E18DFF" />
             )}
         </View>
     );
@@ -74,17 +80,15 @@ const styles = StyleSheet.create({
     sectionTitle: {
         fontSize: 16,
         fontWeight: '600',
-        color: '#374151',
     },
     seeAllText: {
         fontSize: 12,
         fontWeight: '600',
-        color: '#5E2C7E',
+        color: '#E18DFF',
     },
 
     // History Card
     historyCard: {
-        backgroundColor: '#FFF',
         borderRadius: 20,
         padding: 20,
         shadowColor: '#000',
@@ -105,7 +109,6 @@ const styles = StyleSheet.create({
     },
     historyDate: {
         fontSize: 12,
-        color: '#374151',
         marginBottom: 6,
         fontWeight: '400',
     },
@@ -121,6 +124,5 @@ const styles = StyleSheet.create({
     historyStatText: {
         fontSize: 12,
         fontWeight: '600',
-        color: '#374151',
     },
 });

@@ -17,6 +17,9 @@ export default function EmailVerifiedScreen() {
   const router = useRouter();
   const colorScheme = useColorScheme() ?? 'dark';
   const colors = Colors[colorScheme];
+  const isDark = colorScheme === 'dark';
+  const screenBg = isDark ? colors.background : '#ECECEE';
+  const subtitleColor = isDark ? '#FFFFFFB2' : '#656971';
   const insets = useSafeAreaInsets();
 
   const handlePersonalize = () => {
@@ -25,8 +28,8 @@ export default function EmailVerifiedScreen() {
   };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
-      <StatusBar style="light" />
+    <SafeAreaView style={[styles.container, { backgroundColor: screenBg }]}>
+      <StatusBar style={isDark ? 'light' : 'dark'} />
 
       <View style={[styles.content, { paddingTop: insets.top + 12, paddingBottom: Math.max(insets.bottom, 24) }]}>
         <View style={styles.illustrationWrap}>
@@ -38,12 +41,12 @@ export default function EmailVerifiedScreen() {
         </View>
 
         <View style={styles.textWrap}>
-          <ThemedText type="poppins-semibold" style={styles.title}>Email Verified!</ThemedText>
-          <ThemedText type="poppins-regular" style={[styles.subtitle, { color: '#FFFFFFB2' }]}>Take a moment to shape your HerDeen experience around what matters most to you.</ThemedText>
+          <ThemedText type="poppins-semibold" style={[styles.title, { color: colors.text }]}>Email Verified!</ThemedText>
+          <ThemedText type="poppins-regular" style={[styles.subtitle, { color: subtitleColor }]}>Take a moment to shape your HerDeen experience around what matters most to you.</ThemedText>
         </View>
 
         <View style={styles.footer}>
-          <TouchableOpacity activeOpacity={0.85} onPress={handlePersonalize} style={[styles.primaryButton, { backgroundColor: '#AA74E0' }]}>
+          <TouchableOpacity activeOpacity={0.85} onPress={handlePersonalize} style={[styles.primaryButton, { backgroundColor: '#E18DFF' }]}>
             <ThemedText type="poppins-semibold" style={styles.primaryButtonText}>Personalize my Journey</ThemedText>
           </TouchableOpacity>
         </View>

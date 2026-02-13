@@ -1,4 +1,5 @@
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useAppColors } from '@/hooks/use-app-colors';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
@@ -13,12 +14,10 @@ import {
     View,
 } from 'react-native';
 
-const DARK_PURPLE = '#AA74E0';
-const TEXT_GRAY = '#4A4A4A';
-const BG_COLOR = '#F8F8F8';
-
+const DARK_PURPLE = '#E18DFF';
 export default function PasswordScreen() {
     const router = useRouter();
+    const { colors } = useAppColors();
     const [currentPassword, setCurrentPassword] = useState('Aishah@2009');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -28,7 +27,7 @@ export default function PasswordScreen() {
     const [showConfirm, setShowConfirm] = useState(false);
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 style={{ flex: 1 }}
@@ -36,23 +35,24 @@ export default function PasswordScreen() {
                 {/* Header */}
                 <View style={styles.header}>
                     <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-                        <IconSymbol name="arrow.left" size={28} color={TEXT_GRAY} />
+                        <IconSymbol name="arrow.left" size={28} color={colors.text} />
                     </TouchableOpacity>
-                    <Text style={styles.headerTitle}>Change Password</Text>
+                    <Text style={[styles.headerTitle, { color: colors.text }]}>Change Password</Text>
                 </View>
 
                 <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
                     <View style={styles.form}>
                         {/* Current Password */}
                         <View style={styles.inputGroup}>
-                            <Text style={styles.label}>Current Password</Text>
+                            <Text style={[styles.label, { color: colors.textMuted }]}>Current Password</Text>
                             <View style={styles.inputWrapper}>
                                 <TextInput
-                                    style={styles.input}
+                                    style={[styles.input, { backgroundColor: colors.surface, color: colors.text, borderColor: colors.border }]}
                                     value={currentPassword}
                                     onChangeText={setCurrentPassword}
                                     secureTextEntry={!showCurrent}
                                     placeholder="Enter current password"
+                                    placeholderTextColor={colors.textMuted}
                                 />
                                 <TouchableOpacity
                                     style={styles.eyeIcon}
@@ -61,7 +61,7 @@ export default function PasswordScreen() {
                                     <IconSymbol
                                         name={showCurrent ? "eye.slash" : "eye"}
                                         size={22}
-                                        color="#8A8A8E"
+                                        color={colors.textMuted}
                                     />
                                 </TouchableOpacity>
                             </View>
@@ -72,14 +72,15 @@ export default function PasswordScreen() {
 
                         {/* New Password */}
                         <View style={styles.inputGroup}>
-                            <Text style={styles.label}>New Password</Text>
+                            <Text style={[styles.label, { color: colors.textMuted }]}>New Password</Text>
                             <View style={styles.inputWrapper}>
                                 <TextInput
-                                    style={styles.input}
+                                    style={[styles.input, { backgroundColor: colors.surface, color: colors.text, borderColor: colors.border }]}
                                     value={newPassword}
                                     onChangeText={setNewPassword}
                                     secureTextEntry={!showNew}
                                     placeholder="********"
+                                    placeholderTextColor={colors.textMuted}
                                 />
                                 <TouchableOpacity
                                     style={styles.eyeIcon}
@@ -88,7 +89,7 @@ export default function PasswordScreen() {
                                     <IconSymbol
                                         name={showNew ? "eye.slash" : "eye"}
                                         size={22}
-                                        color="#8A8A8E"
+                                        color={colors.textMuted}
                                     />
                                 </TouchableOpacity>
                             </View>
@@ -96,14 +97,15 @@ export default function PasswordScreen() {
 
                         {/* Confirm Password */}
                         <View style={styles.inputGroup}>
-                            <Text style={styles.label}>Confirm Password</Text>
+                            <Text style={[styles.label, { color: colors.textMuted }]}>Confirm Password</Text>
                             <View style={styles.inputWrapper}>
                                 <TextInput
-                                    style={styles.input}
+                                    style={[styles.input, { backgroundColor: colors.surface, color: colors.text, borderColor: colors.border }]}
                                     value={confirmPassword}
                                     onChangeText={setConfirmPassword}
                                     secureTextEntry={!showConfirm}
                                     placeholder="********"
+                                    placeholderTextColor={colors.textMuted}
                                 />
                                 <TouchableOpacity
                                     style={styles.eyeIcon}
@@ -112,7 +114,7 @@ export default function PasswordScreen() {
                                     <IconSymbol
                                         name={showConfirm ? "eye.slash" : "eye"}
                                         size={22}
-                                        color="#8A8A8E"
+                                        color={colors.textMuted}
                                     />
                                 </TouchableOpacity>
                             </View>
@@ -132,7 +134,7 @@ export default function PasswordScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: BG_COLOR,
+        backgroundColor: '#13181C',
     },
     header: {
         flexDirection: 'row',
@@ -146,7 +148,7 @@ const styles = StyleSheet.create({
     headerTitle: {
         fontSize: 22,
         fontWeight: '500',
-        color: TEXT_GRAY,
+        color: '#FFFFFF',
     },
     scrollContent: {
         paddingBottom: 40,
@@ -161,7 +163,7 @@ const styles = StyleSheet.create({
     label: {
         fontSize: 14,
         fontWeight: '400',
-        color: '#444444',
+        color: '#FFFFFFB2',
         marginBottom: 8,
     },
     inputWrapper: {
@@ -169,15 +171,15 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     input: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#1F2125',
         borderRadius: 12,
         height: 56,
         paddingHorizontal: 16,
         paddingRight: 50,
         fontSize: 16,
-        color: TEXT_GRAY,
+        color: '#FFFFFF',
         borderWidth: 1,
-        borderColor: '#F2F2F7',
+        borderColor: '#5B6268',
     },
     eyeIcon: {
         position: 'absolute',

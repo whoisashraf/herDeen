@@ -1,16 +1,19 @@
 import goalsIcon from '../../assets/icons/goals.png';
+import { useAppColors } from '@/hooks/use-app-colors';
 import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { DAYS } from './types';
 
 export default function DateCard() {
+    const { colors, isDark } = useAppColors();
+
     return (
         <View style={styles.dateSelectorSection}>
-            <View style={styles.dateCard}>
+            <View style={[styles.dateCard, { backgroundColor: isDark ? colors.surface : 'white', borderColor: isDark ? colors.border : '#F3E8F6' }]}>
                 <View style={styles.dateSelectorHeader}>
                     <View style={styles.flex1}>
-                        <Text style={styles.titleText}>My Ibadah Goals</Text>
-                        <Text style={styles.subtitleText}>
+                        <Text style={[styles.titleText, { color: colors.text }]}>My Ibadah Goals</Text>
+                        <Text style={[styles.subtitleText, { color: colors.textMuted }]}>
                             Set your spiritual intentions. Track your consistency. Grow closer to Allah - One goal at a time.
                         </Text>
                     </View>
@@ -21,7 +24,7 @@ export default function DateCard() {
                     </View>
                 </View>
 
-                <View style={styles.separator} />
+                <View style={[styles.separator, { backgroundColor: isDark ? colors.border : '#F3E8F6' }]} />
 
                 <View style={styles.calendarStrip}>
                     {DAYS.map((item, index) => (
@@ -29,8 +32,8 @@ export default function DateCard() {
                             key={index}
                             style={[styles.dayButton, item.active ? styles.dayButtonActive : styles.dayButtonInactive]}
                         >
-                            <Text style={[styles.dayText, item.active ? styles.dayTextActive : styles.dayTextInactive]}>{item.day}</Text>
-                            <Text style={[styles.dowText, item.active ? styles.dowTextActive : styles.dowTextInactive]}>{item.dow}</Text>
+                            <Text style={[styles.dayText, !item.active && { color: colors.textMuted }, item.active ? styles.dayTextActive : styles.dayTextInactive]}>{item.day}</Text>
+                            <Text style={[styles.dowText, !item.active && { color: colors.textFaint }, item.active ? styles.dowTextActive : styles.dowTextInactive]}>{item.dow}</Text>
                         </TouchableOpacity>
                     ))}
                 </View>
@@ -66,12 +69,10 @@ const styles = StyleSheet.create({
     titleText: {
         fontSize: 16,
         fontWeight: '500',
-        color: '#1F2937',
         marginBottom: 2,
     },
     subtitleText: {
         fontSize: 11,
-        color: '#6B7280',
         lineHeight: 16,
     },
     targetIconContainer: { alignItems: 'center', justifyContent: 'center' },
@@ -86,9 +87,9 @@ const styles = StyleSheet.create({
     separator: { height: 1, backgroundColor: '#F3E8F6', marginVertical: 12 },
     calendarStrip: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 8 },
     dayButton: { alignItems: 'center', justifyContent: 'center', paddingHorizontal: 8, paddingVertical: 8, borderRadius: 8, minWidth: 40, minHeight: 48 },
-    dayButtonActive: { backgroundColor: '#AA74E0', borderRadius: 8 },
+    dayButtonActive: { backgroundColor: '#E18DFF', borderRadius: 8 },
     dayButtonInactive: { backgroundColor: 'transparent' },
-    dayText: { fontSize: 16, fontWeight: '600', marginBottom: 2, color: '#374151' },
+    dayText: { fontSize: 16, fontWeight: '600', marginBottom: 2 },
     dayTextActive: { color: 'white', fontSize: 16, fontWeight: '600' },
     dayTextInactive: { color: '#374151' },
     dowText: { fontSize: 10, fontWeight: '500' },

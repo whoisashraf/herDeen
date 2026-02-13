@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
         marginTop: 'auto',
     },
     revealButton: {
-        backgroundColor: '#AA74E0',
+        backgroundColor: '#E18DFF',
         borderRadius: 100,
         paddingVertical: 16,
         width: '100%',

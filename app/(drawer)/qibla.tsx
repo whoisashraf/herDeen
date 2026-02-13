@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 25,
         borderLeftColor: 'transparent',
         borderRightColor: 'transparent',
-        borderBottomColor: '#AA74E0',
+        borderBottomColor: '#E18DFF',
     },
     innerDisplay: {
         position: 'absolute',

@@ -1,4 +1,5 @@
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useAppColors } from '@/hooks/use-app-colors';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
@@ -16,10 +17,7 @@ import {
     View,
 } from 'react-native';
 
-const PURPLE = '#5C1E68';
-const TEXT_GRAY = '#1A1A1A';
-const BG_COLOR = '#F9F9F9';
-
+const PURPLE = '#E18DFF';
 const donationAmounts = [
     '₦2,000',
     '₦24,000',
@@ -31,18 +29,19 @@ const donationAmounts = [
 
 export default function SupportUsScreen() {
     const router = useRouter();
+    const { colors, isDark } = useAppColors();
     const [selectedAmount, setSelectedAmount] = useState<string | null>(null);
     const [customAmount, setCustomAmount] = useState('');
 
     return (
-        <View style={styles.container}>
-            <StatusBar barStyle="dark-content" />
-            <SafeAreaView style={styles.safeArea}>
+        <View style={[styles.container, { backgroundColor: colors.background }]}>
+            <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
+            <SafeAreaView style={[styles.safeArea, { backgroundColor: colors.background }]}>
                 <View style={styles.header}>
                     <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-                        <IconSymbol name="arrow.left" size={24} color={TEXT_GRAY} />
+                        <IconSymbol name="arrow.left" size={24} color={colors.text} />
                     </TouchableOpacity>
-                    <Text style={styles.headerTitle}>Support Us</Text>
+                    <Text style={[styles.headerTitle, { color: colors.text }]}>Support Us</Text>
                 </View>
             </SafeAreaView>
 
@@ -82,6 +81,7 @@ export default function SupportUsScreen() {
                                 key={index}
                                 style={[
                                     styles.amountCard,
+                                    { backgroundColor: colors.surface },
                                     selectedAmount === amount && styles.amountCardSelected,
                                 ]}
                                 onPress={() => {
@@ -92,6 +92,7 @@ export default function SupportUsScreen() {
                                 <Text
                                     style={[
                                         styles.amountText,
+                                        { color: colors.text },
                                         selectedAmount === amount && styles.amountTextSelected,
                                     ]}
                                 >
@@ -104,9 +105,9 @@ export default function SupportUsScreen() {
                     {/* Custom Amount Input */}
                     <View style={styles.customAmountContainer}>
                         <TextInput
-                            style={styles.customAmountInput}
+                            style={[styles.customAmountInput, { backgroundColor: colors.surface, borderColor: colors.border, color: colors.text }]}
                             placeholder="Enter custom amount"
-                            placeholderTextColor="#8A8A8E"
+                            placeholderTextColor={colors.textMuted}
                             value={customAmount}
                             onChangeText={(text) => {
                                 setCustomAmount(text);
@@ -135,10 +136,10 @@ export default function SupportUsScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: BG_COLOR,
+        backgroundColor: '#13181C',
     },
     safeArea: {
-        backgroundColor: BG_COLOR,
+        backgroundColor: '#13181C',
     },
     header: {
         flexDirection: 'row',
@@ -152,7 +153,7 @@ const styles = StyleSheet.create({
     headerTitle: {
         fontSize: 20,
         fontWeight: '500',
-        color: TEXT_GRAY,
+        color: '#FFFFFF',
         marginLeft: 12,
     },
     scrollContent: {
@@ -204,7 +205,7 @@ const styles = StyleSheet.create({
     },
     amountCard: {
         width: '30%',
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#1F2125',
         borderRadius: 8,
         paddingVertical: 20,
         paddingHorizontal: 12,
@@ -220,12 +221,12 @@ const styles = StyleSheet.create({
     },
     amountCardSelected: {
         borderColor: PURPLE,
-        backgroundColor: '#F9F3FB',
+        backgroundColor: '#332646',
     },
     amountText: {
         fontSize: 14,
         fontWeight: '400',
-        color: TEXT_GRAY,
+        color: '#FFFFFF',
     },
     amountTextSelected: {
         color: PURPLE,
@@ -235,14 +236,14 @@ const styles = StyleSheet.create({
         marginBottom: 24,
     },
     customAmountInput: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#1F2125',
         borderRadius: 12,
         borderWidth: 1,
-        borderColor: '#F2F2F7',
+        borderColor: '#5B6268',
         paddingHorizontal: 16,
         paddingVertical: 16,
         fontSize: 16,
-        color: TEXT_GRAY,
+        color: '#FFFFFF',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.05,
@@ -262,7 +263,7 @@ const styles = StyleSheet.create({
         elevation: 4,
     },
     supportButtonDisabled: {
-        backgroundColor: '#C7C7CC',
+        backgroundColor: '#16171A',
         shadowOpacity: 0.1,
     },
     supportButtonText: {

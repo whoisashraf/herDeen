@@ -28,9 +28,11 @@ export default function SetNewPasswordScreen() {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const isDark = colorScheme === 'dark';
-    const inputBg = INPUT_BACKGROUND;
-    const textColor = isDark ? '#FFFFFF' : '#11181C';
-    const placeholderColor = isDark ? '#9CA3AF' : '#6B7280';
+    const screenBg = isDark ? colors.background : '#ECECEE';
+    const inputBg = isDark ? INPUT_BACKGROUND : '#E4E4E6';
+    const textColor = isDark ? '#FFFFFF' : '#1E2330';
+    const subtitleColor = isDark ? '#FFFFFFB2' : '#656971';
+    const placeholderColor = isDark ? '#9CA3AF' : '#A7A9AE';
 
     const handleSetNewPassword = () => {
         setLoading(true);
@@ -47,8 +49,8 @@ export default function SetNewPasswordScreen() {
     };
 
     return (
-        <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
-            <StatusBar style="light" />
+        <SafeAreaView style={[styles.container, { backgroundColor: screenBg }]}>
+            <StatusBar style={isDark ? 'light' : 'dark'} />
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 style={styles.keyboard}
@@ -57,14 +59,14 @@ export default function SetNewPasswordScreen() {
                     {/* Header with close button and step indicators */}
                     <View style={styles.header}>
                         <TouchableOpacity onPress={handleClose} style={styles.closeButton}>
-                            <Ionicons name="close" size={28} color="#FFFFFF" />
+                            <Ionicons name="close" size={28} color={textColor} />
                         </TouchableOpacity>
                     </View>
 
                     {/* Title and subtitle */}
                     <View style={styles.textSection}>
-                        <Text style={styles.title}>Create a New Password</Text>
-                        <Text style={styles.subtitle}>Choose something secure you’ll remember.</Text>
+                        <Text style={[styles.title, { color: textColor }]}>Create a New Password</Text>
+                        <Text style={[styles.subtitle, { color: subtitleColor }]}>Choose something secure you’ll remember.</Text>
                     </View>
 
                     {/* New Password input */}
@@ -107,10 +109,10 @@ export default function SetNewPasswordScreen() {
 
                     {/* Set Password button */}
                     <TouchableOpacity
-                        style={[styles.setPasswordButton, (!password || password !== confirmPassword) && styles.setPasswordButtonDisabled]}
+                        style={styles.setPasswordButton}
                         onPress={handleSetNewPassword}
                         activeOpacity={0.85}
-                        disabled={!password || password !== confirmPassword || loading}
+                        disabled={loading}
                     >
                         <ThemedText type="poppins-semibold" style={styles.setPasswordButtonText}>
                             Reset Password
@@ -161,7 +163,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#1C1C1E',
     },
     progressActive: {
-        backgroundColor: '#AA74E01A',
+        backgroundColor: '#E18DFF1A',
         borderWidth: 0,
     },
     progressText: {
@@ -170,7 +172,7 @@ const styles = StyleSheet.create({
         fontFamily: 'Poppins_500Medium',
     },
     progressTextActive: {
-        color: '#AA74E0',
+        color: '#E18DFF',
         fontSize: 14,
         fontFamily: 'Poppins_600SemiBold',
     },
@@ -212,7 +214,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     setPasswordButton: {
-        backgroundColor: '#AA74E0',
+        backgroundColor: '#E18DFF',
         borderRadius: 100,
         paddingVertical: 20,
         width: '100%',

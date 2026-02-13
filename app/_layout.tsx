@@ -24,6 +24,7 @@ import {
 
 import { AuthProvider, useAuth } from '@/contexts/auth-context';
 import { PlannerProvider } from '@/contexts/planner-context';
+import { ThemeModeProvider } from '@/contexts/theme-context';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 const InitialLayout = () => {
@@ -77,7 +78,9 @@ const InitialLayout = () => {
 export default function RootLayout() {
   return (
     <AuthProvider>
-      <InitialLayout />
+      <ThemeModeProvider>
+        <InitialLayout />
+      </ThemeModeProvider>
     </AuthProvider>
   );
 }

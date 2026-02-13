@@ -8,6 +8,7 @@ import OverviewCard from '@/components/ibadah-goals/OverviewCard';
 import Tabs from '@/components/ibadah-goals/Tabs';
 import type { Goal } from '@/components/ibadah-goals/types';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useAppColors } from '@/hooks/use-app-colors';
 import { Stack } from 'expo-router';
 import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -52,6 +53,7 @@ const INITIAL_GOALS: Goal[] = [
 ];
 
 export default function IbadahGoalsScreen() {
+  const { colors, isDark } = useAppColors();
   const [goals, setGoals] = useState(INITIAL_GOALS);
   const [activeTab, setActiveTab] = useState<'daily' | 'weekly'>('daily');
   const [isSetupComplete, setIsSetupComplete] = useState(false);
@@ -98,42 +100,42 @@ export default function IbadahGoalsScreen() {
       // Show detailed overview page
       if (showOverview) {
         return (
-          <SafeAreaView style={styles.container}>
+          <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
             <Stack.Screen options={{ headerShown: false }} />
-            <ScrollView style={styles.detailContainer}>
+            <ScrollView style={[styles.detailContainer, { backgroundColor: colors.background }]}>
               <View style={styles.detailHeader}>
                 <TouchableOpacity onPress={handleBackToDetail} style={styles.backButton}>
-                  <IconSymbol name="chevron.left" size={20} color="#1F2937" />
-                  <Text style={styles.backText}>{selectedGoal.title} Overview</Text>
+                  <IconSymbol name="chevron.left" size={20} color={colors.text} />
+                  <Text style={[styles.backText, { color: colors.text }]}>{selectedGoal.title} Overview</Text>
                 </TouchableOpacity>
               </View>
 
-              <View style={styles.progressCard}>
+              <View style={[styles.progressCard, { backgroundColor: isDark ? colors.surface : 'white' }]}>
                 <View style={styles.detailProgressCircleContainer}>
                   <View style={styles.detailProgressCircleBackground} />
                   <View style={styles.detailProgressCircleForeground} />
-                  <Text style={styles.detailProgressPercentage}>90%</Text>
+                  <Text style={[styles.detailProgressPercentage, { color: colors.text }]}>90%</Text>
                 </View>
                 <View style={styles.progressInfo}>
-                  <Text style={styles.progressTitle}>Your Weekly {selectedGoal.title} wasn't completed</Text>
-                  <Text style={styles.progressSubtitle}>You can do better next week</Text>
+                  <Text style={[styles.progressTitle, { color: colors.text }]}>Your Weekly {selectedGoal.title} wasn't completed</Text>
+                  <Text style={[styles.progressSubtitle, { color: colors.textMuted }]}>You can do better next week</Text>
                 </View>
               </View>
 
               <View style={styles.dailyProgressContainer}>
                 {[1, 2, 3, 4, 5, 6, 7].map((day) => (
-                  <View key={day} style={styles.dailyProgressCard}>
+                  <View key={day} style={[styles.dailyProgressCard, { backgroundColor: isDark ? colors.surface : 'white' }]}>
                     <View style={styles.dayInfo}>
-                      <Text style={styles.dayNumber}>Day {day}</Text>
-                      <Text style={styles.goalLabel}>goal</Text>
+                      <Text style={[styles.dayNumber, { color: colors.text }]}>Day {day}</Text>
+                      <Text style={[styles.goalLabel, { color: colors.textMuted }]}>goal</Text>
                     </View>
                     <View style={styles.progressBarContainer}>
-                      <Text style={styles.progressPercent}>100%</Text>
-                      <View style={styles.progressBar}>
+                      <Text style={[styles.progressPercent, { color: colors.text }]}>100%</Text>
+                      <View style={[styles.progressBar, { backgroundColor: isDark ? colors.border : '#E5E7EB' }]}>
                         <View style={styles.progressBarFill} />
                       </View>
-                      <Text style={styles.progressMessage}>You Observed your complete {selectedGoal.title}</Text>
-                      <Text style={styles.progressSubMessage}>Alhamdulillah</Text>
+                      <Text style={[styles.progressMessage, { color: colors.text }]}>You Observed your complete {selectedGoal.title}</Text>
+                      <Text style={[styles.progressSubMessage, { color: colors.textMuted }]}>Alhamdulillah</Text>
                     </View>
                   </View>
                 ))}
@@ -146,33 +148,33 @@ export default function IbadahGoalsScreen() {
 
       // Show regular detail page
       return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
           <Stack.Screen options={{ headerShown: false }} />
-          <View style={[styles.detailContainer, { flex: 1 }]}>
+          <View style={[styles.detailContainer, { flex: 1, backgroundColor: colors.background }]}>
             <View style={styles.detailHeader}>
               <TouchableOpacity onPress={handleBackToList} style={styles.backButton}>
-                <IconSymbol name="chevron.left" size={20} color="#1F2937" />
-                <Text style={styles.backText}>{selectedGoal.title}</Text>
+                <IconSymbol name="chevron.left" size={20} color={colors.text} />
+                <Text style={[styles.backText, { color: colors.text }]}>{selectedGoal.title}</Text>
               </TouchableOpacity>
             </View>
 
-            <View style={styles.progressCard}>
+            <View style={[styles.progressCard, { backgroundColor: isDark ? colors.surface : 'white' }]}>
               <TouchableOpacity onPress={handleShowOverview} style={styles.detailProgressCircleContainer}>
                 <View style={styles.detailProgressCircleBackground} />
                 <View style={styles.detailProgressCircleForeground} />
-                <Text style={styles.detailProgressPercentage}>90%</Text>
+                <Text style={[styles.detailProgressPercentage, { color: colors.text }]}>90%</Text>
               </TouchableOpacity>
               <View style={styles.progressInfo}>
-                <Text style={styles.progressTitle}>Your Weekly {selectedGoal.title} wasn't completed</Text>
-                <Text style={styles.progressSubtitle}>You can do better next week</Text>
+                <Text style={[styles.progressTitle, { color: colors.text }]}>Your Weekly {selectedGoal.title} wasn't completed</Text>
+                <Text style={[styles.progressSubtitle, { color: colors.textMuted }]}>You can do better next week</Text>
               </View>
             </View>
 
             <View style={styles.weeklyGrid}>
               {[1, 2, 3, 4, 5, 6, 7].map((day) => (
-                <View key={day} style={styles.dayCard}>
-                  <Text style={styles.dayTitle}>Day {day}</Text>
-                  <Text style={styles.dayStatus}>{day === 5 ? 'Missed One Salah' : 'Completed'}</Text>
+                <View key={day} style={[styles.dayCard, { backgroundColor: isDark ? colors.surface : 'white' }]}>
+                  <Text style={[styles.dayTitle, { color: colors.text }]}>Day {day}</Text>
+                  <Text style={[styles.dayStatus, { color: colors.textMuted }]}>{day === 5 ? 'Missed One Salah' : 'Completed'}</Text>
                 </View>
               ))}
             </View>
@@ -186,7 +188,7 @@ export default function IbadahGoalsScreen() {
   // Show initial setup screen if setup is not complete
   if (!isSetupComplete) {
     return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
         <Stack.Screen options={{ headerShown: false }} />
         <ScrollView style={styles.scrollViewContent} showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollViewContentContainer}>
           <Header />
@@ -201,7 +203,7 @@ export default function IbadahGoalsScreen() {
   // Show completed view (goal cards with View detail buttons)
   if (showCompletedView) {
     return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
         <Stack.Screen options={{ headerShown: false }} />
         <ScrollView style={styles.scrollViewContent} showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollViewContentContainer}>
           <Header />
@@ -212,19 +214,19 @@ export default function IbadahGoalsScreen() {
           {/* Goals List with View detail buttons */}
           <View style={styles.goalsContainer}>
             {goals.map((goal) => (
-              <View key={goal.id} style={styles.goalCard}>
+              <View key={goal.id} style={[styles.goalCard, { backgroundColor: isDark ? colors.surface : 'white', borderColor: isDark ? colors.border : '#F3F4F6' }]}>
                 <View style={styles.goalHeader}>
                   <View style={styles.goalTitleRow}>
                     <View style={styles.goalIcon}>
-                      <IconSymbol name="person" size={20} color="#6B7280" />
+                      <IconSymbol name="person" size={20} color={colors.textMuted} />
                     </View>
-                    <Text style={styles.goalTitle}>{goal.title}</Text>
+                    <Text style={[styles.goalTitle, { color: colors.text }]}>{goal.title}</Text>
                   </View>
                   <TouchableOpacity style={styles.viewDetailButton} onPress={() => handleViewDetail(goal.id)}>
                     <Text style={styles.viewDetailText}>View detail</Text>
                   </TouchableOpacity>
                 </View>
-                <Text style={styles.goalProgress}>Progress: {goal.type === 'checkboxes' ? `${goal.value || 0}/5` : (goal.completed ? 'Complete' : 'Incomplete')}</Text>
+                <Text style={[styles.goalProgress, { color: colors.textMuted }]}>Progress: {goal.type === 'checkboxes' ? `${goal.value || 0}/5` : (goal.completed ? 'Complete' : 'Incomplete')}</Text>
               </View>
             ))}
           </View>
@@ -236,7 +238,7 @@ export default function IbadahGoalsScreen() {
 
   // Show tracking screen after setup is complete
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <Stack.Screen options={{ headerShown: false }} />
 
       <ScrollView style={styles.scrollViewContent} showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollViewContentContainer}>
@@ -391,7 +393,7 @@ const styles = StyleSheet.create({
     minHeight: 56,
   },
   dayButtonActive: {
-    backgroundColor: '#4A0C63',
+    backgroundColor: '#E18DFF',
     paddingHorizontal: 12,
     paddingVertical: 10,
     borderRadius: 14,
@@ -428,7 +430,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   overviewCard: {
-    backgroundColor: '#4A0C63',
+    backgroundColor: '#E18DFF',
     borderRadius: 16,
     padding: 20,
     overflow: 'hidden',
@@ -480,7 +482,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
   },
   progressBadgeText: {
-    color: '#4A0C63',
+    color: '#E18DFF',
     fontSize: 12,
     fontWeight: 'bold',
   },
@@ -542,7 +544,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   tabActive: {
-    backgroundColor: '#4A0C63',
+    backgroundColor: '#E18DFF',
   },
   tabInactive: {
     backgroundColor: 'transparent',
@@ -557,7 +559,7 @@ const styles = StyleSheet.create({
     color: '#6B7280',
   },
   tabTextWeekly: {
-    color: '#581C87',
+    color: '#E18DFF',
   },
   goalsContainer: {
     paddingHorizontal: 20,
@@ -589,9 +591,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 16,
-    backgroundColor: '#4A0C63',
+    backgroundColor: '#E18DFF',
     borderRadius: 12,
-    shadowColor: '#AA74E0',
+    shadowColor: '#E18DFF',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -609,7 +611,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
   },
   viewDetailText: {
-    color: '#AA74E0',
+    color: '#E18DFF',
     fontSize: 12,
     fontWeight: '600',
   },
@@ -700,7 +702,7 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 50,
     borderWidth: 10.47,
-    borderColor: '#AA74E0',
+    borderColor: '#E18DFF',
     borderRightColor: 'transparent',
     borderBottomColor: 'transparent',
     transform: [{ rotate: '0deg' }],
@@ -752,7 +754,7 @@ const styles = StyleSheet.create({
   },
   progressBarFill: {
     height: '100%',
-    backgroundColor: '#AA74E0',
+    backgroundColor: '#E18DFF',
     borderRadius: 4,
     width: '100%',
   },
@@ -867,6 +869,6 @@ const styles = StyleSheet.create({
     color: '#92400E',
   },
   noButtonTextActive: {
-    color: '#581C87',
+    color: '#E18DFF',
   },
 });

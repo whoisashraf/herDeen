@@ -1,6 +1,7 @@
 import { BottomNav } from '@/components/dashboard/BottomNav';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useAppColors } from '@/hooks/use-app-colors';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Dimensions, Pressable, StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -48,9 +49,14 @@ const dhikrList: Dhikr[] = [
 
 export default function TasbihScreen() {
     const router = useRouter();
+    const { colors, isDark } = useAppColors();
     const [currentDhikrIndex, setCurrentDhikrIndex] = useState(0);
     const [count, setCount] = useState(0);
     const [rounds, setRounds] = useState(1);
+    const screenBackground = isDark ? '#090909' : colors.background;
+    const surfaceBackground = isDark ? '#1C1C1E' : colors.surface;
+    const primaryText = isDark ? '#FFFFFF' : colors.text;
+    const mutedText = isDark ? '#8E8E93' : colors.textMuted;
 
     const currentDhikr = dhikrList[currentDhikrIndex];
 
@@ -85,31 +91,31 @@ export default function TasbihScreen() {
     };
 
     return (
-        <View style={[styles.container, { backgroundColor: '#090909' }]}>
+        <View style={[styles.container, { backgroundColor: screenBackground }]}>
             {/* Header */}
             <View style={styles.header}>
-                <TouchableOpacity onPress={() => router.back()} style={styles.headerIconButton}>
-                    <IconSymbol name="arrow.left" size={24} color="white" />
+                <TouchableOpacity onPress={() => router.back()} style={[styles.headerIconButton, { backgroundColor: surfaceBackground }]}>
+                    <IconSymbol name="arrow.left" size={24} color={primaryText} />
                 </TouchableOpacity>
                 <View style={styles.headerTitleContainer}>
-                    <ThemedText type="poppins-bold" style={styles.headerTitle}>Tasbih</ThemedText>
-                    <ThemedText type="poppins-regular" style={styles.headerSubtitle}>Counter</ThemedText>
+                    <ThemedText type="poppins-bold" style={[styles.headerTitle, { color: primaryText }]}>Tasbih</ThemedText>
+                    <ThemedText type="poppins-regular" style={[styles.headerSubtitle, { color: mutedText }]}>Counter</ThemedText>
                 </View>
-                <TouchableOpacity onPress={handleReset} style={styles.headerIconButton}>
-                    <IconSymbol name="arrow.clockwise" size={24} color="white" />
+                <TouchableOpacity onPress={handleReset} style={[styles.headerIconButton, { backgroundColor: surfaceBackground }]}>
+                    <IconSymbol name="arrow.clockwise" size={24} color={primaryText} />
                 </TouchableOpacity>
             </View>
 
             {/* Content */}
             <Pressable style={styles.content} onPress={handleCount}>
-                <View style={styles.dhikrCard}>
-                    <ThemedText type="amiri-bold" style={styles.arabicText}>
+                <View style={[styles.dhikrCard, { backgroundColor: surfaceBackground, borderColor: isDark ? '#262626' : colors.border }]}>
+                    <ThemedText type="amiri-bold" style={[styles.arabicText, { color: primaryText }]}>
                         {currentDhikr.arabic}
                     </ThemedText>
                     <ThemedText type="poppins-medium" style={styles.transliteration}>
                         {currentDhikr.transliteration}
                     </ThemedText>
-                    <ThemedText type="poppins-regular" style={styles.translation}>
+                    <ThemedText type="poppins-regular" style={[styles.translation, { color: mutedText }]}>
                         {currentDhikr.translation}
                     </ThemedText>
 
@@ -117,35 +123,35 @@ export default function TasbihScreen() {
                         <TouchableOpacity
                             onPress={handlePrevious}
                             disabled={currentDhikrIndex === 0}
-                            style={[styles.navBtn, currentDhikrIndex === 0 && { opacity: 0.3 }]}
+                            style={[styles.navBtn, { backgroundColor: screenBackground }, currentDhikrIndex === 0 && { opacity: 0.3 }]}
                         >
-                            <IconSymbol name="chevron.left" size={24} color="white" />
+                            <IconSymbol name="chevron.left" size={24} color={primaryText} />
                         </TouchableOpacity>
-                        <ThemedText type="poppins-medium" style={styles.dhikrNavText}>
+                        <ThemedText type="poppins-medium" style={[styles.dhikrNavText, { color: primaryText }]}>
                             {currentDhikrIndex + 1} / {dhikrList.length}
                         </ThemedText>
                         <TouchableOpacity
                             onPress={handleNext}
                             disabled={currentDhikrIndex === dhikrList.length - 1}
-                            style={[styles.navBtn, currentDhikrIndex === dhikrList.length - 1 && { opacity: 0.3 }]}
+                            style={[styles.navBtn, { backgroundColor: screenBackground }, currentDhikrIndex === dhikrList.length - 1 && { opacity: 0.3 }]}
                         >
-                            <IconSymbol name="chevron.right" size={24} color="white" />
+                            <IconSymbol name="chevron.right" size={24} color={primaryText} />
                         </TouchableOpacity>
                     </View>
                 </View>
 
                 {/* Main Counter Display */}
                 <View style={styles.counterWrapper}>
-                    <View style={styles.mainCircle}>
-                        <ThemedText type="poppins-bold" style={styles.countText}>{count}</ThemedText>
-                        <ThemedText type="poppins-medium" style={styles.targetText}>target: {currentDhikr.target}</ThemedText>
+                    <View style={[styles.mainCircle, { borderColor: surfaceBackground, backgroundColor: screenBackground }]}>
+                        <ThemedText type="poppins-bold" style={[styles.countText, { color: primaryText }]}>{count}</ThemedText>
+                        <ThemedText type="poppins-medium" style={[styles.targetText, { color: mutedText }]}>target: {currentDhikr.target}</ThemedText>
                     </View>
                     <View style={styles.roundBadge}>
                         <ThemedText type="poppins-bold" style={styles.roundText}>Round {rounds}</ThemedText>
                     </View>
                 </View>
 
-                <ThemedText type="poppins-regular" style={styles.tapTip}>Tap anywhere to count</ThemedText>
+                <ThemedText type="poppins-regular" style={[styles.tapTip, { color: mutedText }]}>Tap anywhere to count</ThemedText>
             </Pressable>
 
             <BottomNav />
@@ -207,7 +213,7 @@ const styles = StyleSheet.create({
     },
     transliteration: {
         fontSize: 18,
-        color: '#AA74E0',
+        color: '#E18DFF',
         textAlign: 'center',
     },
     translation: {
@@ -263,7 +269,7 @@ const styles = StyleSheet.create({
     roundBadge: {
         position: 'absolute',
         bottom: -15,
-        backgroundColor: '#AA74E0',
+        backgroundColor: '#E18DFF',
         paddingHorizontal: 20,
         paddingVertical: 8,
         borderRadius: 20,

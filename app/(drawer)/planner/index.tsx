@@ -3,6 +3,7 @@ import { AIChatModal } from '@/components/ai-chat-modal';
 import { BottomNav } from '@/components/dashboard/BottomNav';
 import { TaskCard } from '@/components/task-card';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useAppColors } from '@/hooks/use-app-colors';
 import { usePlanner } from '@/contexts/planner-context';
 import { DrawerActions } from '@react-navigation/native';
 import { Image } from 'expo-image';
@@ -12,6 +13,7 @@ import { ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View }
 
 export default function PlannerScreen() {
   const { tasks, addTask, updateTask, deleteTask, setTasksFromAI, generatePlan } = usePlanner();
+  const { colors, isDark } = useAppColors();
   const [expandedTasks, setExpandedTasks] = useState<string[]>([]);
   const [showAIChat, setShowAIChat] = useState(false);
   const navigation = useNavigation();
@@ -39,23 +41,23 @@ export default function PlannerScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Header */}
-      <View style={styles.header}>
+      <View style={[styles.header, { backgroundColor: colors.background }]}>
         <View style={styles.headerLeft}>
           <Image
             source={require('@/assets/icons/ai_logo.svg')}
             style={styles.logo}
             contentFit="contain"
           />
-          <Text style={styles.headerTitle}>AI Day Planner</Text>
+          <Text style={[styles.headerTitle, { color: colors.text }]}>AI Day Planner</Text>
         </View>
         <View style={styles.headerRight}>
           <TouchableOpacity style={styles.iconButton}>
-            <IconSymbol name="bell" size={22} color="#333" />
+            <IconSymbol name="bell" size={22} color={colors.icon} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.iconButton} onPress={openDrawer}>
-            <IconSymbol name="line.3.horizontal" size={22} color="#333" />
+            <IconSymbol name="line.3.horizontal" size={22} color={colors.icon} />
           </TouchableOpacity>
         </View>
       </View>
@@ -78,7 +80,7 @@ export default function PlannerScreen() {
             </View>
             <TouchableOpacity style={styles.planButton} onPress={() => setShowAIChat(true)}>
               <Text style={styles.planButtonText}>Plan my day for me</Text>
-              <IconSymbol name="sparkles" size={16} color="#AA74E0" />
+              <IconSymbol name="sparkles" size={16} color="#E18DFF" />
             </TouchableOpacity>
           </View>
           <Image
@@ -104,8 +106,8 @@ export default function PlannerScreen() {
 
           {/* Add More Button */}
           <TouchableOpacity style={styles.addMoreButton} onPress={addTask}>
-            <Text style={styles.addMoreText}>One More</Text>
-            <IconSymbol name="plus" size={18} color="#666" />
+            <Text style={[styles.addMoreText, { color: colors.textMuted }]}>One More</Text>
+            <IconSymbol name="plus" size={18} color={colors.textMuted} />
           </TouchableOpacity>
         </View>
 
@@ -172,7 +174,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   heroCard: {
-    backgroundColor: '#AA74E0',
+    backgroundColor: '#E18DFF',
     marginHorizontal: 20,
     marginTop: 20,
     borderRadius: 20,
@@ -216,7 +218,7 @@ const styles = StyleSheet.create({
   planButtonText: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#AA74E0',
+    color: '#E18DFF',
   },
   heroIcon: {
     width: 120,
@@ -242,7 +244,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   generateButton: {
-    backgroundColor: '#AA74E0',
+    backgroundColor: '#E18DFF',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',

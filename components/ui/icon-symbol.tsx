@@ -96,6 +96,11 @@ const MAPPING: IconMapping = {
   'vibration': 'vibration',
   'bed': 'bed',
   'leaf': 'eco',
+  'magnifyingglass': 'search',
+  'textformat.size': 'format-size',
+  'bold': 'format-bold',
+  'italic': 'format-italic',
+  'underline': 'format-underlined',
 } as IconMapping;
 
 

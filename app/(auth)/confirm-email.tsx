@@ -16,7 +16,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-const PRIMARY = '#AA74E0';
+const PRIMARY = '#E18DFF';
 const CODE_LENGTH = 6;
 
 export default function ConfirmEmailScreen() {
@@ -30,9 +30,11 @@ export default function ConfirmEmailScreen() {
   const inputRefs = useRef<(TextInput | null)[]>([]);
 
   const isDark = colorScheme === 'dark';
-  const inputBg = INPUT_BACKGROUND;
-  const textColor = isDark ? '#FFFFFF' : '#11181C';
-  const placeholderColor = isDark ? '#9CA3AF' : '#6B7280';
+  const screenBg = isDark ? colors.background : '#ECECEE';
+  const inputBg = isDark ? INPUT_BACKGROUND : '#E4E4E6';
+  const textColor = isDark ? '#FFFFFF' : '#1E2330';
+  const subtitleColor = isDark ? colors.textMuted : '#656971';
+  const placeholderColor = isDark ? '#9CA3AF' : '#A7A9AE';
   const codeString = code.join('');
 
   const handleCodeChange = (value: string, index: number) => {
@@ -55,9 +57,9 @@ export default function ConfirmEmailScreen() {
   };
 
   const handleVerify = () => {
-    if (codeString.length !== CODE_LENGTH) return;
     setLoading(true);
-    setTimeout(() => { setLoading(false); router.replace('/(auth)/email-verified'); }, 800);
+    // Endpoint is not ready; allow continue without validating code.
+    setTimeout(() => { setLoading(false); router.replace('/(auth)/email-verified'); }, 500);
   };
 
   const handleResend = () => {
@@ -69,8 +71,8 @@ export default function ConfirmEmailScreen() {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <StatusBar style="light" />
+    <View style={[styles.container, { backgroundColor: screenBg }]}>
+      <StatusBar style={isDark ? 'light' : 'dark'} />
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={[styles.keyboard, { paddingTop: insets.top }]}>
         <View style={[styles.content, { paddingBottom: insets.bottom + 24 }]}>
           <TouchableOpacity style={styles.backButton} onPress={() => router.back()} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
@@ -78,7 +80,7 @@ export default function ConfirmEmailScreen() {
           </TouchableOpacity>
 
           <ThemedText type="poppins-bold" style={[styles.title, { color: textColor }]}>Confirm Your Email</ThemedText>
-          <ThemedText type="poppins-regular" style={[styles.subtitle, { color: colors.textMuted }]}>
+          <ThemedText type="poppins-regular" style={[styles.subtitle, { color: subtitleColor }]}>
             Enter the code we just sent to you.
           </ThemedText>
 
@@ -87,7 +89,7 @@ export default function ConfirmEmailScreen() {
               <TextInput
                 key={i}
                 ref={(r) => { inputRefs.current[i] = r; }}
-                style={[styles.codeInput, { backgroundColor: inputBg, color: textColor, borderColor: code[i] ? PRIMARY : (isDark ? '#374151' : '#E5E7EB') }]}
+                style={[styles.codeInput, { backgroundColor: inputBg, color: textColor, borderColor: code[i] ? PRIMARY : (isDark ? '#374151' : '#D8D9DD') }]}
                 value={code[i]}
                 onChangeText={(v) => handleCodeChange(v, i)}
                 onKeyPress={(e) => handleKeyPress(e, i)}
@@ -101,18 +103,18 @@ export default function ConfirmEmailScreen() {
           </View>
 
           <TouchableOpacity
-            style={[styles.primaryButton, codeString.length !== CODE_LENGTH && styles.primaryButtonDisabled]}
+            style={styles.primaryButton}
             onPress={handleVerify}
-            disabled={codeString.length !== CODE_LENGTH || loading}
+            disabled={loading}
             activeOpacity={0.8}
           >
             {loading ? <ActivityIndicator color="#FFFFFF" /> : <ThemedText type="poppins-bold" style={styles.primaryButtonText}>Verify</ThemedText>}
           </TouchableOpacity>
 
           <View style={styles.resendRow}>
-            <ThemedText type="poppins-regular" style={[styles.resendPrompt, { color: colors.textMuted }]}>Didn&apos;t get it? </ThemedText>
+            <ThemedText type="poppins-regular" style={[styles.resendPrompt, { color: subtitleColor }]}>Didn&apos;t get it? </ThemedText>
             <TouchableOpacity onPress={handleResend} disabled={resendCooldown > 0}>
-              <ThemedText type="poppins-semibold" style={[styles.resendLink, { color: resendCooldown > 0 ? colors.textMuted : '#FEA1CD' }]}>
+              <ThemedText type="poppins-semibold" style={[styles.resendLink, { color: resendCooldown > 0 ? subtitleColor : '#E18DFF' }]}>
                 {resendCooldown > 0 ? `Resend in ${resendCooldown}s` : 'Resend'}
               </ThemedText>
             </TouchableOpacity>
@@ -121,7 +123,7 @@ export default function ConfirmEmailScreen() {
         </View>
       </KeyboardAvoidingView>
       <View style={[styles.editRow, { paddingBottom: insets.bottom > 0 ? insets.bottom : 24, paddingTop: 12 }]}>
-        <ThemedText type="poppins-regular" style={[styles.editPrompt, { color: colors.textMuted }]}>Wrong email? </ThemedText>
+        <ThemedText type="poppins-regular" style={[styles.editPrompt, { color: subtitleColor }]}>Wrong email? </ThemedText>
         <TouchableOpacity onPress={() => router.back()}>
           <ThemedText type="poppins-semibold" style={[styles.editLink, { color: PRIMARY }]}>Edit address</ThemedText>
         </TouchableOpacity>

@@ -1,4 +1,5 @@
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useAppColors } from '@/hooks/use-app-colors';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
@@ -15,26 +16,24 @@ import {
     View,
 } from 'react-native';
 
-const PURPLE = '#5C1E68';
-const TEXT_GRAY = '#1A1A1A';
-const BG_COLOR = '#F9F9F9';
-
+const PURPLE = '#E18DFF';
 export default function ProfileScreen() {
     const router = useRouter();
+    const { colors, isDark } = useAppColors();
     const [firstName, setFirstName] = useState('Aishah');
     const [lastName, setLastName] = useState('Abdullahi');
     const [email, setEmail] = useState('aishahabdullahi09@gmail.com');
     const [phone, setPhone] = useState('+234 913 892 7486');
 
     return (
-        <View style={styles.container}>
-            <StatusBar barStyle="dark-content" />
-            <SafeAreaView style={styles.safeArea}>
+        <View style={[styles.container, { backgroundColor: colors.background }]}>
+            <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
+            <SafeAreaView style={[styles.safeArea, { backgroundColor: colors.background }]}>
                 <View style={styles.header}>
                     <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-                        <IconSymbol name="arrow.left" size={24} color={TEXT_GRAY} />
+                        <IconSymbol name="arrow.left" size={24} color={colors.text} />
                     </TouchableOpacity>
-                    <Text style={styles.headerTitle}>Profile Info</Text>
+                    <Text style={[styles.headerTitle, { color: colors.text }]}>Profile Info</Text>
                 </View>
             </SafeAreaView>
 
@@ -50,8 +49,8 @@ export default function ProfileScreen() {
                                 source={require('@/assets/images/profile.jpg')}
                                 style={styles.avatar}
                             />
-                            <TouchableOpacity style={styles.editIconContainer}>
-                                <IconSymbol name="camera" size={20} color={TEXT_GRAY} />
+                            <TouchableOpacity style={[styles.editIconContainer, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+                                <IconSymbol name="camera" size={20} color={colors.text} />
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -59,31 +58,31 @@ export default function ProfileScreen() {
                     {/* Form Fields */}
                     <View style={styles.form}>
                         <View style={styles.inputGroup}>
-                            <Text style={styles.label}>First Name</Text>
+                            <Text style={[styles.label, { color: colors.textMuted }]}>First Name</Text>
                             <TextInput
-                                style={styles.input}
+                                style={[styles.input, { backgroundColor: colors.surface, borderColor: colors.border, color: colors.text }]}
                                 value={firstName}
                                 onChangeText={setFirstName}
                                 placeholder="First Name"
-                                placeholderTextColor="#C7C7CC"
+                                placeholderTextColor={colors.textFaint}
                             />
                         </View>
 
                         <View style={styles.inputGroup}>
-                            <Text style={styles.label}>Last Name</Text>
+                            <Text style={[styles.label, { color: colors.textMuted }]}>Last Name</Text>
                             <TextInput
-                                style={styles.input}
+                                style={[styles.input, { backgroundColor: colors.surface, borderColor: colors.border, color: colors.text }]}
                                 value={lastName}
                                 onChangeText={setLastName}
                                 placeholder="Last Name"
-                                placeholderTextColor="#C7C7CC"
+                                placeholderTextColor={colors.textFaint}
                             />
                         </View>
 
                         <View style={styles.inputGroup}>
-                            <Text style={styles.label}>Email</Text>
+                            <Text style={[styles.label, { color: colors.textMuted }]}>Email</Text>
                             <TextInput
-                                style={[styles.input, styles.disabledInput]}
+                                style={[styles.input, styles.disabledInput, { color: colors.textMuted, backgroundColor: colors.surfaceSoft }]}
                                 value={email}
                                 editable={false}
                                 keyboardType="email-address"
@@ -91,14 +90,14 @@ export default function ProfileScreen() {
                         </View>
 
                         <View style={styles.inputGroup}>
-                            <Text style={styles.label}>Mobile Number</Text>
+                            <Text style={[styles.label, { color: colors.textMuted }]}>Mobile Number</Text>
                             <TextInput
-                                style={styles.input}
+                                style={[styles.input, { backgroundColor: colors.surface, borderColor: colors.border, color: colors.text }]}
                                 value={phone}
                                 onChangeText={setPhone}
                                 keyboardType="phone-pad"
                                 placeholder="Mobile Number"
-                                placeholderTextColor="#C7C7CC"
+                                placeholderTextColor={colors.textFaint}
                             />
                         </View>
 
@@ -116,10 +115,10 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: BG_COLOR,
+        backgroundColor: '#13181C',
     },
     safeArea: {
-        backgroundColor: BG_COLOR,
+        backgroundColor: '#13181C',
     },
     header: {
         flexDirection: 'row',
@@ -133,7 +132,7 @@ const styles = StyleSheet.create({
     headerTitle: {
         fontSize: 20,
         fontWeight: '500',
-        color: TEXT_GRAY,
+        color: '#FFFFFF',
         marginLeft: 12,
     },
     scrollContent: {
@@ -158,7 +157,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 5,
         right: 5,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#1F2125',
         width: 40,
         height: 40,
         borderRadius: 20,
@@ -171,7 +170,7 @@ const styles = StyleSheet.create({
         shadowRadius: 10,
         elevation: 3,
         borderWidth: 1,
-        borderColor: '#F2F2F7',
+        borderColor: '#5B6268',
     },
     form: {
         paddingHorizontal: 20,
@@ -182,17 +181,17 @@ const styles = StyleSheet.create({
     label: {
         fontSize: 14,
         fontWeight: '600',
-        color: '#4A4A4A',
+        color: '#FFFFFFB2',
         marginBottom: 8,
         marginLeft: 4,
     },
     input: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#1F2125',
         borderRadius: 16,
         height: 58,
         paddingHorizontal: 16,
         fontSize: 16,
-        color: TEXT_GRAY,
+        color: '#FFFFFF',
         // Soft Shadow
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
@@ -200,11 +199,11 @@ const styles = StyleSheet.create({
         shadowRadius: 8,
         elevation: 2,
         borderWidth: 1,
-        borderColor: '#F2F2F7',
+        borderColor: '#5B6268',
     },
     disabledInput: {
-        color: '#8A8A8E',
-        backgroundColor: '#F2F2F7',
+        color: '#FFFFFFB2',
+        backgroundColor: '#5B6268',
         borderColor: 'transparent',
     },
     saveButton: {

@@ -1,4 +1,7 @@
 import { ThemedText } from '@/components/themed-text';
+import { Colors } from '@/constants/theme';
+import { useColorScheme } from '@/hooks/use-color-scheme';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import {
@@ -26,7 +29,7 @@ const SLIDES = [
         titleLine1: 'Balance Your',
         titleLine2: {
             text1: 'Deen',
-            color1: '#AA74E0',
+            color1: '#E18DFF',
             text2: ' & ',
             color2: '#FFFFFF',
             text3: 'Dunya',
@@ -40,7 +43,7 @@ const SLIDES = [
         image: require('@/assets/images/onboarding-plan.png'),
         titleLine1: 'Plan your day',
         titleLine1Styles: [
-            { text: 'Plan', color: '#AA74E0' },
+            { text: 'Plan', color: '#E18DFF' },
             { text: ' your day', color: '#FFFFFF' }
         ],
         titleLine2: {
@@ -59,7 +62,7 @@ const SLIDES = [
         image: require('@/assets/images/onboarding-sisterhood.png'),
         titleLine1: 'Grow and shine',
         titleLine1Styles: [
-            { text: 'Grow', color: '#AA74E0' },
+            { text: 'Grow', color: '#E18DFF' },
             { text: ' and shine', color: '#FFFFFF' }
         ],
         titleLine2: {
@@ -77,6 +80,9 @@ const SLIDES = [
 
 export default function OnboardingScreen() {
     const router = useRouter();
+    const colorScheme = useColorScheme() ?? 'dark';
+    const colors = Colors[colorScheme];
+    const isDark = colorScheme === 'dark';
     const [currentIndex, setCurrentIndex] = useState(0);
     const flatListRef = useRef<FlatList>(null);
 
@@ -131,13 +137,22 @@ export default function OnboardingScreen() {
         // Slide 2+: Content Slides
         const contentIndex = index - 1;
         const totalContentSlides = SLIDES.length - 1;
+        const contentBackground = isDark ? colors.background : '#ECECEE';
+        const cardBackground = isDark ? '#1F2125' : '#E2E2E6';
+        const headingColor = isDark ? '#FFFFFF' : '#1E2330';
+        const secondaryHeadingColor = isDark ? '#FFFFFF' : '#1E2330';
+        const accentPurple = '#E18DFF';
+        const accentPink = '#F5A8D8';
+        const buttonGradient = isDark ? ['#E18DFF', '#E18DFF'] : ['#C87AEF', '#E18DFF'];
+        const buttonTextColor = '#FFFFFF';
+        const inactiveDotColor = '#D39AFB';
 
         return (
-            <View style={[styles.slideContainer, { width }]}>
-                <View style={styles.illustrationContainer}>
+            <View style={[styles.slideContainer, { width, backgroundColor: contentBackground }]}>
+                <View style={[styles.illustrationContainer, { backgroundColor: cardBackground }]}>
                     <Image
                         source={item.image}
-                        style={styles.illustration}
+                        style={[styles.illustration, !isDark && styles.illustrationLight]}
                         resizeMode="contain"
                     />
                 </View>
@@ -147,12 +162,15 @@ export default function OnboardingScreen() {
                     <View style={styles.titleRow}>
                         {item.titleLine1Styles ? (
                             item.titleLine1Styles.map((part: any, i: number) => (
-                                <ThemedText key={i} type="poppins-bold" style={[styles.title, { color: part.color }]}>
+                                <ThemedText
+                                    key={i}
+                                    type={isDark ? 'poppins-bold' : 'amiri-bold'}
+                                    style={[styles.title, { color: !isDark && part.color === '#FFFFFF' ? headingColor : part.color }]}>
                                     {part.text}
                                 </ThemedText>
                             ))
                         ) : (
-                            <ThemedText type="poppins-bold" style={styles.title}>
+                            <ThemedText type={isDark ? 'poppins-bold' : 'amiri-bold'} style={[styles.title, { color: headingColor }]}>
                                 {item.titleLine1}
                             </ThemedText>
                         )}
@@ -160,44 +178,60 @@ export default function OnboardingScreen() {
 
                     {/* Title Line 2 */}
                     <View style={styles.titleRow}>
-                        <ThemedText type="poppins-bold" style={[styles.title, { color: item.titleLine2.color1 }]}>
+                        <ThemedText
+                            type={isDark ? 'poppins-bold' : 'amiri-bold'}
+                            style={[styles.title, { color: !isDark ? accentPurple : item.titleLine2.color1 }]}>
                             {item.titleLine2.text1}
                         </ThemedText>
-                        <ThemedText type="poppins-bold" style={[styles.title, { color: item.titleLine2.color2 }]}>
+                        <ThemedText
+                            type={isDark ? 'poppins-bold' : 'amiri-bold'}
+                            style={[styles.title, { color: !isDark ? secondaryHeadingColor : item.titleLine2.color2 }]}>
                             {item.titleLine2.text2}
                         </ThemedText>
-                        <ThemedText type="poppins-bold" style={[styles.title, { color: item.titleLine2.color3 }]}>
+                        <ThemedText
+                            type={isDark ? 'poppins-bold' : 'amiri-bold'}
+                            style={[styles.title, { color: !isDark ? accentPink : item.titleLine2.color3 }]}>
                             {item.titleLine2.text3}
                         </ThemedText>
                     </View>
                 </View>
 
-                {/* Pagination Dots */}
-                <View style={styles.paginationContainer}>
-                    {Array.from({ length: totalContentSlides }).map((_, i) => (
-                        <View
-                            key={i}
-                            style={[
-                                styles.dot,
-                                contentIndex === i ? styles.activeDot : styles.inactiveDot
-                            ]}
-                        />
-                    ))}
-                </View>
+                <View style={styles.bottomContent}>
+                    {/* Pagination Dots */}
+                    <View style={styles.paginationContainer}>
+                        {Array.from({ length: totalContentSlides }).map((_, i) => (
+                            <View
+                                key={i}
+                                style={[
+                                    styles.dot,
+                                    contentIndex === i
+                                        ? [styles.activeDot, { backgroundColor: accentPurple }]
+                                        : [styles.inactiveDot, { borderColor: inactiveDotColor }]
+                                ]}
+                            />
+                        ))}
+                    </View>
 
-                <TouchableOpacity style={styles.button} onPress={handleNext}>
-                    <ThemedText type="poppins-medium" style={styles.buttonText}>
-                        {item.buttonText}
-                    </ThemedText>
-                </TouchableOpacity>
-
-                {item.showLogin && (
-                    <TouchableOpacity onPress={() => router.replace('/(auth)/login')} style={styles.loginContainer}>
-                        <ThemedText type="poppins-regular" style={styles.loginText}>
-                            Login
-                        </ThemedText>
+                    <TouchableOpacity style={styles.button} onPress={handleNext}>
+                        <LinearGradient
+                            colors={buttonGradient}
+                            start={{ x: 0, y: 0.5 }}
+                            end={{ x: 1, y: 0.5 }}
+                            style={styles.buttonGradient}>
+                            <ThemedText type="poppins-medium" style={[styles.buttonText, { color: buttonTextColor }]}>
+                                {item.buttonText}
+                            </ThemedText>
+                        </LinearGradient>
                     </TouchableOpacity>
-                )}
+
+                    {item.showLogin && (
+                        <TouchableOpacity onPress={() => router.replace('/(auth)/login')} style={styles.loginContainer}>
+                            <ThemedText type="poppins-regular" style={[styles.loginText, { color: isDark ? '#8E8E93' : '#5B6268' }]}>
+                                Login
+                            </ThemedText>
+                        </TouchableOpacity>
+                    )}
+                </View>
             </View>
         );
     };
@@ -209,8 +243,8 @@ export default function OnboardingScreen() {
     }).current;
 
     return (
-        <View style={styles.container}>
-            <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
+        <View style={[styles.container, { backgroundColor: colors.background }]}>
+            <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} translucent backgroundColor="transparent" />
             <FlatList
                 ref={flatListRef}
                 data={SLIDES}
@@ -237,18 +271,18 @@ export default function OnboardingScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#111111',
+        backgroundColor: '#13181C',
     },
     // Welcome Slide Styles
     welcomeBackground: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#AA74E0',
+        backgroundColor: '#E18DFF',
     },
     welcomeOverlay: {
         ...StyleSheet.absoluteFillObject,
-        backgroundColor: '#AA74E0',
+        backgroundColor: '#E18DFF',
         opacity: 0.9,
     },
     welcomeContent: {
@@ -272,11 +306,11 @@ const styles = StyleSheet.create({
     // Content Slide Styles
     slideContainer: {
         flex: 1,
-        backgroundColor: '#111111',
+        backgroundColor: '#13181C',
         alignItems: 'center',
         justifyContent: 'flex-start',
         paddingHorizontal: 0,
-        paddingBottom: 40,
+        paddingBottom: 30,
     },
     illustrationContainer: {
         width: width - 20,
@@ -295,6 +329,10 @@ const styles = StyleSheet.create({
         width: '60%',
         height: '60%',
     },
+    illustrationLight: {
+        width: '78%',
+        height: '78%',
+    },
     textContainer: {
         alignItems: 'center',
         marginBottom: 40,
@@ -307,15 +345,21 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
     },
     title: {
-        fontSize: 32,
+        fontSize: 33,
         color: '#FFFFFF',
         textAlign: 'center',
-        lineHeight: 40,
+        lineHeight: 41,
+        fontWeight: '600',
+    },
+    bottomContent: {
+        marginTop: 'auto',
+        alignItems: 'center',
+        width: '100%',
     },
     paginationContainer: {
         flexDirection: 'row',
         gap: 8,
-        marginBottom: 40,
+        marginBottom: 26,
     },
     dot: {
         width: 10,
@@ -323,21 +367,28 @@ const styles = StyleSheet.create({
         borderRadius: 5,
     },
     activeDot: {
-        backgroundColor: '#AA74E0',
+        backgroundColor: '#E18DFF',
     },
     inactiveDot: {
         borderWidth: 1,
-        borderColor: '#AA74E0',
+        borderColor: '#E18DFF',
     },
     button: {
-        backgroundColor: '#AA74E0',
         width: 200,
         height: 58,
         borderRadius: 100,
+        overflow: 'hidden',
         alignItems: 'center',
         justifyContent: 'center',
         gap: 8,
-        marginBottom: 20,
+        marginBottom: 12,
+    },
+    buttonGradient: {
+        width: '100%',
+        height: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 100,
     },
     buttonText: {
         color: '#FFFFFF',
@@ -346,6 +397,7 @@ const styles = StyleSheet.create({
     },
     loginContainer: {
         padding: 5,
+        marginBottom: 6,
     },
     loginText: {
         color: '#8E8E93',

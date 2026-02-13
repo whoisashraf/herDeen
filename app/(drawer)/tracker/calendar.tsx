@@ -1,5 +1,6 @@
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useAppColors } from '@/hooks/use-app-colors';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -63,39 +64,45 @@ const CALENDAR_DATA: MonthData[] = [
 
 export default function CalendarScreen() {
     const router = useRouter();
+    const { colors, isDark } = useAppColors();
+    const background = isDark ? colors.background : '#F9FAFB';
+    const surface = isDark ? colors.surface : '#FFF';
+    const primaryText = isDark ? colors.text : '#1F2937';
+    const mutedText = isDark ? colors.textMuted : '#4B5563';
+    const dividerColor = isDark ? colors.border : '#E5E7EB';
     const [viewMode, setViewMode] = useState<'month' | 'year'>('month');
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: background }]}>
             {/* Header */}
             <View style={styles.header}>
-                <Text style={styles.headerTitle}>Cycle Calendar</Text>
+                <Text style={[styles.headerTitle, { color: primaryText }]}>Cycle Calendar</Text>
                 <TouchableOpacity onPress={() => router.back()}>
-                    <IconSymbol name="xmark" size={24} color="#333" />
+                    <IconSymbol name="xmark" size={24} color={primaryText} />
                 </TouchableOpacity>
             </View>
 
             {/* Legend */}
             <View style={styles.legendContainer}>
-                <LegendItem color="#EF4444" type="solid" label="Period" />
-                <LegendItem color="#EF4444" type="dotted" label="Predicted Period" />
-                <LegendItem color="#3B82F6" type="solid" label="Fertile days" />
-                <LegendItem color="#3B82F6" type="dotted" label="Ovulation day" />
+                <LegendItem color="#EF4444" type="solid" label="Period" labelColor={mutedText} />
+                <LegendItem color="#EF4444" type="dotted" label="Predicted Period" labelColor={mutedText} />
+                <LegendItem color="#3B82F6" type="solid" label="Fertile days" labelColor={mutedText} />
+                <LegendItem color="#3B82F6" type="dotted" label="Ovulation day" labelColor={mutedText} />
             </View>
 
             {/* Toggle */}
-            <View style={styles.toggleContainer}>
+            <View style={[styles.toggleContainer, { backgroundColor: surface }]}>
                 <TouchableOpacity
                     style={[styles.toggleButton, viewMode === 'month' && styles.toggleActive]}
                     onPress={() => setViewMode('month')}
                 >
-                    <Text style={[styles.toggleText, viewMode === 'month' && styles.toggleTextActive]}>Month</Text>
+                    <Text style={[styles.toggleText, { color: mutedText }, viewMode === 'month' && styles.toggleTextActive]}>Month</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[styles.toggleButton, viewMode === 'year' && styles.toggleActive]}
                     onPress={() => setViewMode('year')}
                 >
-                    <Text style={[styles.toggleText, viewMode === 'year' && styles.toggleTextActive]}>Year</Text>
+                    <Text style={[styles.toggleText, { color: mutedText }, viewMode === 'year' && styles.toggleTextActive]}>Year</Text>
                 </TouchableOpacity>
             </View>
 
@@ -104,14 +111,14 @@ export default function CalendarScreen() {
                 <View style={[styles.calendarContainer, viewMode === 'year' && styles.yearGrid]}>
                     {CALENDAR_DATA.map((monthData, index) => (
                         <View key={`${monthData.month}-${monthData.year}`} style={[styles.monthWrapper, viewMode === 'year' && styles.monthWrapperYear]}>
-                            <Text style={[styles.monthTitle, viewMode === 'year' && styles.monthTitleYear]}>
+                            <Text style={[styles.monthTitle, { color: primaryText }, viewMode === 'year' && styles.monthTitleYear]}>
                                 {monthData.month}, {monthData.year}
                             </Text>
 
                             {/* Day Labels */}
                             <View style={styles.daysHeader}>
                                 {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, i) => (
-                                    <Text key={i} style={[styles.dayLabel, viewMode === 'year' && styles.dayLabelYear]}>{day}</Text>
+                                    <Text key={i} style={[styles.dayLabel, { color: mutedText }, viewMode === 'year' && styles.dayLabelYear]}>{day}</Text>
                                 ))}
                             </View>
 
@@ -139,6 +146,7 @@ export default function CalendarScreen() {
                                             ]}>
                                                 <Text style={[
                                                     styles.dayText,
+                                                    { color: primaryText },
                                                     viewMode === 'year' && styles.dayTextYear,
                                                     status === 'period' && styles.whiteText,
                                                     status === 'predicted' && styles.redText,
@@ -153,7 +161,7 @@ export default function CalendarScreen() {
                                     );
                                 })}
                             </View>
-                            {viewMode === 'month' && <View style={styles.monthDivider} />}
+                            {viewMode === 'month' && <View style={[styles.monthDivider, { backgroundColor: dividerColor }]} />}
                         </View>
                     ))}
                 </View>
@@ -163,7 +171,7 @@ export default function CalendarScreen() {
     );
 }
 
-function LegendItem({ color, type, label }: { color: string, type: 'solid' | 'dotted', label: string }) {
+function LegendItem({ color, type, label, labelColor }: { color: string, type: 'solid' | 'dotted', label: string; labelColor: string }) {
     return (
         <View style={styles.legendItem}>
             <View style={[
@@ -175,7 +183,7 @@ function LegendItem({ color, type, label }: { color: string, type: 'solid' | 'do
                     borderStyle: type === 'dotted' ? 'dashed' : 'solid',
                 }
             ]} />
-            <Text style={styles.legendLabel}>{label}</Text>
+            <Text style={[styles.legendLabel, { color: labelColor }]}>{label}</Text>
         </View>
     );
 }
@@ -183,7 +191,6 @@ function LegendItem({ color, type, label }: { color: string, type: 'solid' | 'do
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F9FAFB',
         paddingTop: 60,
     },
     header: {
@@ -196,7 +203,6 @@ const styles = StyleSheet.create({
     headerTitle: {
         fontSize: 20,
         fontWeight: '700',
-        color: '#1F2937',
     },
 
     // Legend
@@ -220,7 +226,6 @@ const styles = StyleSheet.create({
     },
     legendLabel: {
         fontSize: 12,
-        color: '#4B5563',
     },
 
     // Toggle
@@ -245,12 +250,11 @@ const styles = StyleSheet.create({
         borderRadius: 8,
     },
     toggleActive: {
-        backgroundColor: '#5E2C7E',
+        backgroundColor: '#E18DFF',
     },
     toggleText: {
         fontSize: 14,
         fontWeight: '500',
-        color: '#4B5563',
     },
     toggleTextActive: {
         color: '#FFF',
@@ -296,7 +300,6 @@ const styles = StyleSheet.create({
         width: 40,
         textAlign: 'center',
         fontSize: 13,
-        color: '#6B7280',
         fontWeight: '500',
     },
     dayLabelYear: {
@@ -370,7 +373,7 @@ const styles = StyleSheet.create({
         color: '#3B82F6',
     },
     purpleText: {
-        color: '#5E2C7E',
+        color: '#E18DFF',
         fontWeight: '700',
     },
 

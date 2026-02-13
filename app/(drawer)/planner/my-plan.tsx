@@ -1,6 +1,7 @@
 import { TimelineTask } from '@/components/timeline-task';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { usePlanner } from '@/contexts/planner-context';
+import { useAppColors } from '@/hooks/use-app-colors';
 import { DrawerActions } from '@react-navigation/native';
 import { Image } from 'expo-image';
 import { useNavigation, useRouter } from 'expo-router';
@@ -8,6 +9,7 @@ import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-nati
 
 export default function MyPlanScreen() {
   const { savedPlan, toggleTaskComplete, generatePlan, savePlan, isPlanSaved } = usePlanner();
+  const { colors } = useAppColors();
   const navigation = useNavigation();
   const router = useRouter();
 
@@ -25,26 +27,26 @@ export default function MyPlanScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Header */}
-      <View style={styles.header}>
+      <View style={[styles.header, { backgroundColor: colors.background }]}>
         <View style={styles.headerLeft}>
           <Image source={require('@/assets/icons/plan-logo.png')} style={styles.logoImage} />
-          <Text style={styles.headerTitle}>AI Day Planner</Text>
+          <Text style={[styles.headerTitle, { color: colors.text }]}>AI Day Planner</Text>
         </View>
         <View style={styles.headerRight}>
           <TouchableOpacity style={styles.iconButton}>
-            <IconSymbol name="bell" size={22} color="#333" />
+            <IconSymbol name="bell" size={22} color={colors.icon} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.iconButton} onPress={openDrawer}>
-            <IconSymbol name="line.3.horizontal" size={22} color="#333" />
+            <IconSymbol name="line.3.horizontal" size={22} color={colors.icon} />
           </TouchableOpacity>
         </View>
       </View>
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         {/* Title */}
-        <Text style={styles.pageTitle}>
+        <Text style={[styles.pageTitle, { color: colors.text }]}>
           {isPlanSaved ? 'Yes! My Plan' : 'Ouuu! Here\'s your Plan for the day.'}
         </Text>
 
@@ -71,7 +73,7 @@ export default function MyPlanScreen() {
       {/* Action Buttons - only show if plan is not saved */}
       {!isPlanSaved && (
         <View style={styles.actionButtons}>
-          <TouchableOpacity style={styles.regenerateButton} onPress={handleRegenerate}>
+          <TouchableOpacity style={[styles.regenerateButton, { backgroundColor: colors.surface, borderColor: '#E18DFF' }]} onPress={handleRegenerate}>
             <Image source={require('@/assets/icons/reset_icon.png')} style={styles.regenerateButtonIcon} />
             <Text style={styles.regenerateText}>Regenerate</Text>
           </TouchableOpacity>
@@ -108,7 +110,7 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 8,
-    backgroundColor: '#AA74E0',
+    backgroundColor: '#E18DFF',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 10,
@@ -159,19 +161,19 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#4A0C63',
+    borderColor: '#E18DFF',
     backgroundColor: '#fff',
     gap: 8,
   },
   regenerateText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#4A0C63',
+    color: '#E18DFF',
   },
   regenerateButtonIcon: {
     width: 18, // Match the size of the original IconSymbol
     height: 18,
-    tintColor: '#4A0C63', // Match the color of the regenerateText
+    tintColor: '#E18DFF', // Match the color of the regenerateText
     resizeMode: 'contain',
   },
   saveButton: {
@@ -181,7 +183,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 16,
     borderRadius: 12,
-    backgroundColor: '#4A0C63',
+    backgroundColor: '#E18DFF',
     gap: 8,
   },
   saveText: {

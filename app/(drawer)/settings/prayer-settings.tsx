@@ -1,7 +1,6 @@
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { ThemePalette, useAppColors } from '@/hooks/use-app-colors';
 import { Stack, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
@@ -10,7 +9,6 @@ import {
     SafeAreaView,
     ScrollView,
     StyleSheet,
-    Switch,
     TouchableOpacity,
     View,
 } from 'react-native';
@@ -25,7 +23,13 @@ type SettingItemProps = {
     isSwitch?: boolean;
     switchValue?: boolean;
     onSwitchChange?: (value: boolean) => void;
+    colors: ThemePalette;
 };
+
+const LOCATION_TOGGLE_ON = '#A978E8';
+const LOCATION_TOGGLE_OFF = '#FFFFFF4D';
+const LOCATION_KNOB_ON = '#0C0D10';
+const LOCATION_KNOB_OFF = '#DADDE3';
 
 const SettingItem: React.FC<SettingItemProps> = ({
     icon,
@@ -36,10 +40,8 @@ const SettingItem: React.FC<SettingItemProps> = ({
     isSwitch = false,
     switchValue,
     onSwitchChange,
+    colors,
 }) => {
-    const colorScheme = useColorScheme() ?? 'light';
-    const colors = Colors[colorScheme];
-
     const iconColor = colors.icon;
 
     return (
@@ -54,7 +56,7 @@ const SettingItem: React.FC<SettingItemProps> = ({
             disabled={isSwitch}
             activeOpacity={0.7}
         >
-            <View style={[styles.iconBox, { backgroundColor: '#1F2125' }]}>
+            <View style={[styles.iconBox, { backgroundColor: colors.surface }]}>
                 {iconType === 'image' ? (
                     <Image source={icon as number} style={[styles.localIcon, { tintColor: iconColor }]} />
                 ) : (
@@ -72,13 +74,15 @@ const SettingItem: React.FC<SettingItemProps> = ({
                 )}
             </View>
             {isSwitch ? (
-                <Switch
-                    trackColor={{ false: '#FFFFFF4D', true: colors.primary }}
-                    thumbColor={colors.background}
-                    ios_backgroundColor="#FFFFFF4D"
-                    onValueChange={onSwitchChange}
-                    value={switchValue}
-                />
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => onSwitchChange?.(!switchValue)}
+                    style={styles.toggleHit}
+                >
+                    <View style={[styles.toggleTrack, switchValue ? styles.toggleOn : styles.toggleOff]}>
+                        <View style={[styles.toggleKnob, switchValue ? styles.knobOn : styles.knobOff]} />
+                    </View>
+                </TouchableOpacity>
             ) : (
                 <IconSymbol name="chevron.right" size={18} color={colors.textMuted} />
             )}
@@ -88,8 +92,7 @@ const SettingItem: React.FC<SettingItemProps> = ({
 
 export default function PrayerSettingsScreen() {
     const router = useRouter();
-    const colorScheme = useColorScheme() ?? 'light';
-    const colors = Colors[colorScheme];
+    const { colors } = useAppColors();
     const insets = useSafeAreaInsets();
 
     const [adhanSoundEnabled, setAdhanSoundEnabled] = useState(false);
@@ -127,6 +130,7 @@ export default function PrayerSettingsScreen() {
                     title="Current Location"
                     subText="Ilorin East, Nigeria"
                     onPress={() => router.push('/(drawer)/settings/current-location')}
+                    colors={colors}
                 />
                 <SettingItem
                     icon={require('@/assets/icons/calculation-method.png')}
@@ -134,6 +138,7 @@ export default function PrayerSettingsScreen() {
                     title="Calculation method"
                     subText="Muslim World League (MWL)"
                     onPress={() => router.push('/(drawer)/settings/calculation-method')}
+                    colors={colors}
                 />
                 <SettingItem
                     icon={require('@/assets/icons/asr-method.png')}
@@ -141,6 +146,7 @@ export default function PrayerSettingsScreen() {
                     title="Asr Method"
                     subText="Standard / Hanafi"
                     onPress={() => setIsAsrModalVisible(true)}
+                    colors={colors}
                 />
 
                 {/* Adhan & Sound Section */}
@@ -155,6 +161,7 @@ export default function PrayerSettingsScreen() {
                     isSwitch
                     switchValue={adhanSoundEnabled}
                     onSwitchChange={setAdhanSoundEnabled}
+                    colors={colors}
                 />
                 <SettingItem
                     icon={require('@/assets/icons/screen-rotation.png')}
@@ -164,6 +171,7 @@ export default function PrayerSettingsScreen() {
                     isSwitch
                     switchValue={vibrationEnabled}
                     onSwitchChange={setVibrationEnabled}
+                    colors={colors}
                 />
 
                 {/* Special Times Section */}
@@ -178,6 +186,7 @@ export default function PrayerSettingsScreen() {
                     isSwitch
                     switchValue={jumuahReminderEnabled}
                     onSwitchChange={setJumuahReminderEnabled}
+                    colors={colors}
                 />
                 <SettingItem
                     icon={require('@/assets/icons/tahajjud-eminder.png')}
@@ -187,6 +196,7 @@ export default function PrayerSettingsScreen() {
                     isSwitch
                     switchValue={tahajjudReminderEnabled}
                     onSwitchChange={setTahajjudReminderEnabled}
+                    colors={colors}
                 />
             </ScrollView>
 
@@ -196,15 +206,15 @@ export default function PrayerSettingsScreen() {
                 animationType="slide"
                 onRequestClose={() => setIsAsrModalVisible(false)}
             >
-                <View style={styles.asrOverlay}>
-                    <View style={styles.asrSheet}>
-                        <View style={styles.asrHandle} />
+                <View style={[styles.asrOverlay, { backgroundColor: colors.overlay }]}>
+                    <View style={[styles.asrSheet, { backgroundColor: colors.surface }]}>
+                        <View style={[styles.asrHandle, { backgroundColor: colors.textMuted }]} />
                         <View style={styles.asrHeader}>
-                            <ThemedText type="poppins-semibold" style={styles.asrTitle}>
+                            <ThemedText type="poppins-semibold" style={[styles.asrTitle, { color: colors.text }]}>
                                 Asr Method
                             </ThemedText>
                             <TouchableOpacity onPress={() => setIsAsrModalVisible(false)}>
-                                <IconSymbol name="xmark" size={22} color="#FFFFFF" />
+                                <IconSymbol name="xmark" size={22} color={colors.text} />
                             </TouchableOpacity>
                         </View>
 
@@ -214,38 +224,38 @@ export default function PrayerSettingsScreen() {
                             onPress={() => setAsrMethod('Shafi')}
                         >
                             <View style={styles.asrLeft}>
-                                <View style={styles.asrIconBox}>
+                                <View style={[styles.asrIconBox, { backgroundColor: colors.surfaceSoft }]}>
                                     <IconSymbol name="sun" size={18} color="#0C0D10" />
                                 </View>
-                                <ThemedText type="poppins-medium" style={styles.asrOptionText}>
+                                <ThemedText type="poppins-medium" style={[styles.asrOptionText, { color: colors.text }]}>
                                     Shafi
                                 </ThemedText>
                             </View>
                             {asrMethod === 'Shafi' ? (
                                 <View style={styles.asrCheck}>
-                                    <IconSymbol name="checkmark" size={18} color="#A978E8" />
-                                    <IconSymbol name="checkmark" size={18} color="#A978E8" style={styles.asrCheckBack} />
+                                    <IconSymbol name="checkmark" size={18} color="#E18DFF" />
+                                    <IconSymbol name="checkmark" size={18} color="#E18DFF" style={styles.asrCheckBack} />
                                 </View>
                             ) : null}
                         </TouchableOpacity>
-                        <View style={styles.asrDivider} />
+                        <View style={[styles.asrDivider, { backgroundColor: colors.border }]} />
                         <TouchableOpacity
                             style={styles.asrOption}
                             activeOpacity={0.8}
                             onPress={() => setAsrMethod('Hanafi')}
                         >
                             <View style={styles.asrLeft}>
-                                <View style={styles.asrIconBox}>
+                                <View style={[styles.asrIconBox, { backgroundColor: colors.surfaceSoft }]}>
                                     <IconSymbol name="sun" size={18} color="#0C0D10" />
                                 </View>
-                                <ThemedText type="poppins-medium" style={styles.asrOptionText}>
+                                <ThemedText type="poppins-medium" style={[styles.asrOptionText, { color: colors.text }]}>
                                     Hanafi
                                 </ThemedText>
                             </View>
                             {asrMethod === 'Hanafi' ? (
                                 <View style={styles.asrCheck}>
-                                    <IconSymbol name="checkmark" size={18} color="#A978E8" />
-                                    <IconSymbol name="checkmark" size={18} color="#A978E8" style={styles.asrCheckBack} />
+                                    <IconSymbol name="checkmark" size={18} color="#E18DFF" />
+                                    <IconSymbol name="checkmark" size={18} color="#E18DFF" style={styles.asrCheckBack} />
                                 </View>
                             ) : null}
                         </TouchableOpacity>
@@ -382,5 +392,35 @@ const styles = StyleSheet.create({
     },
     asrCheckBack: {
         marginLeft: -6,
+    },
+    toggleHit: {
+        paddingLeft: 8,
+        paddingVertical: 6,
+    },
+    toggleTrack: {
+        width: 46,
+        height: 24,
+        borderRadius: 12,
+        justifyContent: 'center',
+        paddingHorizontal: 3,
+    },
+    toggleOn: {
+        backgroundColor: LOCATION_TOGGLE_ON,
+        alignItems: 'flex-end',
+    },
+    toggleOff: {
+        backgroundColor: LOCATION_TOGGLE_OFF,
+        alignItems: 'flex-start',
+    },
+    toggleKnob: {
+        width: 18,
+        height: 18,
+        borderRadius: 9,
+    },
+    knobOn: {
+        backgroundColor: LOCATION_KNOB_ON,
+    },
+    knobOff: {
+        backgroundColor: LOCATION_KNOB_OFF,
     },
 });

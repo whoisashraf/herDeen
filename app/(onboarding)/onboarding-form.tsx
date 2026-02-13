@@ -1,3 +1,4 @@
+import StepIndicators from '@/components/auth/StepIndicators';
 import SelectOptionCard from '@/components/onboarding/SelectOptionCard';
 import { ThemedText } from '@/components/themed-text';
 import { Colors } from '@/constants/theme';
@@ -11,6 +12,7 @@ export default function OnboardingFormScreen() {
   const router = useRouter();
   const colorScheme = useColorScheme() ?? 'dark';
   const colors = Colors[colorScheme];
+  const isDark = colorScheme === 'dark';
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
 
   const options = [
@@ -31,30 +33,20 @@ export default function OnboardingFormScreen() {
   };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: '#111111' }]}>
-      <StatusBar style="light" />
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+      <StatusBar style={isDark ? 'light' : 'dark'} />
       <View style={styles.content}>
 
         {/* Top bar with step indicators */}
-        <View style={styles.header}>
-          <View />
-          <View style={styles.progressIndicators}>
-            <View style={[styles.progressCircle, styles.progressActive]}>
-              <Text style={styles.progressTextActive}>1</Text>
-            </View>
-            <View style={styles.progressCircle}>
-              <Text style={styles.progressText}>2</Text>
-            </View>
-            <View style={styles.progressCircle}>
-              <Text style={styles.progressText}>3</Text>
-            </View>
-          </View>
+          <View style={styles.header}>
+          <View style={styles.headerSpacer} />
+          <StepIndicators currentStep={1} isDark={isDark} />
         </View>
 
         {/* Title + subtitle */}
         <View style={styles.textSection}>
-          <Text style={styles.title}>Tell Us About You</Text>
-          <Text style={styles.subtitle}>So HerDeen fits your lifestyle and pace.</Text>
+          <Text style={[styles.title, { color: colors.text }]}>Tell Us About You</Text>
+          <Text style={[styles.subtitle, { color: colors.textMuted }]}>So HerDeen fits your lifestyle and pace.</Text>
         </View>
 
         {/* Options */}
@@ -81,7 +73,7 @@ export default function OnboardingFormScreen() {
           </TouchableOpacity>
 
           <TouchableOpacity onPress={handleSkip} activeOpacity={0.7} style={{ marginTop: 16 }}>
-            <ThemedText type="poppins-regular" style={styles.skipButtonText}>Skip this</ThemedText>
+            <ThemedText type="poppins-regular" style={[styles.skipButtonText, { color: colors.textMuted }]}>Skip this</ThemedText>
           </TouchableOpacity>
         </View>
       </View>
@@ -104,33 +96,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 40,
   },
-  progressIndicators: {
-    flexDirection: 'row',
-    gap: -10, // Overlap indicators
-  },
-  progressCircle: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: '#333336',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#1C1C1E',
-  },
-  progressActive: {
-    backgroundColor: '#AA74E01A', // Semi-transparent purple for active
-    borderWidth: 0, // No border for active
-  },
-  progressText: {
-    color: '#9CA3AF',
-    fontSize: 14,
-    fontFamily: 'Poppins_500Medium',
-  },
-  progressTextActive: {
-    color: '#AA74E0', // Purple text on semi-transparent background
-    fontSize: 14,
-    fontFamily: 'Poppins_600SemiBold',
+  headerSpacer: {
+    width: 40,
+    height: 40,
   },
   textSection: {
     marginBottom: 32,
@@ -155,7 +123,7 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   continueButton: {
-    backgroundColor: '#AA74E0',
+    backgroundColor: '#E18DFF',
     borderRadius: 100, // Pill shape
     paddingVertical: 20,
     width: '100%',

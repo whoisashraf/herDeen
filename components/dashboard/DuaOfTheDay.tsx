@@ -14,7 +14,7 @@ export const DuaOfTheDay = () => {
           <ThemedText type="poppins-regular" style={styles.linkText}>
             Duas
           </ThemedText>
-          <IconSymbol name="chevron.right" size={16} color="#AA74E0" />
+          <IconSymbol name="chevron.right" size={16} color="#E18DFF" />
         </TouchableOpacity>
       </View>
 
@@ -44,7 +44,7 @@ export const DuaOfTheDay = () => {
           <ThemedText type="poppins-regular" style={styles.linkText}>
             Open Tasbih
           </ThemedText>
-          <IconSymbol name="chevron.right" size={16} color="#AA74E0" />
+          <IconSymbol name="chevron.right" size={16} color="#E18DFF" />
         </TouchableOpacity>
       </View>
     </View>
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
   },
   linkText: {
     fontSize: 14,
-    color: '#AA74E0',
+    color: '#E18DFF',
   },
   duaContent: {
     marginBottom: 24,
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
   },
   progressBarFill: {
     height: '100%',
-    backgroundColor: '#AA74E0',
+    backgroundColor: '#E18DFF',
     borderRadius: 3,
     width: '13%',
   },

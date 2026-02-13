@@ -1,163 +1,176 @@
+import { ThemeMode, useThemeMode } from '@/contexts/theme-context';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import Entypo from '@expo/vector-icons/Entypo';
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import React from 'react';
 import {
-    SafeAreaView,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
-const PURPLE = '#5C1E68';
-const TEXT_GRAY = '#1A1A1A';
-const BG_COLOR = '#F9F9F9';
+const LIGHT_BG = '#F9F9F9';
+const LIGHT_CARD = '#FFFFFF';
+const LIGHT_TEXT = '#444444';
+const LIGHT_MUTED = '#5B6268';
+const LIGHT_BORDER = '#EBDFED';
+
+const DARK_BG = '#13181C';
+const DARK_CARD = '#1F2125';
+const DARK_TEXT = '#FFFFFF';
+const DARK_MUTED = '#FFFFFFB2';
+const DARK_BORDER = '#5B6268';
+
+const ACCENT = '#E18DFF';
 
 interface ThemeOptionProps {
-    id: string;
-    label: string;
-    icon: string | React.ReactNode;
-    isSelected: boolean;
-    onSelect: () => void;
-    showBorder?: boolean;
+  label: string;
+  icon: string | React.ReactNode;
+  isSelected: boolean;
+  onSelect: () => void;
+  showBorder?: boolean;
+  accentColor: string;
+  textColor: string;
+  mutedColor: string;
+  borderColor: string;
 }
 
 const ThemeOption: React.FC<ThemeOptionProps> = ({
-    label,
-    icon,
-    isSelected,
-    onSelect,
-    showBorder = true,
+  label,
+  icon,
+  isSelected,
+  onSelect,
+  showBorder = true,
+  accentColor,
+  textColor,
+  mutedColor,
+  borderColor,
 }) => (
-    <TouchableOpacity
-        style={[styles.optionContainer, showBorder && styles.optionBorder]}
-        onPress={onSelect}
-        activeOpacity={0.7}
-    >
-        <View style={styles.optionLeft}>
-            <View style={styles.iconContainer}>
-                {typeof icon === 'string' ? (
-                    <IconSymbol name={icon as any} size={24} color={isSelected ? PURPLE : '#8E8E93'} />
-                ) : (
-                    icon
-                )}
-            </View>
-            <Text style={[styles.optionLabel, isSelected && styles.selectedLabel]}>{label}</Text>
-        </View>
-        {isSelected && (
-            <IconSymbol name="checkmark" size={20} color={PURPLE} />
+  <TouchableOpacity
+    style={[styles.optionContainer, showBorder && styles.optionBorder, showBorder && { borderBottomColor: borderColor }]}
+    onPress={onSelect}
+    activeOpacity={0.7}>
+    <View style={styles.optionLeft}>
+      <View style={styles.iconContainer}>
+        {typeof icon === 'string' ? (
+          <IconSymbol name={icon as any} size={24} color={isSelected ? accentColor : mutedColor} />
+        ) : (
+          icon
         )}
-    </TouchableOpacity>
+      </View>
+      <Text style={[styles.optionLabel, { color: textColor }, isSelected && { color: accentColor }]}>
+        {label}
+      </Text>
+    </View>
+    {isSelected && <IconSymbol name="checkmark" size={20} color={accentColor} />}
+  </TouchableOpacity>
 );
 
 export default function ThemeScreen() {
-    const router = useRouter();
-    const [selectedTheme, setSelectedTheme] = useState('system');
+  const router = useRouter();
+  const { themeMode, setThemeMode, colorScheme } = useThemeMode();
 
-    const themes = [
-        { id: 'system', label: 'System', icon: 'hexagon' },
-        { id: 'dark', label: 'Dark', icon: 'moon' },
-        {
-            id: 'light',
-            label: 'Light',
-            icon: <Entypo name="light-up" size={24} color={selectedTheme === 'light' ? PURPLE : '#8E8E93'} />
-        },
-    ];
+  const isDark = colorScheme === 'dark';
+  const bg = isDark ? DARK_BG : LIGHT_BG;
+  const card = isDark ? DARK_CARD : LIGHT_CARD;
+  const text = isDark ? DARK_TEXT : LIGHT_TEXT;
+  const muted = isDark ? DARK_MUTED : LIGHT_MUTED;
+  const border = isDark ? DARK_BORDER : LIGHT_BORDER;
 
-    return (
-        <View style={styles.container}>
-            <StatusBar barStyle="dark-content" />
-            <SafeAreaView style={styles.safeArea}>
-                <View style={styles.header}>
-                    <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-                        <IconSymbol name="arrow.left" size={24} color={TEXT_GRAY} />
-                    </TouchableOpacity>
-                    <Text style={styles.headerTitle}>Theme</Text>
-                </View>
-            </SafeAreaView>
+  const themes: Array<{ id: ThemeMode; label: string; icon: string | React.ReactNode }> = [
+    { id: 'system', label: 'System', icon: 'hexagon' },
+    { id: 'dark', label: 'Dark', icon: 'moon' },
+    {
+      id: 'light',
+      label: 'Light',
+      icon: <Entypo name="light-up" size={24} color={themeMode === 'light' ? ACCENT : muted} />,
+    },
+  ];
 
-            <View style={styles.content}>
-                <View style={styles.optionsCard}>
-                    {themes.map((theme, index) => (
-                        <ThemeOption
-                            key={theme.id}
-                            id={theme.id}
-                            label={theme.label}
-                            icon={theme.icon}
-                            isSelected={selectedTheme === theme.id}
-                            onSelect={() => setSelectedTheme(theme.id)}
-                            showBorder={index < themes.length - 1}
-                        />
-                    ))}
-                </View>
-            </View>
+  return (
+    <View style={[styles.container, { backgroundColor: bg }]}>
+      <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
+      <SafeAreaView style={[styles.safeArea, { backgroundColor: bg }]}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+            <IconSymbol name="arrow.left" size={24} color={text} />
+          </TouchableOpacity>
+          <Text style={[styles.headerTitle, { color: text }]}>Theme</Text>
         </View>
-    );
+      </SafeAreaView>
+
+      <View style={styles.content}>
+        <View style={[styles.optionsCard, { backgroundColor: card, borderColor: border }]}>
+          {themes.map((theme, index) => (
+            <ThemeOption
+              key={theme.id}
+              label={theme.label}
+              icon={theme.icon}
+              isSelected={themeMode === theme.id}
+              onSelect={() => setThemeMode(theme.id)}
+              showBorder={index < themes.length - 1}
+              accentColor={ACCENT}
+              textColor={text}
+              mutedColor={muted}
+              borderColor={border}
+            />
+          ))}
+        </View>
+      </View>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: BG_COLOR,
-    },
-    safeArea: {
-        backgroundColor: BG_COLOR,
-    },
-    header: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingHorizontal: 16,
-        paddingVertical: 12,
-    },
-    backButton: {
-        padding: 4,
-    },
-    headerTitle: {
-        fontSize: 20,
-        fontWeight: '500',
-        color: TEXT_GRAY,
-        marginLeft: 12,
-    },
-    content: {
-        padding: 16,
-    },
-    optionsCard: {
-        borderRadius: 16,
-        paddingHorizontal: 16,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.05,
-        shadowRadius: 10,
-        elevation: 2,
-    },
-    optionContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingVertical: 16,
-    },
-    optionBorder: {
-        borderBottomWidth: 4,
-        borderBottomColor: '#F2F2F7',
-    },
-    optionLeft: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    iconContainer: {
-        width: 32,
-        alignItems: 'center',
-    },
-    optionLabel: {
-        fontSize: 17,
-        color: TEXT_GRAY,
-        marginLeft: 12,
-        fontWeight: '500',
-    },
-    selectedLabel: {
-        color: PURPLE,
-        fontWeight: '600',
-    },
+  container: {
+    flex: 1,
+  },
+  safeArea: {},
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  backButton: {
+    padding: 4,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: '500',
+    marginLeft: 12,
+  },
+  content: {
+    padding: 16,
+  },
+  optionsCard: {
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    borderWidth: 1,
+  },
+  optionContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 16,
+  },
+  optionBorder: {
+    borderBottomWidth: 1,
+  },
+  optionLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  iconContainer: {
+    width: 32,
+    alignItems: 'center',
+  },
+  optionLabel: {
+    fontSize: 17,
+    marginLeft: 12,
+    fontWeight: '500',
+  },
 });

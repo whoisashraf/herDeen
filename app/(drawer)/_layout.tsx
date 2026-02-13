@@ -41,6 +41,33 @@ export default function DrawerLayout() {
           }}
         />
         <Drawer.Screen
+          name="journal"
+          options={{
+            drawerLabel: 'Her Journal',
+          }}
+        />
+        <Drawer.Screen
+          name="journal-editor"
+          options={{
+            drawerLabel: 'Journal Editor',
+            drawerItemStyle: { display: 'none' },
+          }}
+        />
+        <Drawer.Screen
+          name="journal-mood"
+          options={{
+            drawerLabel: 'Journal Mood',
+            drawerItemStyle: { display: 'none' },
+          }}
+        />
+        <Drawer.Screen
+          name="journal-entry"
+          options={{
+            drawerLabel: 'Journal Entry',
+            drawerItemStyle: { display: 'none' },
+          }}
+        />
+        <Drawer.Screen
           name="tracker"
           options={{
             drawerLabel: 'Menstrual Tracker',

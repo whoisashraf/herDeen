@@ -1,12 +1,12 @@
 import { BOTTOM_NAV_HEIGHT, BottomNav } from '@/components/dashboard/BottomNav';
+import { useThemeMode } from '@/contexts/theme-context';
+import { ThemePalette, useAppColors } from '@/hooks/use-app-colors';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { AntDesign } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import {
     Dimensions,
     Image,
-    ImageBackground,
     Modal,
     SafeAreaView,
     ScrollView,
@@ -22,44 +22,63 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuth } from '@/contexts/auth-context'; // Import useAuth
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
-const PURPLE = '#5C1E68';
-const TEXT_GRAY = '#4A4A4A';
-const BG_COLOR = '#F9F9F9';
+const PURPLE = '#E18DFF';
+const BG_COLOR = '#13181C';
+const SURFACE = '#1F2125';
+const SURFACE_ELEVATED = '#16171A';
+const BORDER = '#5B6268';
+const TEXT_PRIMARY = '#FFFFFF';
+const TEXT_SECONDARY = '#FFFFFFB2';
+const DANGER = '#FF3B30';
 
 interface SettingsItemProps {
     icon: string;
     label: string;
-    value?: string;
+    subtitle?: string;
     onPress: () => void;
     showBorder?: boolean;
+    colors: ThemePalette;
 }
 
 const SettingsItem: React.FC<SettingsItemProps> = ({
     icon,
     label,
-    value,
+    subtitle,
     onPress,
     showBorder = true,
+    colors,
 }) => (
-    <View style={showBorder && styles.itemBorder}>
+    <View>
         <TouchableOpacity
             style={styles.itemContainer}
             onPress={onPress}
         >
             <View style={styles.itemLeft}>
-                <IconSymbol name={icon as any} size={22} color={PURPLE} />
-                <Text style={styles.itemLabel} numberOfLines={1} ellipsizeMode="tail">{label}</Text>
+                <View style={[styles.itemIconTile, { backgroundColor: colors.surface }]}>
+                    <IconSymbol name={icon as any} size={22} color={colors.textMuted} />
+                </View>
+                <View style={styles.itemTextWrap}>
+                    <Text style={[styles.itemLabel, { color: colors.text }]} numberOfLines={1} ellipsizeMode="tail">{label}</Text>
+                    {subtitle ? (
+                        <Text style={[styles.itemSubtitle, { color: colors.textMuted }]} numberOfLines={1} ellipsizeMode="tail">
+                            {subtitle}
+                        </Text>
+                    ) : null}
+                </View>
             </View>
             <View style={styles.itemRight}>
-                {value && <Text style={styles.itemValue} numberOfLines={1} ellipsizeMode="tail">{value}</Text>}
-                <IconSymbol name="chevron.right" size={20} color="#C7C7CC" />
+                <IconSymbol name="chevron.right" size={24} color={colors.textFaint} />
             </View>
         </TouchableOpacity>
+        {showBorder ? <View style={[styles.itemBorder, { borderBottomColor: colors.border }]} /> : null}
     </View>
 );
 
-const SettingsGroup: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-    <View style={styles.groupContainer}>{children}</View>
+const SettingsGroup: React.FC<{ title: string; children: React.ReactNode; colors: ThemePalette }> = ({ title, children, colors }) => (
+    <View style={styles.groupContainer}>
+        <Text style={[styles.groupTitle, { color: colors.textFaint }]}>{title}</Text>
+        <View>{children}</View>
+    </View>
 );
 
 export default function SettingsScreen() {
@@ -73,6 +92,12 @@ export default function SettingsScreen() {
     const [isAutomaticLocation, setIsAutomaticLocation] = React.useState(true);
     const [searchQuery, setSearchQuery] = React.useState('');
     const [isLogoutModalVisible, setIsLogoutModalVisible] = React.useState(false);
+    const { themeMode } = useThemeMode();
+    const { colors, isDark } = useAppColors();
+
+    const themeLabel = themeMode === 'system'
+        ? 'System'
+        : themeMode.charAt(0).toUpperCase() + themeMode.slice(1);
 
     const hijriOptions = [-3, -2, -1, 0, 1, 2, 3];
     const timeOptions = ['12 hours', '24 hours'];
@@ -95,154 +120,139 @@ export default function SettingsScreen() {
     const cities = ['Lagos', 'Lafia', 'Lagos, Ikeja'];
 
     return (
-        <View style={{ flex: 1 }}>
-            <StatusBar barStyle="dark-content" />
-            <ImageBackground
-                source={require('@/assets/images/bg-settings.jpg')}
-                style={styles.fullBackground}
-                imageStyle={{ opacity: 1 }}
-                resizeMode="cover"
-            >
-                <View
-                    style={styles.imageOverlay}
-                >
-                    <ScrollView
-                        showsVerticalScrollIndicator={false}
-                        contentContainerStyle={[
-                            styles.scrollContent,
-                            { paddingBottom: 40 + BOTTOM_NAV_HEIGHT + insets.bottom },
-                        ]}>
-                        <SafeAreaView>
-                            <View style={styles.header}>
-                                <View style={styles.profileSection}>
-                                    <Image
-                                        source={require('@/assets/images/profile.jpg')}
-                                        style={styles.avatar}
-                                    />
-                                    <View>
-                                        <Text style={styles.greetingText}>Assalamu Alaikum,</Text>
-                                        <Text style={styles.nameText}>Aishah Abdullahi!</Text>
-                                    </View>
-                                </View>
-                                <TouchableOpacity onPress={() => router.back()} style={styles.closeButton}>
-                                    <Image
-                                        source={require('@/assets/icons/menu_custom.png')}
-                                        style={{ width: 24, height: 24, tintColor: PURPLE }}
-                                        resizeMode="contain"
-                                    />
-                                </TouchableOpacity>
-                            </View>
-
-                            <View style={styles.titleRow}>
-                                <Text style={styles.title}>Settings</Text>
-                                <TouchableOpacity onPress={() => setIsLogoutModalVisible(true)}>
-                                    <AntDesign name="logout" size={22} color="#FF3B30" />
-                                </TouchableOpacity>
-                            </View>
-                        </SafeAreaView>
-
-                        {/* Group 1: Profile & Account */}
-                        <SettingsGroup>
-                            <SettingsItem
-                                icon="person"
-                                label="Profile Info"
-                                onPress={() => router.push('/(drawer)/settings/profile')}
-                            />
-                            <SettingsItem
-                                icon="lock"
-                                label="Change Password"
-                                onPress={() => router.push('/(drawer)/settings/password')}
-                            />
-                            <SettingsItem
-                                icon="translate"
-                                label="Language Preference"
-                                value="English"
-                                onPress={() => router.push('/(drawer)/settings/language')}
-                                showBorder={false}
-                            />
-                        </SettingsGroup>
-
-                        {/* Group 2: Notifications */}
-                        <SettingsGroup>
-                            <SettingsItem
-                                icon="bell"
-                                label="Reminders & Notification"
-                                onPress={() => router.push('/(drawer)/settings/notifications')}
-                                showBorder={false}
-                            />
-                        </SettingsGroup>
-
-                        {/* Group 3: Theme */}
-                        <SettingsGroup>
-                            <SettingsItem
-                                icon="moon"
-                                label="Theme"
-                                value="System"
-                                onPress={() => router.push('/(drawer)/settings/theme')}
-                                showBorder={false}
-                            />
-                        </SettingsGroup>
-
-                        {/* Group 4: Prayer Settings */}
-                        <SettingsGroup>
-                            <SettingsItem
-                                icon="calendar"
-                                label="Hijri Adjust"
-                                value={hijriAdjustment.toString()}
-                                onPress={() => setActiveModal('hijri')}
-                            />
-                            <SettingsItem
-                                icon="clock"
-                                label="Time Format"
-                                value={timeFormat}
-                                onPress={() => setActiveModal('time')}
-                            />
-                            <SettingsItem
-                                icon="location"
-                                label="Location"
-                                value={isAutomaticLocation ? 'Automatic' : 'Manual'}
-                                onPress={() => setActiveModal('location')}
-                            />
-                            <SettingsItem
-                                icon="gearshape"
-                                label="Prayer Calculation Method"
-                                onPress={() => setActiveModal('prayer')}
-                                showBorder={false}
-                            />
-                        </SettingsGroup>
-
-                        {/* Group 5: Support & Info */}
-                        <SettingsGroup>
-                            <SettingsItem
-                                icon="heart"
-                                label="Support Us"
-                                onPress={() => router.push('/(drawer)/settings/support')}
-                            />
-                            <SettingsItem
-                                icon="phone"
-                                label="Contact Us"
-                                onPress={() => router.push('/(drawer)/settings/contact')}
-                            />
-                            <SettingsItem
-                                icon="questionmark.circle"
-                                label="FAQs"
-                                onPress={() => router.push('/(drawer)/settings/faqs')}
-                            />
-                            <SettingsItem
-                                icon="info.circle"
-                                label="About HerDeen"
-                                onPress={() => router.push('/(drawer)/settings/about')}
-                                showBorder={false}
-                            />
-                        </SettingsGroup>
-
-                        {/* Sign Out Button */}
-                        <TouchableOpacity style={styles.signOutButton} onPress={() => setIsLogoutModalVisible(true)}>
-                            <Text style={styles.signOutText}>Sign Out</Text>
-                        </TouchableOpacity>
-                    </ScrollView>
+        <View style={[styles.container, { backgroundColor: colors.background }]}>
+            <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
+            <SafeAreaView>
+                <View style={[styles.header, { paddingTop: insets.top > 0 ? 4 : 18 }]}>
+                    <TouchableOpacity onPress={() => router.back()} style={[styles.backCircle, { backgroundColor: colors.surface }]}>
+                        <IconSymbol name="arrow.left" size={28} color={colors.text} />
+                    </TouchableOpacity>
+                    <Text style={[styles.title, { color: colors.text }]}>Settings</Text>
                 </View>
-            </ImageBackground>
+            </SafeAreaView>
+
+            <ScrollView
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={[
+                    styles.scrollContent,
+                    { paddingBottom: 40 + BOTTOM_NAV_HEIGHT + insets.bottom },
+                ]}>
+                <SettingsGroup title="Prayer Location" colors={colors}>
+                    <SettingsItem
+                        icon="person"
+                        label="Profile"
+                        subtitle="Ilorin East, Nigeria"
+                        onPress={() => router.push('/(drawer)/settings/profile')}
+                        colors={colors}
+                    />
+                    <SettingsItem
+                        icon="lock"
+                        label="Password"
+                        subtitle="Muslim World League (MWL)"
+                        onPress={() => router.push('/(drawer)/settings/password')}
+                        colors={colors}
+                    />
+                    <SettingsItem
+                        icon="translate"
+                        label="Language"
+                        subtitle="Standard / Hanafi"
+                        onPress={() => router.push('/(drawer)/settings/language')}
+                        showBorder={false}
+                        colors={colors}
+                    />
+                </SettingsGroup>
+
+                <SettingsGroup title="Adhan & Sound" colors={colors}>
+                    <SettingsItem
+                        icon="bell"
+                        label="Notification"
+                        subtitle="Standard / Hanafi"
+                        onPress={() => router.push('/(drawer)/settings/notifications')}
+                        colors={colors}
+                    />
+                    <SettingsItem
+                        icon="moon"
+                        label="Theme"
+                        subtitle={themeLabel}
+                        onPress={() => router.push('/(drawer)/settings/theme')}
+                        colors={colors}
+                    />
+                    <SettingsItem
+                        icon="calendar"
+                        label="Hijri Adjust"
+                        subtitle={`Current: ${hijriAdjustment}`}
+                        onPress={() => setActiveModal('hijri')}
+                        showBorder={false}
+                        colors={colors}
+                    />
+                </SettingsGroup>
+
+                <SettingsGroup title="Prayer Preferences" colors={colors}>
+                    <SettingsItem
+                        icon="clock"
+                        label="Time Format"
+                        subtitle={timeFormat}
+                        onPress={() => setActiveModal('time')}
+                        colors={colors}
+                    />
+                    <SettingsItem
+                        icon="location"
+                        label="Location"
+                        subtitle={isAutomaticLocation ? 'Automatic' : 'Manual'}
+                        onPress={() => setActiveModal('location')}
+                        colors={colors}
+                    />
+                    <SettingsItem
+                        icon="gearshape"
+                        label="Calculation Method"
+                        subtitle={prayerMethod}
+                        onPress={() => setActiveModal('prayer')}
+                        showBorder={false}
+                        colors={colors}
+                    />
+                </SettingsGroup>
+
+                <SettingsGroup title="More" colors={colors}>
+                    <SettingsItem
+                        icon="heart"
+                        label="Support Us"
+                        subtitle="Help keep HerDeen growing"
+                        onPress={() => router.push('/(drawer)/settings/support')}
+                        colors={colors}
+                    />
+                    <SettingsItem
+                        icon="phone"
+                        label="Contact Us"
+                        subtitle="Get in touch with support"
+                        onPress={() => router.push('/(drawer)/settings/contact')}
+                        colors={colors}
+                    />
+                    <SettingsItem
+                        icon="questionmark.circle"
+                        label="FAQs"
+                        subtitle="Common questions and answers"
+                        onPress={() => router.push('/(drawer)/settings/faqs')}
+                        colors={colors}
+                    />
+                    <SettingsItem
+                        icon="info.circle"
+                        label="About HerDeen"
+                        subtitle="Version info and legal"
+                        onPress={() => router.push('/(drawer)/settings/about')}
+                        showBorder={false}
+                        colors={colors}
+                    />
+                </SettingsGroup>
+
+                <TouchableOpacity
+                    style={[
+                        styles.signOutButton,
+                        { backgroundColor: colors.destructiveBg, borderColor: isDark ? '#3A232A' : '#F1CDD2' }
+                    ]}
+                    onPress={() => setIsLogoutModalVisible(true)}>
+                    <Text style={[styles.signOutText, { color: colors.destructiveText }]}>Sign Out</Text>
+                </TouchableOpacity>
+            </ScrollView>
             <BottomNav />
 
             {/* Dynamic Settings Modal */}
@@ -252,16 +262,17 @@ export default function SettingsScreen() {
                 animationType="slide"
                 onRequestClose={() => setActiveModal(null)}
             >
-                <View style={styles.modalOverlay}>
+                <View style={[styles.modalOverlay, { backgroundColor: colors.overlay }]}>
                     <View style={[
                         styles.modalContainer,
+                        { backgroundColor: colors.surface },
                         activeModal === 'prayer' && { height: 600 },
                         activeModal === 'location' && { height: 400 },
                         (activeModal === 'manualLocation' || activeModal === 'manualLocationSearch') && { height: SCREEN_HEIGHT * 0.8 },
                         (activeModal === 'time' || activeModal === 'hijri') && { height: 500 }
                     ]}>
                         <View style={styles.modalHeader}>
-                            <Text style={styles.modalTitle}>
+                            <Text style={[styles.modalTitle, { color: colors.text }]}>
                                 {activeModal === 'hijri' && 'Adjust Hijri'}
                                 {activeModal === 'time' && 'Time Format'}
                                 {activeModal === 'prayer' && 'Prayer Method'}
@@ -269,7 +280,7 @@ export default function SettingsScreen() {
                                 {(activeModal === 'manualLocation' || activeModal === 'manualLocationSearch') && 'Manual Location'}
                             </Text>
                             <TouchableOpacity onPress={() => setActiveModal(null)}>
-                                <IconSymbol name="xmark" size={24} color={PURPLE} />
+                                <IconSymbol name="xmark" size={24} color={colors.text} />
                             </TouchableOpacity>
                         </View>
 
@@ -277,7 +288,7 @@ export default function SettingsScreen() {
                             {activeModal === 'hijri' && (
                                 <>
                                     <IconSymbol name="calendar" size={60} color={PURPLE} />
-                                    <Text style={styles.modalSmallTitle}>Muharam 19, 1447 AH</Text>
+                                    <Text style={[styles.modalSmallTitle, { color: colors.text }]}>Muharam 19, 1447 AH</Text>
                                     <View style={styles.adjustmentRow}>
                                         {hijriOptions.map((opt) => (
                                             <TouchableOpacity
@@ -289,6 +300,7 @@ export default function SettingsScreen() {
                                                 ]}>
                                                 <Text style={[
                                                     styles.adjustmentText,
+                                                    { color: colors.textMuted },
                                                     hijriAdjustment === opt && styles.selectedAdjustmentText
                                                 ]}>{opt}</Text>
                                             </TouchableOpacity>
@@ -299,19 +311,19 @@ export default function SettingsScreen() {
 
                             {activeModal === 'time' && (
                                 <>
-                                    <View style={styles.iconBox}>
+                                    <View style={[styles.iconBox, { backgroundColor: colors.surfaceSoft }]}>
                                         <IconSymbol name="clock" size={32} color={PURPLE} />
                                     </View>
-                                    <Text style={styles.modalDisplayValue}>06:30</Text>
+                                    <Text style={[styles.modalDisplayValue, { color: colors.text }]}>06:30</Text>
                                     <View style={styles.optionsList}>
                                         {timeOptions.map((opt) => (
                                             <TouchableOpacity
                                                 key={opt}
-                                                style={styles.optionItem}
+                                                style={[styles.optionItem, { borderBottomColor: colors.border }]}
                                                 onPress={() => setTimeFormat(opt)}>
                                                 <View style={styles.optionLeft}>
-                                                    <View style={styles.bullet} />
-                                                    <Text style={styles.optionText}>{opt}</Text>
+                                                    <View style={[styles.bullet, { backgroundColor: colors.textMuted }]} />
+                                                    <Text style={[styles.optionText, { color: colors.text }]}>{opt}</Text>
                                                 </View>
                                                 {timeFormat === opt && <IconSymbol name="checkmark" size={20} color={PURPLE} />}
                                             </TouchableOpacity>
@@ -326,10 +338,10 @@ export default function SettingsScreen() {
                                         {prayerMethods.map((method) => (
                                             <TouchableOpacity
                                                 key={method}
-                                                style={styles.optionItem}
+                                                style={[styles.optionItem, { borderBottomColor: colors.border }]}
                                                 onPress={() => setPrayerMethod(method)}>
                                                 <Text
-                                                    style={[styles.optionText, { flex: 1, flexShrink: 1, marginRight: 12 }]}
+                                                    style={[styles.optionText, { color: colors.text, flex: 1, flexShrink: 1, marginRight: 12 }]}
                                                     numberOfLines={2}
                                                 >
                                                     {method}
@@ -343,10 +355,10 @@ export default function SettingsScreen() {
 
                             {activeModal === 'location' && (
                                 <View style={{ width: '100%' }}>
-                                    <View style={[styles.optionItem, { borderBottomWidth: 0 }]}>
+                                    <View style={[styles.optionItem, { borderBottomWidth: 0, borderBottomColor: colors.border }]}>
                                         <View>
-                                            <Text style={styles.optionTextBold}>Automatic</Text>
-                                            <Text style={styles.subLabel}>Oko Erin Kwara Nigeria</Text>
+                                            <Text style={[styles.optionTextBold, { color: colors.text }]}>Automatic</Text>
+                                            <Text style={[styles.subLabel, { color: colors.textMuted }]}>Oko Erin Kwara Nigeria</Text>
                                         </View>
                                         <TouchableOpacity
                                             onPress={() => setIsAutomaticLocation(!isAutomaticLocation)}
@@ -356,7 +368,7 @@ export default function SettingsScreen() {
                                                 width: 44,
                                                 height: 24,
                                                 borderRadius: 12,
-                                                backgroundColor: isAutomaticLocation ? '#E9D7F0' : '#D1D1D6',
+                                                backgroundColor: isAutomaticLocation ? '#332646' : '#4B5263',
                                                 padding: 2,
                                                 justifyContent: 'center',
                                             }}>
@@ -364,7 +376,7 @@ export default function SettingsScreen() {
                                                     width: 20,
                                                     height: 20,
                                                     borderRadius: 10,
-                                                    backgroundColor: isAutomaticLocation ? PURPLE : '#FFFFFF',
+                                                    backgroundColor: isAutomaticLocation ? PURPLE : '#D6DAE2',
                                                     transform: [{ translateX: isAutomaticLocation ? 20 : 0 }]
                                                 }} />
                                             </View>
@@ -385,9 +397,9 @@ export default function SettingsScreen() {
                                 <View style={{ width: '100%', flex: 1 }}>
                                     <View style={styles.searchContainer}>
                                         <TextInput
-                                            style={styles.searchInput}
+                                            style={[styles.searchInput, { backgroundColor: colors.surfaceSoft, borderColor: colors.border, color: colors.text }]}
                                             placeholder="Search"
-                                            placeholderTextColor="#8A8A8E"
+                                            placeholderTextColor={colors.textMuted}
                                             value={searchQuery}
                                             onChangeText={(text: string) => {
                                                 setSearchQuery(text);
@@ -399,21 +411,21 @@ export default function SettingsScreen() {
                                     <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
                                         {activeModal === 'manualLocation' ? (
                                             countries.map((country, idx) => (
-                                                <TouchableOpacity key={idx} style={styles.optionItem}>
-                                                    <Text style={styles.optionText}>{country.name}</Text>
-                                                    <IconSymbol name="chevron.right" size={20} color="#C7C7CC" />
+                                                <TouchableOpacity key={idx} style={[styles.optionItem, { borderBottomColor: colors.border }]}>
+                                                    <Text style={[styles.optionText, { color: colors.text }]}>{country.name}</Text>
+                                                    <IconSymbol name="chevron.right" size={20} color={colors.textMuted} />
                                                 </TouchableOpacity>
                                             ))
                                         ) : (
                                             cities.map((city, idx) => (
                                                 <TouchableOpacity
                                                     key={idx}
-                                                    style={styles.optionItem}
+                                                    style={[styles.optionItem, { borderBottomColor: colors.border }]}
                                                     onPress={() => {
                                                         setActiveModal(null);
                                                         setSearchQuery('');
                                                     }}>
-                                                    <Text style={styles.optionText}>{city}</Text>
+                                                    <Text style={[styles.optionText, { color: colors.text }]}>{city}</Text>
                                                 </TouchableOpacity>
                                             ))
                                         )}
@@ -441,16 +453,16 @@ export default function SettingsScreen() {
                 animationType="fade"
                 onRequestClose={() => setIsLogoutModalVisible(false)}
             >
-                <View style={styles.logoutModalOverlay}>
-                    <View style={styles.logoutModalContainer}>
+                <View style={[styles.logoutModalOverlay, { backgroundColor: colors.overlay }]}>
+                    <View style={[styles.logoutModalContainer, { backgroundColor: colors.surface }]}>
                         <Image
                             source={require('@/assets/images/logout_illustration.png')}
                             style={styles.logoutIllustration}
                             resizeMode="contain"
                         />
 
-                        <Text style={styles.logoutTitle}>Logging Out Already?</Text>
-                        <Text style={styles.logoutSubtitle}>
+                        <Text style={[styles.logoutTitle, { color: colors.text }]}>Logging Out Already?</Text>
+                        <Text style={[styles.logoutSubtitle, { color: colors.textMuted }]}>
                             Aww, don't go! we will miss you. Anyways, We'll be here when you're ready to come back.
                         </Text>
 
@@ -468,7 +480,7 @@ export default function SettingsScreen() {
                             style={styles.cancelLogoutButton}
                             onPress={() => setIsLogoutModalVisible(false)}
                         >
-                            <Text style={styles.cancelLogoutText}>No, I changed my mind!</Text>
+                            <Text style={[styles.cancelLogoutText, { color: colors.textMuted }]}>No, I changed my mind!</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -480,17 +492,17 @@ export default function SettingsScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F9F9F9',
+        backgroundColor: BG_COLOR,
     },
     modalOverlay: {
         flex: 1,
-        backgroundColor: 'rgba(248, 241, 241, 0.4)',
+        backgroundColor: 'rgba(7, 9, 14, 0.62)',
         justifyContent: 'flex-end',
     },
     modalContainer: {
         width: SCREEN_WIDTH,
         height: 450,
-        backgroundColor: '#F9F9F9',
+        backgroundColor: SURFACE,
         borderTopLeftRadius: 32,
         borderTopRightRadius: 32,
         paddingTop: 25,
@@ -507,7 +519,7 @@ const styles = StyleSheet.create({
     modalTitle: {
         fontSize: 20,
         fontWeight: '500',
-        color: '#2B0E30',
+        color: TEXT_PRIMARY,
     },
     modalContent: {
         alignItems: 'center',
@@ -516,19 +528,19 @@ const styles = StyleSheet.create({
     modalSmallTitle: {
         fontSize: 18,
         fontWeight: '600',
-        color: TEXT_GRAY,
+        color: TEXT_PRIMARY,
         marginTop: 10,
     },
     modalDisplayValue: {
         fontSize: 32,
         fontWeight: '700',
-        color: '#2B0E30',
+        color: TEXT_PRIMARY,
         marginVertical: 10,
     },
     iconBox: {
         width: 64,
         height: 64,
-        backgroundColor: '#F2F2F7',
+        backgroundColor: SURFACE_ELEVATED,
         borderRadius: 16,
         alignItems: 'center',
         justifyContent: 'center',
@@ -542,10 +554,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingVertical: 18,
-        borderBottomWidth: 2,
+        borderBottomWidth: 1,
         borderBottomLeftRadius: 20,
         borderBottomRightRadius: 20,
-        borderBottomColor: '#F2F2F7',
+        borderBottomColor: BORDER,
     },
     optionLeft: {
         flexDirection: 'row',
@@ -555,22 +567,22 @@ const styles = StyleSheet.create({
         width: 6,
         height: 6,
         borderRadius: 3,
-        backgroundColor: '#2B0E30',
+        backgroundColor: TEXT_SECONDARY,
         marginRight: 12,
     },
     optionText: {
         fontSize: 17,
-        color: '#2B0E30',
+        color: TEXT_PRIMARY,
         fontWeight: '500',
     },
     optionTextBold: {
         fontSize: 18,
         fontWeight: '700',
-        color: '#2B0E30',
+        color: TEXT_PRIMARY,
     },
     subLabel: {
         fontSize: 14,
-        color: '#8A8A8E',
+        color: TEXT_SECONDARY,
         marginTop: 4,
     },
     searchContainer: {
@@ -580,23 +592,23 @@ const styles = StyleSheet.create({
     searchInput: {
         width: '100%',
         height: 56,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: SURFACE_ELEVATED,
         borderRadius: 12,
         borderWidth: 1,
-        borderColor: '#F2F2F7',
+        borderColor: BORDER,
         paddingHorizontal: 16,
         fontSize: 16,
-        color: '#2B0E30',
+        color: TEXT_PRIMARY,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.02,
+        shadowOpacity: 0,
         shadowRadius: 4,
-        elevation: 1,
+        elevation: 0,
     },
     hijriDateText: {
         fontSize: 18,
         fontWeight: '600',
-        color: TEXT_GRAY,
+        color: TEXT_PRIMARY,
         marginTop: 10,
     },
     adjustmentRow: {
@@ -618,7 +630,7 @@ const styles = StyleSheet.create({
     },
     adjustmentText: {
         fontSize: 16,
-        color: TEXT_GRAY,
+        color: TEXT_SECONDARY,
         fontWeight: '500',
     },
     selectedAdjustmentText: {
@@ -640,125 +652,105 @@ const styles = StyleSheet.create({
         fontWeight: '700',
     },
     scrollContent: {
+        paddingHorizontal: 24,
+        paddingTop: 14,
         paddingBottom: 40,
     },
-    fullBackground: {
-        flex: 1,
-        width: SCREEN_WIDTH,
-    },
-    imageOverlay: {
-        flex: 1,
-        paddingTop: 0,
-        gap: 12,
-    },
     header: {
-        paddingHorizontal: 20,
-        paddingTop: 10,
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
+        paddingHorizontal: 24,
+        paddingBottom: 8,
+        gap: 16,
     },
-    closeButton: {
-        padding: 8,
-    },
-    profileSection: {
-        flexDirection: 'row',
+    backCircle: {
+        width: 56,
+        height: 56,
+        borderRadius: 28,
+        backgroundColor: SURFACE,
         alignItems: 'center',
-        flex: 1,
-    },
-    avatar: {
-        width: 50,
-        height: 50,
-        borderRadius: 25,
-        marginRight: 12,
-        borderWidth: 2,
-        borderColor: PURPLE,
-    },
-    greetingText: {
-        fontSize: 14,
-        color: '#8A8A8E',
-    },
-    nameText: {
-        fontSize: 18,
-        fontWeight: '500',
-        color: TEXT_GRAY,
-    },
-    titleRow: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        paddingHorizontal: 20,
-        marginTop: 10,
-        marginBottom: 10,
+        justifyContent: 'center',
     },
     title: {
-        fontSize: 28,
-        fontWeight: '500',
-        color: TEXT_GRAY,
+        fontSize: 20,
+        lineHeight: 28,
+        fontWeight: '600',
+        color: TEXT_PRIMARY,
     },
     groupContainer: {
-        backgroundColor: '#FFFFFF',
-        borderRadius: 16,
-        marginHorizontal: 20,
+        marginBottom: 26,
+    },
+    groupTitle: {
+        fontSize: 16,
+        lineHeight: 22,
+        color: '#4C5261',
         marginBottom: 12,
-        padding: 16,
-        gap: 12,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.05,
-        shadowRadius: 8,
-        elevation: 2,
+        fontWeight: '500',
     },
     itemContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
+        minHeight: 88,
+        paddingVertical: 12,
     },
     itemBorder: {
         borderBottomWidth: 1,
-        borderBottomColor: '#F2F2F7',
-        paddingBottom: 12,
+        borderBottomColor: BORDER,
+        marginLeft: 72,
     },
     itemLeft: {
         flexDirection: 'row',
         alignItems: 'center',
         flex: 1,
-        marginRight: 10,
+        paddingRight: 10,
+    },
+    itemIconTile: {
+        width: 56,
+        height: 56,
+        borderRadius: 18,
+        backgroundColor: SURFACE,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    itemTextWrap: {
+        flex: 1,
+        marginLeft: 16,
+        justifyContent: 'center',
     },
     itemLabel: {
         fontSize: 16,
-        color: TEXT_GRAY,
-        marginLeft: 12,
+        lineHeight: 22,
+        color: TEXT_PRIMARY,
+        fontWeight: '600',
+    },
+    itemSubtitle: {
+        marginTop: 4,
+        fontSize: 13,
+        lineHeight: 18,
+        color: TEXT_SECONDARY,
         fontWeight: '500',
     },
     itemRight: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    itemValue: {
-        fontSize: 16,
-        color: '#8A8A8E',
-        marginRight: 8,
-        maxWidth: SCREEN_WIDTH * 0.4,
-    },
-    signOutButton: {
-        backgroundColor: '#FFFFFF',
-        borderRadius: 16,
-        marginHorizontal: 20,
-        marginTop: 10,
-        paddingVertical: 18,
+        marginLeft: 14,
         alignItems: 'center',
         justifyContent: 'center',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.05,
-        shadowRadius: 8,
-        elevation: 2,
+    },
+    signOutButton: {
+        backgroundColor: '#1D1217',
+        borderRadius: 16,
+        borderWidth: 1,
+        borderColor: '#3A232A',
+        marginTop: 10,
+        minHeight: 56,
+        paddingVertical: 14,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     signOutText: {
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: '600',
-        color: '#FF3B30',
+        color: DANGER,
     },
     logoutModalOverlay: {
         flex: 1,
@@ -768,7 +760,7 @@ const styles = StyleSheet.create({
     },
     logoutModalContainer: {
         width: Math.min(SCREEN_WIDTH, 430),
-        backgroundColor: '#FFFFFF',
+        backgroundColor: SURFACE,
         borderTopLeftRadius: 32,
         borderTopRightRadius: 32,
         paddingTop: 25,
@@ -785,19 +777,19 @@ const styles = StyleSheet.create({
     logoutTitle: {
         fontSize: 24,
         fontWeight: '500',
-        color: '#2B0E30',
+        color: TEXT_PRIMARY,
         textAlign: 'center',
     },
     logoutSubtitle: {
         fontSize: 15,
         fontWeight: '400',
-        color: '#444444',
+        color: TEXT_SECONDARY,
         textAlign: 'center',
         lineHeight: 22,
         paddingHorizontal: 10,
     },
     confirmLogoutButton: {
-        backgroundColor: '#FF4133',
+        backgroundColor: DANGER,
         width: '100%',
         paddingVertical: 18,
         borderRadius: 16,
@@ -814,7 +806,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     cancelLogoutText: {
-        color: '#444444',
+        color: TEXT_SECONDARY,
         fontSize: 16,
         fontWeight: '500',
     },

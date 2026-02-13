@@ -1,3 +1,4 @@
+import StepIndicators from '@/components/auth/StepIndicators';
 import OnboardingSuccessModal from '@/components/onboarding/OnboardingSuccessModal';
 import { ThemedText } from '@/components/themed-text';
 import { Colors } from '@/constants/theme';
@@ -12,6 +13,7 @@ export default function OnboardingStep3Screen() {
     const router = useRouter();
     const colorScheme = useColorScheme() ?? 'dark';
     const colors = Colors[colorScheme];
+    const isDark = colorScheme === 'dark';
     const [showSuccessModal, setShowSuccessModal] = useState(false);
 
     const handleJoinCommunity = () => {
@@ -39,44 +41,34 @@ export default function OnboardingStep3Screen() {
     };
 
     return (
-        <SafeAreaView style={[styles.container, { backgroundColor: '#111111' }]}>
-            <StatusBar style="light" />
+        <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+            <StatusBar style={isDark ? 'light' : 'dark'} />
             <View style={styles.content}>
 
                 {/* Top bar with back button and step indicators */}
                 <View style={styles.header}>
                     <TouchableOpacity onPress={handleBack} style={styles.backButton}>
-                        <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
+                        <Ionicons name="arrow-back" size={24} color={colors.text} />
                     </TouchableOpacity>
-                    <View style={styles.progressIndicators}>
-                        <View style={styles.progressCircle}>
-                            <Text style={styles.progressText}>1</Text>
-                        </View>
-                        <View style={styles.progressCircle}>
-                            <Text style={styles.progressText}>2</Text>
-                        </View>
-                        <View style={[styles.progressCircle, styles.progressActive]}>
-                            <Text style={styles.progressTextActive}>3</Text>
-                        </View>
-                    </View>
+                    <StepIndicators currentStep={3} isDark={isDark} />
                 </View>
 
                 {/* Main content */}
                 <View style={styles.mainContent}>
                     {/* Title */}
                     <View style={styles.titleSection}>
-                        <Text style={styles.title}>Join Our</Text>
+                        <Text style={[styles.title, { color: colors.text }]}>Join Our</Text>
                         <View style={styles.titleRow}>
-                            <Text style={styles.title}>C</Text>
+                            <Text style={[styles.title, { color: colors.text }]}>C</Text>
                             <View style={styles.iconWrapper}>
                                 <Ionicons name="leaf" size={20} color="#7ED321" />
                             </View>
-                            <Text style={styles.title}>mmunity</Text>
+                            <Text style={[styles.title, { color: colors.text }]}>mmunity</Text>
                         </View>
                     </View>
 
                     {/* Subtitle */}
-                    <Text style={styles.subtitle}>
+                    <Text style={[styles.subtitle, { color: colors.textMuted }]}>
                         Join a circle of Muslimah sisters learning, planning, and growing — together.
                     </Text>
 
@@ -145,34 +137,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'flex-start',
     },
-    progressIndicators: {
-        flexDirection: 'row',
-        gap: -10,
-    },
-    progressCircle: {
-        width: 32,
-        height: 32,
-        borderRadius: 16,
-        borderWidth: 1,
-        borderColor: '#333336',
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#1C1C1E',
-    },
-    progressActive: {
-        backgroundColor: '#AA74E01A',
-        borderWidth: 0,
-    },
-    progressText: {
-        color: '#9CA3AF',
-        fontSize: 14,
-        fontFamily: 'Poppins_500Medium',
-    },
-    progressTextActive: {
-        color: '#AA74E0',
-        fontSize: 14,
-        fontFamily: 'Poppins_600SemiBold',
-    },
     mainContent: {
         flex: 1,
         alignItems: 'center',
@@ -228,7 +192,7 @@ const styles = StyleSheet.create({
         gap: 16,
     },
     joinButton: {
-        backgroundColor: '#AA74E0',
+        backgroundColor: '#E18DFF',
         borderRadius: 100,
         paddingVertical: 16,
         width: '100%',
@@ -246,7 +210,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     finishButtonText: {
-        color: '#AA74E0',
+        color: '#E18DFF',
         fontSize: 18,
     },
 });

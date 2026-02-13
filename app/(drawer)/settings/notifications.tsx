@@ -1,4 +1,5 @@
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { ThemePalette, useAppColors } from '@/hooks/use-app-colors';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Feather from '@expo/vector-icons/Feather';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
@@ -16,14 +17,14 @@ import {
     View
 } from 'react-native';
 
-const PURPLE = '#5C1E68';
-const TEXT_GRAY = '#1A1A1A';
-const BG_COLOR = '#F9F9F9';
+const PURPLE = '#E18DFF';
 
 const CustomSwitch: React.FC<{
     isEnabled: boolean;
     onToggle: (value: boolean) => void;
-}> = ({ isEnabled, onToggle }) => {
+    colors: ThemePalette;
+    isDark: boolean;
+}> = ({ isEnabled, onToggle, colors, isDark }) => {
     const [animatedValue] = useState(new Animated.Value(isEnabled ? 1 : 0));
 
     React.useEffect(() => {
@@ -41,7 +42,7 @@ const CustomSwitch: React.FC<{
 
     const trackColor = animatedValue.interpolate({
         inputRange: [0, 1],
-        outputRange: ['#E9E9EB', '#DABFDE'], // Light purple track when active
+        outputRange: ['#E9E9EB', '#DABFDE'],
     });
 
     return (
@@ -54,6 +55,7 @@ const CustomSwitch: React.FC<{
                 <Animated.View
                     style={[
                         styles.switchThumb,
+                        { backgroundColor: PURPLE },
                         { transform: [{ translateX }] }
                     ]}
                 />
@@ -68,6 +70,8 @@ interface NotificationItemProps {
     isEnabled: boolean;
     onToggle: (value: boolean) => void;
     showBorder?: boolean;
+    colors: ThemePalette;
+    isDark: boolean;
 }
 
 const NotificationItem: React.FC<NotificationItemProps> = ({
@@ -76,8 +80,10 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
     isEnabled,
     onToggle,
     showBorder = true,
+    colors,
+    isDark,
 }) => (
-    <View style={[styles.itemContainer, showBorder && styles.itemBorder]}>
+    <View style={[styles.itemContainer, showBorder && styles.itemBorder, showBorder && { borderBottomColor: colors.border }]}>
         <View style={styles.itemLeft}>
             <View style={styles.iconContainer}>
                 {typeof icon === 'string' ? (
@@ -86,9 +92,9 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
                     icon
                 )}
             </View>
-            <Text style={styles.itemLabel}>{label}</Text>
+            <Text style={[styles.itemLabel, { color: colors.text }]}>{label}</Text>
         </View>
-        <CustomSwitch isEnabled={isEnabled} onToggle={onToggle} />
+        <CustomSwitch isEnabled={isEnabled} onToggle={onToggle} colors={colors} isDark={isDark} />
     </View>
 );
 
@@ -98,6 +104,8 @@ interface PrayerReminderRowProps {
     isNotificationEnabled: boolean;
     onToggleNotification: () => void;
     showBorder?: boolean;
+    colors: ThemePalette;
+    isDark: boolean;
 }
 
 const PrayerReminderRow: React.FC<PrayerReminderRowProps> = ({
@@ -106,19 +114,22 @@ const PrayerReminderRow: React.FC<PrayerReminderRowProps> = ({
     isNotificationEnabled,
     onToggleNotification,
     showBorder = true,
+    colors,
+    isDark,
 }) => (
-    <View style={[styles.prayerRow, showBorder && styles.itemBorder]}>
+    <View style={[styles.prayerRow, showBorder && styles.itemBorder, showBorder && { borderBottomColor: colors.border }]}>
         <View style={styles.itemLeft}>
             {typeof icon === 'string' ? (
-                <IconSymbol name={icon as any} size={22} color={TEXT_GRAY} />
+                <IconSymbol name={icon as any} size={22} color={colors.text} />
             ) : (
                 icon
             )}
-            <Text style={styles.prayerLabel}>{label}</Text>
+            <Text style={[styles.prayerLabel, { color: colors.textMuted }]}>{label}</Text>
         </View>
         <TouchableOpacity onPress={onToggleNotification}>
             <View style={[
                 styles.bellButton,
+                !isDark && styles.bellInactiveLight,
                 isNotificationEnabled ? styles.bellActive : styles.bellInactive
             ]}>
                 <IconSymbol
@@ -133,6 +144,7 @@ const PrayerReminderRow: React.FC<PrayerReminderRowProps> = ({
 
 export default function NotificationsScreen() {
     const router = useRouter();
+    const { colors, isDark } = useAppColors();
     const [settings, setSettings] = useState({
         prayerReminders: true,
         quranGoals: true,
@@ -159,71 +171,85 @@ export default function NotificationsScreen() {
     };
 
     return (
-        <View style={styles.container}>
-            <StatusBar barStyle="dark-content" />
-            <SafeAreaView style={styles.safeArea}>
+        <View style={[styles.container, { backgroundColor: colors.background }]}>
+            <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
+            <SafeAreaView style={[styles.safeArea, { backgroundColor: colors.background }]}>
                 <View style={styles.header}>
                     <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-                        <IconSymbol name="arrow.left" size={24} color={TEXT_GRAY} />
+                        <IconSymbol name="arrow.left" size={24} color={colors.text} />
                     </TouchableOpacity>
-                    <Text style={styles.headerTitle}>Notifications</Text>
+                    <Text style={[styles.headerTitle, { color: colors.text }]}>Notifications</Text>
                 </View>
             </SafeAreaView>
 
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
                 {/* Combined Reminders Card */}
-                <View style={styles.groupCard}>
+                <View style={[styles.groupCard, { backgroundColor: colors.surface }]}>
                     <View style={styles.groupHeader}>
                         <View style={styles.itemLeft}>
                             <View style={styles.iconContainer}>
                                 <FontAwesome6 name="person-praying" size={20} color={PURPLE} />
                             </View>
-                            <Text style={styles.groupTitle}>Prayer Reminders</Text>
+                            <Text style={[styles.groupTitle, { color: colors.text }]}>Prayer Reminders</Text>
                         </View>
                         <CustomSwitch
                             isEnabled={settings.prayerReminders}
                             onToggle={() => toggleSetting('prayerReminders')}
+                            colors={colors}
+                            isDark={isDark}
                         />
                     </View>
 
                     {settings.prayerReminders && (
-                        <View style={styles.prayerList}>
+                        <View style={[styles.prayerList, { borderColor: colors.border }]}>
                             <PrayerReminderRow
-                                icon={<Feather name="cloud" size={22} color={TEXT_GRAY} />}
+                                icon={<Feather name="cloud" size={22} color={colors.text} />}
                                 label="Fajr"
                                 isNotificationEnabled={prayerNotifications.fajr}
                                 onToggleNotification={() => togglePrayer('fajr')}
+                                colors={colors}
+                                isDark={isDark}
                             />
                             <PrayerReminderRow
-                                icon={<Feather name="sun" size={22} color={TEXT_GRAY} />}
+                                icon={<Feather name="sun" size={22} color={colors.text} />}
                                 label="Sunrise"
                                 isNotificationEnabled={prayerNotifications.sunrise}
                                 onToggleNotification={() => togglePrayer('sunrise')}
+                                colors={colors}
+                                isDark={isDark}
                             />
                             <PrayerReminderRow
-                                icon={<AntDesign name="clock-circle" size={20} color={TEXT_GRAY} />}
+                                icon={<AntDesign name="clock-circle" size={20} color={colors.text} />}
                                 label="Dhuhr"
                                 isNotificationEnabled={prayerNotifications.dhuhr}
                                 onToggleNotification={() => togglePrayer('dhuhr')}
+                                colors={colors}
+                                isDark={isDark}
                             />
                             <PrayerReminderRow
-                                icon={<Feather name="cloud" size={22} color={TEXT_GRAY} />}
+                                icon={<Feather name="cloud" size={22} color={colors.text} />}
                                 label="Asr"
                                 isNotificationEnabled={prayerNotifications.asr}
                                 onToggleNotification={() => togglePrayer('asr')}
+                                colors={colors}
+                                isDark={isDark}
                             />
                             <PrayerReminderRow
-                                icon={<Feather name="sunrise" size={22} color={TEXT_GRAY} />}
+                                icon={<Feather name="sunrise" size={22} color={colors.text} />}
                                 label="Maghrib"
                                 isNotificationEnabled={prayerNotifications.maghrib}
                                 onToggleNotification={() => togglePrayer('maghrib')}
+                                colors={colors}
+                                isDark={isDark}
                             />
                             <PrayerReminderRow
-                                icon={<Feather name="moon" size={22} color={TEXT_GRAY} />}
+                                icon={<Feather name="moon" size={22} color={colors.text} />}
                                 label="Ishai"
                                 isNotificationEnabled={prayerNotifications.ishai}
                                 onToggleNotification={() => togglePrayer('ishai')}
                                 showBorder={false}
+                                colors={colors}
+                                isDark={isDark}
                             />
                         </View>
                     )}
@@ -234,6 +260,8 @@ export default function NotificationsScreen() {
                             label="Qur'an / Tilawah Goals"
                             isEnabled={settings.quranGoals}
                             onToggle={() => toggleSetting('quranGoals')}
+                            colors={colors}
+                            isDark={isDark}
                         />
                     </View>
                     <NotificationItem
@@ -241,12 +269,16 @@ export default function NotificationsScreen() {
                         label="Du'a Prompts"
                         isEnabled={settings.duaPrompts}
                         onToggle={() => toggleSetting('duaPrompts')}
+                        colors={colors}
+                        isDark={isDark}
                     />
                     <NotificationItem
                         icon="bathtub"
                         label="Cycle & Ghusl Reminders"
                         isEnabled={settings.cycleReminders}
                         onToggle={() => toggleSetting('cycleReminders')}
+                        colors={colors}
+                        isDark={isDark}
                     />
                     <NotificationItem
                         icon={<FontAwesome5 name="mosque" size={18} color={PURPLE} />}
@@ -254,6 +286,8 @@ export default function NotificationsScreen() {
                         isEnabled={settings.jumuahReminder}
                         onToggle={() => toggleSetting('jumuahReminder')}
                         showBorder={false}
+                        colors={colors}
+                        isDark={isDark}
                     />
                 </View>
             </ScrollView>
@@ -264,10 +298,10 @@ export default function NotificationsScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: BG_COLOR,
+        backgroundColor: '#13181C',
     },
     safeArea: {
-        backgroundColor: BG_COLOR,
+        backgroundColor: '#13181C',
     },
     header: {
         flexDirection: 'row',
@@ -281,7 +315,7 @@ const styles = StyleSheet.create({
     headerTitle: {
         fontSize: 20,
         fontWeight: '500',
-        color: TEXT_GRAY,
+        color: '#FFFFFF',
         marginLeft: 12,
     },
     scrollContent: {
@@ -291,7 +325,7 @@ const styles = StyleSheet.create({
     groupCard: {
         width: 390,
         minHeight: 679,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#1F2125',
         borderRadius: 10,
         padding: 16,
         gap: 16,
@@ -313,7 +347,7 @@ const styles = StyleSheet.create({
     groupTitle: {
         fontSize: 16,
         fontWeight: '600',
-        color: TEXT_GRAY,
+        color: '#FFFFFF',
         marginLeft: 12,
     },
     iconContainer: {
@@ -328,7 +362,7 @@ const styles = StyleSheet.create({
     },
     itemBorder: {
         borderBottomWidth: 1,
-        borderBottomColor: '#F2F2F7',
+        borderBottomColor: '#5B6268',
     },
     itemLeft: {
         flexDirection: 'row',
@@ -337,7 +371,7 @@ const styles = StyleSheet.create({
     },
     itemLabel: {
         fontSize: 16,
-        color: TEXT_GRAY,
+        color: '#FFFFFF',
         marginLeft: 12,
         fontWeight: '500',
     },
@@ -358,7 +392,7 @@ const styles = StyleSheet.create({
     },
     prayerLabel: {
         fontSize: 16,
-        color: '#444444',
+        color: '#FFFFFFB2',
         marginLeft: 12,
     },
     bellButton: {
@@ -372,7 +406,7 @@ const styles = StyleSheet.create({
         backgroundColor: PURPLE,
     },
     bellInactive: {
-        backgroundColor: '#EBD6ED', // Light purple background
+        backgroundColor: '#332646', // Light purple background
     },
     switchContainer: {
         width: 50,
@@ -396,5 +430,8 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 2,
         elevation: 2,
+    },
+    bellInactiveLight: {
+        backgroundColor: '#D8C6F3',
     },
 });

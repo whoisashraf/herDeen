@@ -1,5 +1,6 @@
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useAppColors } from '@/hooks/use-app-colors';
 import { Stack, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -16,27 +17,24 @@ const METHODS = [
   { id: 'turkey', label: 'Turkey Presidency of Religious Affairs', flag: '🇹🇷' },
 ];
 
-const BG = '#121316';
-const SURFACE = '#1E2026';
-const TITLE = '#F5F6F8';
-const TEXT = '#B9BDC5';
 const ACCENT = '#A978E8';
 
 export default function CalculationMethodScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { colors, isDark } = useAppColors();
   const [selectedId, setSelectedId] = useState('mwl');
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top + 8 }]}>
-      <StatusBar barStyle="light-content" />
+    <View style={[styles.container, { backgroundColor: colors.background, paddingTop: insets.top + 8 }]}>
+      <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
       <Stack.Screen options={{ headerShown: false }} />
 
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.headerBtn}>
-          <IconSymbol name="arrow.left" size={20} color={TITLE} />
+        <TouchableOpacity onPress={() => router.back()} style={[styles.headerBtn, { backgroundColor: colors.surface }]}> 
+          <IconSymbol name="arrow.left" size={20} color={colors.text} />
         </TouchableOpacity>
-        <ThemedText type="poppins-semibold" style={styles.headerTitle}>
+        <ThemedText type="poppins-semibold" style={[styles.headerTitle, { color: colors.text }]}> 
           Calculation Method
         </ThemedText>
       </View>
@@ -55,12 +53,12 @@ export default function CalculationMethodScreen() {
               onPress={() => setSelectedId(method.id)}
             >
               <View style={styles.rowLeft}>
-                <View style={styles.flagCircle}>
+                <View style={[styles.flagCircle, { backgroundColor: colors.surface }]}> 
                   <Text style={styles.flagText}>{method.flag}</Text>
                 </View>
                 <ThemedText
                   type="poppins-medium"
-                  style={[styles.rowLabel, isSelected && styles.rowLabelSelected]}
+                  style={[styles.rowLabel, { color: isSelected ? colors.text : colors.textMuted }]}
                 >
                   {method.label}
                 </ThemedText>
@@ -84,7 +82,6 @@ export default function CalculationMethodScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: BG,
   },
   header: {
     flexDirection: 'row',
@@ -96,14 +93,12 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: SURFACE,
     alignItems: 'center',
     justifyContent: 'center',
   },
   headerTitle: {
     marginLeft: 16,
     fontSize: 24,
-    color: TITLE,
   },
   listContent: {
     paddingHorizontal: 24,
@@ -126,7 +121,6 @@ const styles = StyleSheet.create({
     width: 34,
     height: 34,
     borderRadius: 17,
-    backgroundColor: SURFACE,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -138,10 +132,6 @@ const styles = StyleSheet.create({
     flexShrink: 1,
     fontSize: 18,
     lineHeight: 24,
-    color: TEXT,
-  },
-  rowLabelSelected: {
-    color: TITLE,
   },
   rightSlot: {
     width: 44,

@@ -1,4 +1,5 @@
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useAppColors } from '@/hooks/use-app-colors';
 import OverviewCard from './OverviewCard';
 import React, { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -21,6 +22,7 @@ const INITIAL_GOALS: Goal[] = [
 ];
 
 export default function InitialSetup({ onSaveGoals }: { onSaveGoals: () => void }) {
+    const { colors, isDark } = useAppColors();
     const [goals, setGoals] = useState<Goal[]>(INITIAL_GOALS);
 
     const handleGoalSelection = (goalId: string, selected: boolean) => {
@@ -40,7 +42,7 @@ export default function InitialSetup({ onSaveGoals }: { onSaveGoals: () => void 
             <OverviewCard />
 
             <View style={styles.tabsContainer}>
-                <View style={styles.tabsWrapper}>
+                <View style={[styles.tabsWrapper, { backgroundColor: isDark ? colors.surface : 'white' }]}>
                     <TouchableOpacity style={[styles.tab, styles.tabActive]}>
                         <Text style={[styles.tabText, styles.tabTextActive]}>Daily Plan</Text>
                     </TouchableOpacity>
@@ -52,13 +54,13 @@ export default function InitialSetup({ onSaveGoals }: { onSaveGoals: () => void 
 
             <View style={styles.goalsContainer}>
                 {goals.map((goal) => (
-                    <View key={goal.id} style={styles.goalCard}>
+                    <View key={goal.id} style={[styles.goalCard, { backgroundColor: isDark ? colors.surface : 'white', borderColor: isDark ? colors.border : '#F3F4F6' }]}>
                         <View style={styles.goalHeader}>
                             <View style={styles.goalTitleRow}>
                                 <View style={styles.goalIcon}>
-                                    <IconSymbol name="person" size={20} color="#6B7280" />
+                                    <IconSymbol name="person" size={20} color={colors.textMuted} />
                                 </View>
-                                <Text style={styles.goalTitle}>{goal.title}</Text>
+                                <Text style={[styles.goalTitle, { color: colors.text }]}>{goal.title}</Text>
                             </View>
                             <TouchableOpacity 
                                 style={styles.deleteButton}
@@ -68,7 +70,7 @@ export default function InitialSetup({ onSaveGoals }: { onSaveGoals: () => void 
                                 <Text style={styles.deleteButtonText}>Delete</Text>
                             </TouchableOpacity>
                         </View>
-                        <Text style={styles.goalDescription}>{goal.description}</Text>
+                        <Text style={[styles.goalDescription, { color: colors.textMuted }]}>{goal.description}</Text>
                         {goal.type === 'checkboxes' ? (
                             <View style={styles.checkboxRow}>
                                 {[1, 2, 3, 4, 5].map((index) => (
@@ -108,9 +110,9 @@ export default function InitialSetup({ onSaveGoals }: { onSaveGoals: () => void 
             </View>
 
             <View style={styles.bottomActions}>
-                <TouchableOpacity style={styles.addButton}>
-                    <Text style={styles.addButtonText}>Add more Goals</Text>
-                    <IconSymbol name="plus" size={18} color="#1F2937" />
+                <TouchableOpacity style={[styles.addButton, { backgroundColor: isDark ? colors.surface : 'white', borderColor: isDark ? colors.border : '#E5E7EB' }]}>
+                    <Text style={[styles.addButtonText, { color: colors.text }]}>Add more Goals</Text>
+                    <IconSymbol name="plus" size={18} color={colors.icon} />
                 </TouchableOpacity>
 
                 <TouchableOpacity 
@@ -131,7 +133,7 @@ const styles = StyleSheet.create({
         marginBottom: 24,
     },
     overviewCard: {
-        backgroundColor: '#AA74E0',
+        backgroundColor: '#E18DFF',
         borderRadius: 16,
         padding: 20,
         overflow: 'hidden',
@@ -168,7 +170,7 @@ const styles = StyleSheet.create({
         paddingVertical: 6,
     },
     progressBadgeText: {
-        color: '#AA74E0',
+        color: '#E18DFF',
         fontSize: 12,
         fontWeight: 'bold',
     },
@@ -209,7 +211,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     tabActive: {
-        backgroundColor: '#AA74E0',
+        backgroundColor: '#E18DFF',
     },
     tabInactive: {
         backgroundColor: 'transparent',
@@ -221,7 +223,7 @@ const styles = StyleSheet.create({
         color: 'white',
     },
     tabTextWeekly: {
-        color: '#581C87',
+        color: '#E18DFF',
     },
     goalsContainer: {
         paddingHorizontal: 20,
@@ -346,7 +348,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         paddingVertical: 16,
-        backgroundColor: '#AA74E0',
+        backgroundColor: '#E18DFF',
         borderRadius: 12,
     },
     saveButtonDisabled: {

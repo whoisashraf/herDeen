@@ -1,43 +1,52 @@
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useAppColors } from '@/hooks/use-app-colors';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 export function MyCycles() {
+    const { colors, isDark } = useAppColors();
+
     return (
         <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>My Cycles</Text>
-            <View style={styles.statsCard}>
+            <Text style={[styles.sectionTitle, { color: colors.text }]}>My Cycles</Text>
+            <View style={[styles.statsCard, { backgroundColor: isDark ? colors.surface : '#FFF' }]}>
                 <StatsRow
                     label="Previous cycle length"
                     value="31 days"
                     status="Normal"
                     statusType="good"
+                    textColor={colors.text}
+                    mutedColor={colors.textMuted}
                 />
-                <View style={styles.divider} />
+                <View style={[styles.divider, { backgroundColor: isDark ? colors.border : '#F3F4F6' }]} />
                 <StatsRow
                     label="Previous period length"
                     value="5 days"
                     status="Regular"
                     statusType="good"
+                    textColor={colors.text}
+                    mutedColor={colors.textMuted}
                 />
-                <View style={styles.divider} />
+                <View style={[styles.divider, { backgroundColor: isDark ? colors.border : '#F3F4F6' }]} />
                 <StatsRow
                     label="Cycle length variation"
                     value="40-50 days"
                     status="Irregular"
                     statusType="bad"
+                    textColor={colors.text}
+                    mutedColor={colors.textMuted}
                 />
             </View>
         </View>
     );
 }
 
-function StatsRow({ label, value, status, statusType }: { label: string; value: string; status: string; statusType: 'good' | 'bad' }) {
+function StatsRow({ label, value, status, statusType, textColor, mutedColor }: { label: string; value: string; status: string; statusType: 'good' | 'bad'; textColor: string; mutedColor: string }) {
     return (
         <View style={styles.statsRow}>
             <View>
-                <Text style={styles.statsLabel}>{label}</Text>
-                <Text style={styles.statsValue}>{value}</Text>
+                <Text style={[styles.statsLabel, { color: mutedColor }]}>{label}</Text>
+                <Text style={[styles.statsValue, { color: textColor }]}>{value}</Text>
             </View>
             <View style={styles.statusContainer}>
                 <IconSymbol
@@ -45,7 +54,7 @@ function StatsRow({ label, value, status, statusType }: { label: string; value: 
                     size={24}
                     color={statusType === 'good' ? '#22C55E' : '#EF4444'}
                 />
-                <Text style={styles.statusText}>{status}</Text>
+                <Text style={[styles.statusText, { color: mutedColor }]}>{status}</Text>
             </View>
         </View>
     );
@@ -59,13 +68,11 @@ const styles = StyleSheet.create({
     sectionTitle: {
         fontSize: 16,
         fontWeight: '600',
-        color: '#374151',
         marginBottom: 12,
     },
 
     // Stats Card
     statsCard: {
-        backgroundColor: '#FFF',
         borderRadius: 20,
         padding: 20,
         shadowColor: '#000',
@@ -86,13 +93,11 @@ const styles = StyleSheet.create({
     },
     statsLabel: {
         fontSize: 12,
-        color: '#6B7280',
         marginBottom: 4,
     },
     statsValue: {
         fontSize: 14,
         fontWeight: '600',
-        color: '#1F2937',
     },
     statusContainer: {
         alignItems: 'center',
@@ -100,6 +105,5 @@ const styles = StyleSheet.create({
     },
     statusText: {
         fontSize: 10,
-        color: '#4B5563',
     },
 });

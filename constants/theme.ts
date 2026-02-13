@@ -4,35 +4,36 @@
  */
 
 import { Platform } from 'react-native';
+import { FigmaColors } from './figma-colors';
 
-const tintColorLight = '#0a7ea4';
-const tintColorDark = '#fff';
+const tintColorLight = FigmaColors.primary;
+const tintColorDark = FigmaColors.white;
 
 /** Input/field background color used in auth and forms */
-export const INPUT_BACKGROUND = '#1F2125';
+export const INPUT_BACKGROUND = FigmaColors.darkSurface;
 
 export const Colors = {
   light: {
-    text: '#11181C',
-    textMuted: '#6B7280',
-    background: '#FFFFFF',
-    surface: '#F7F7F7',
+    text: FigmaColors.text,
+    textMuted: FigmaColors.lightMuted,
+    background: FigmaColors.lightBackground,
+    surface: FigmaColors.lightSurfaceSoft,
     inputBackground: INPUT_BACKGROUND,
-    primary: '#AA74E0',
-    primaryLight: '#F3E8FF',
-    tint: '#AA74E0',
-    icon: '#111827',
+    primary: FigmaColors.primary,
+    primaryLight: FigmaColors.primaryActiveLight,
+    tint: tintColorLight,
+    icon: FigmaColors.text,
   },
   dark: {
-    text: '#FFFFFF',
-    textMuted: '#9CA3AF',
-    background: '#111111',
-    surface: '#1F2125',
+    text: FigmaColors.white,
+    textMuted: '#FFFFFFB2',
+    background: FigmaColors.darkBackground,
+    surface: FigmaColors.darkSurface,
     inputBackground: INPUT_BACKGROUND,
-    primary: '#AA74E0',
-    primaryLight: '#2D1F3D',
-    tint: '#AA74E0',
-    icon: '#FFFFFF',
+    primary: FigmaColors.primary,
+    primaryLight: '#44104D',
+    tint: tintColorDark,
+    icon: FigmaColors.white,
   },
 };
 

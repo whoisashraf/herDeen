@@ -1,4 +1,5 @@
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { ThemePalette, useAppColors } from '@/hooks/use-app-colors';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
@@ -11,10 +12,7 @@ import {
     View,
 } from 'react-native';
 
-const PURPLE = '#5C1E68';
-const TEXT_GRAY = '#1A1A1A';
-const BG_COLOR = '#F9F9F9';
-
+const PURPLE = '#E18DFF';
 interface LanguageOptionProps {
     id: string;
     label: string;
@@ -22,6 +20,7 @@ interface LanguageOptionProps {
     isSelected: boolean;
     onSelect: () => void;
     showBorder?: boolean;
+    colors: ThemePalette;
 }
 
 const LanguageOption: React.FC<LanguageOptionProps> = ({
@@ -30,15 +29,16 @@ const LanguageOption: React.FC<LanguageOptionProps> = ({
     isSelected,
     onSelect,
     showBorder = true,
+    colors,
 }) => (
     <TouchableOpacity
-        style={[styles.optionContainer, showBorder && styles.optionBorder]}
+        style={[styles.optionContainer, showBorder && styles.optionBorder, showBorder && { borderBottomColor: colors.border }]}
         onPress={onSelect}
         activeOpacity={0.7}
     >
         <View style={styles.optionLeft}>
             <Text style={styles.flagText}>{flag}</Text>
-            <Text style={[styles.optionLabel, isSelected && styles.selectedLabel]}>{label}</Text>
+            <Text style={[styles.optionLabel, { color: colors.text }, isSelected && styles.selectedLabel]}>{label}</Text>
         </View>
         {isSelected && (
             <IconSymbol name="checkmark" size={20} color={PURPLE} />
@@ -48,6 +48,7 @@ const LanguageOption: React.FC<LanguageOptionProps> = ({
 
 export default function LanguagePreferenceScreen() {
     const router = useRouter();
+    const { colors, isDark } = useAppColors();
     const [selectedLanguage, setSelectedLanguage] = useState('en');
 
     const languages = [
@@ -59,19 +60,19 @@ export default function LanguagePreferenceScreen() {
     ];
 
     return (
-        <View style={styles.container}>
-            <StatusBar barStyle="dark-content" />
-            <SafeAreaView style={styles.safeArea}>
+        <View style={[styles.container, { backgroundColor: colors.background }]}>
+            <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
+            <SafeAreaView style={[styles.safeArea, { backgroundColor: colors.background }]}>
                 <View style={styles.header}>
                     <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-                        <IconSymbol name="arrow.left" size={24} color={TEXT_GRAY} />
+                        <IconSymbol name="arrow.left" size={24} color={colors.text} />
                     </TouchableOpacity>
-                    <Text style={styles.headerTitle}>Language Preference</Text>
+                    <Text style={[styles.headerTitle, { color: colors.text }]}>Language Preference</Text>
                 </View>
             </SafeAreaView>
 
             <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-                <View style={styles.optionsCard}>
+                <View style={[styles.optionsCard, { backgroundColor: colors.surface }]}>
                     {languages.map((lang, index) => (
                         <LanguageOption
                             key={lang.id}
@@ -81,6 +82,7 @@ export default function LanguagePreferenceScreen() {
                             isSelected={selectedLanguage === lang.id}
                             onSelect={() => setSelectedLanguage(lang.id)}
                             showBorder={index < languages.length - 1}
+                            colors={colors}
                         />
                     ))}
                 </View>
@@ -92,10 +94,10 @@ export default function LanguagePreferenceScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: BG_COLOR,
+        backgroundColor: '#13181C',
     },
     safeArea: {
-        backgroundColor: BG_COLOR,
+        backgroundColor: '#13181C',
     },
     header: {
         flexDirection: 'row',
@@ -109,7 +111,7 @@ const styles = StyleSheet.create({
     headerTitle: {
         fontSize: 20,
         fontWeight: '500',
-        color: TEXT_GRAY,
+        color: '#FFFFFF',
         marginLeft: 12,
     },
     content: {
@@ -133,7 +135,7 @@ const styles = StyleSheet.create({
     },
     optionBorder: {
         borderBottomWidth: 1,
-        borderBottomColor: '#F2F2F7',
+        borderBottomColor: '#5B6268',
     },
     optionLeft: {
         flexDirection: 'row',
@@ -145,7 +147,7 @@ const styles = StyleSheet.create({
     },
     optionLabel: {
         fontSize: 17,
-        color: TEXT_GRAY,
+        color: '#FFFFFF',
         fontWeight: '500',
     },
     selectedLabel: {

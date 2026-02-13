@@ -1,3 +1,4 @@
+import StepIndicators from '@/components/auth/StepIndicators';
 import SelectOptionCard from '@/components/onboarding/SelectOptionCard';
 import { ThemedText } from '@/components/themed-text';
 import { Colors } from '@/constants/theme';
@@ -12,6 +13,7 @@ export default function OnboardingStep2Screen() {
     const router = useRouter();
     const colorScheme = useColorScheme() ?? 'dark';
     const colors = Colors[colorScheme];
+    const isDark = colorScheme === 'dark';
     const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
 
     const options = [
@@ -44,32 +46,22 @@ export default function OnboardingStep2Screen() {
     };
 
     return (
-        <SafeAreaView style={[styles.container, { backgroundColor: '#111111' }]}>
-            <StatusBar style="light" />
+        <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+            <StatusBar style={isDark ? 'light' : 'dark'} />
             <View style={styles.content}>
 
                 {/* Top bar with back button and step indicators */}
                 <View style={styles.header}>
                     <TouchableOpacity onPress={handleBack} style={styles.backButton}>
-                        <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
+                        <Ionicons name="arrow-back" size={24} color={colors.text} />
                     </TouchableOpacity>
-                    <View style={styles.progressIndicators}>
-                        <View style={styles.progressCircle}>
-                            <Text style={styles.progressText}>1</Text>
-                        </View>
-                        <View style={[styles.progressCircle, styles.progressActive]}>
-                            <Text style={styles.progressTextActive}>2</Text>
-                        </View>
-                        <View style={styles.progressCircle}>
-                            <Text style={styles.progressText}>3</Text>
-                        </View>
-                    </View>
+                    <StepIndicators currentStep={2} isDark={isDark} />
                 </View>
 
                 {/* Title + subtitle */}
                 <View style={styles.textSection}>
-                    <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">What Do You Want to Grow?</Text>
-                    <Text style={styles.subtitle}>Choose what you'd like support with — you're in control.</Text>
+                    <Text style={[styles.title, { color: colors.text }]} numberOfLines={1} ellipsizeMode="tail">What Do You Want to Grow?</Text>
+                    <Text style={[styles.subtitle, { color: colors.textMuted }]}>Choose what you'd like support with — you're in control.</Text>
                 </View>
 
                 {/* Options - Multi-select */}
@@ -96,7 +88,7 @@ export default function OnboardingStep2Screen() {
                     </TouchableOpacity>
 
                     <TouchableOpacity onPress={handleSkip} activeOpacity={0.7} style={{ marginTop: 16 }}>
-                        <ThemedText type="poppins-regular" style={styles.skipButtonText}>Skip this</ThemedText>
+                        <ThemedText type="poppins-regular" style={[styles.skipButtonText, { color: colors.textMuted }]}>Skip this</ThemedText>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -125,34 +117,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'flex-start',
     },
-    progressIndicators: {
-        flexDirection: 'row',
-        gap: -10, // Overlap indicators
-    },
-    progressCircle: {
-        width: 32,
-        height: 32,
-        borderRadius: 16,
-        borderWidth: 1,
-        borderColor: '#333336',
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#1C1C1E',
-    },
-    progressActive: {
-        backgroundColor: '#AA74E01A', // Semi-transparent purple for active
-        borderWidth: 0, // No border for active
-    },
-    progressText: {
-        color: '#9CA3AF',
-        fontSize: 14,
-        fontFamily: 'Poppins_500Medium',
-    },
-    progressTextActive: {
-        color: '#AA74E0', // Purple text on semi-transparent background
-        fontSize: 14,
-        fontFamily: 'Poppins_600SemiBold',
-    },
     textSection: {
         marginBottom: 32,
     },
@@ -176,7 +140,7 @@ const styles = StyleSheet.create({
         width: '100%'
     },
     continueButton: {
-        backgroundColor: '#AA74E0',
+        backgroundColor: '#E18DFF',
         borderRadius: 100,
         paddingVertical: 20,
         width: '100%',

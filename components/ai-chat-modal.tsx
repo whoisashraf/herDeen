@@ -1,4 +1,5 @@
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useAppColors } from '@/hooks/use-app-colors';
 import { aiService } from '@/services/ai-service';
 import { useEffect, useRef, useState } from 'react';
 import {
@@ -30,6 +31,7 @@ interface AIChatModalProps {
 }
 
 export function AIChatModal({ visible, onClose, onTasksReceived }: AIChatModalProps) {
+  const { colors, isDark } = useAppColors();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -143,20 +145,20 @@ export function AIChatModal({ visible, onClose, onTasksReceived }: AIChatModalPr
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet">
       <KeyboardAvoidingView
-        style={styles.container}
+        style={[styles.container, { backgroundColor: colors.background }]}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={0}
       >
         {/* Header */}
-        <View style={styles.header}>
+        <View style={[styles.header, { backgroundColor: colors.surface, borderBottomColor: colors.border }]}>
           <View style={styles.headerLeft}>
             <View style={styles.aiIcon}>
               <IconSymbol name="sparkles" size={20} color="#fff" />
             </View>
-            <Text style={styles.headerTitle}>AI Planner Assistant</Text>
+            <Text style={[styles.headerTitle, { color: colors.text }]}>AI Planner Assistant</Text>
           </View>
           <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-            <IconSymbol name="xmark" size={22} color="#333" />
+            <IconSymbol name="xmark" size={22} color={colors.text} />
           </TouchableOpacity>
         </View>
 
@@ -177,20 +179,20 @@ export function AIChatModal({ visible, onClose, onTasksReceived }: AIChatModalPr
             >
               {!message.isUser && (
                 <View style={styles.aiAvatar}>
-                  <IconSymbol name="brain" size={16} color="#AA74E0" />
+                  <IconSymbol name="brain" size={16} color="#E18DFF" />
                 </View>
               )}
               <View style={styles.messageWrapper}>
                 <View
                   style={[
                     styles.messageContent,
-                    message.isUser ? styles.userMessageContent : styles.aiMessageContent,
+                    message.isUser ? styles.userMessageContent : [styles.aiMessageContent, { backgroundColor: colors.surface }],
                   ]}
                 >
                   <Text
                     style={[
                       styles.messageText,
-                      message.isUser ? styles.userMessageText : styles.aiMessageText,
+                      message.isUser ? styles.userMessageText : [styles.aiMessageText, { color: colors.text }],
                     ]}
                   >
                     {message.text}
@@ -209,7 +211,7 @@ export function AIChatModal({ visible, onClose, onTasksReceived }: AIChatModalPr
                       }
                     }}
                   >
-                    <IconSymbol name="square.and.arrow.up" size={14} color="#6B7280" />
+                    <IconSymbol name="square.and.arrow.up" size={14} color={colors.textMuted} />
                   </TouchableOpacity>
                 )}
               </View>
@@ -219,8 +221,8 @@ export function AIChatModal({ visible, onClose, onTasksReceived }: AIChatModalPr
           {/* Loading indicator */}
           {isLoading && (
             <View style={styles.loadingContainer}>
-              <ActivityIndicator size="small" color="#AA74E0" />
-              <Text style={styles.loadingText}>AI is thinking...</Text>
+              <ActivityIndicator size="small" color="#E18DFF" />
+              <Text style={[styles.loadingText, { color: colors.textMuted }]}>AI is thinking...</Text>
             </View>
           )}
 
@@ -234,11 +236,11 @@ export function AIChatModal({ visible, onClose, onTasksReceived }: AIChatModalPr
         </ScrollView>
 
         {/* Input */}
-        <View style={styles.inputContainer}>
+        <View style={[styles.inputContainer, { backgroundColor: colors.surface, borderTopColor: colors.border }]}>
           <TextInput
-            style={styles.input}
+            style={[styles.input, { backgroundColor: isDark ? colors.surfaceSoft : '#F3F4F6', color: colors.text }]}
             placeholder="Type your message..."
-            placeholderTextColor="#999"
+            placeholderTextColor={colors.textFaint}
             value={inputText}
             onChangeText={setInputText}
             multiline
@@ -253,9 +255,9 @@ export function AIChatModal({ visible, onClose, onTasksReceived }: AIChatModalPr
             disabled={!inputText.trim() || isLoading}
           >
             {isLoading ? (
-              <ActivityIndicator size="small" color="#AA74E0" />
+              <ActivityIndicator size="small" color="#E18DFF" />
             ) : (
-              <IconSymbol name="arrow.up.circle.fill" size={32} color="#AA74E0" />
+              <IconSymbol name="arrow.up.circle.fill" size={32} color="#E18DFF" />
             )}
           </TouchableOpacity>
         </View>
@@ -288,7 +290,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: '#AA74E0',
+    backgroundColor: '#E18DFF',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
@@ -341,7 +343,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   userMessageContent: {
-    backgroundColor: '#AA74E0',
+    backgroundColor: '#E18DFF',
     borderBottomRightRadius: 4,
   },
   aiMessageContent: {
@@ -368,7 +370,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#AA74E0',
+    backgroundColor: '#E18DFF',
     paddingVertical: 14,
     paddingHorizontal: 24,
     borderRadius: 12,

@@ -1,4 +1,5 @@
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useAppColors } from '@/hooks/use-app-colors';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
@@ -13,10 +14,7 @@ import {
     View,
 } from 'react-native';
 
-const PURPLE = '#5C1E68';
-const TEXT_GRAY = '#1A1A1A';
-const BG_COLOR = '#F9F9F9';
-
+const PURPLE = '#E18DFF';
 interface FAQItem {
     question: string;
     answer: string;
@@ -47,6 +45,7 @@ const faqData: FAQItem[] = [
 
 export default function FAQsScreen() {
     const router = useRouter();
+    const { colors, isDark } = useAppColors();
     const [expandedIndex, setExpandedIndex] = useState<number | null>(0);
 
     const toggleFAQ = (index: number) => {
@@ -54,14 +53,14 @@ export default function FAQsScreen() {
     };
 
     return (
-        <View style={styles.container}>
-            <StatusBar barStyle="dark-content" />
-            <SafeAreaView style={styles.safeArea}>
+        <View style={[styles.container, { backgroundColor: colors.background }]}>
+            <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
+            <SafeAreaView style={[styles.safeArea, { backgroundColor: colors.background }]}>
                 <View style={styles.header}>
                     <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-                        <IconSymbol name="arrow.left" size={24} color={TEXT_GRAY} />
+                        <IconSymbol name="arrow.left" size={24} color={colors.text} />
                     </TouchableOpacity>
-                    <Text style={styles.headerTitle}>FAQs</Text>
+                    <Text style={[styles.headerTitle, { color: colors.text }]}>FAQs</Text>
                 </View>
             </SafeAreaView>
 
@@ -93,13 +92,13 @@ export default function FAQsScreen() {
                 {/* FAQ List */}
                 <View style={styles.faqContainer}>
                     {faqData.map((faq, index) => (
-                        <View key={index} style={styles.faqCard}>
+                        <View key={index} style={[styles.faqCard, { backgroundColor: colors.surface }]}>
                             <TouchableOpacity
                                 style={styles.faqHeader}
                                 onPress={() => toggleFAQ(index)}
                                 activeOpacity={0.7}
                             >
-                                <Text style={styles.faqQuestion}>{faq.question}</Text>
+                                <Text style={[styles.faqQuestion, { color: colors.text }]}>{faq.question}</Text>
                                 <View style={styles.iconCircle}>
                                     <IconSymbol
                                         name={expandedIndex === index ? "chevron.up" : "chevron.down"}
@@ -109,7 +108,7 @@ export default function FAQsScreen() {
                                 </View>
                             </TouchableOpacity>
                             {expandedIndex === index && (
-                                <Text style={styles.faqAnswer}>{faq.answer}</Text>
+                                <Text style={[styles.faqAnswer, { color: colors.textMuted }]}>{faq.answer}</Text>
                             )}
                         </View>
                     ))}
@@ -117,7 +116,7 @@ export default function FAQsScreen() {
 
                 {/* Contact Footer */}
                 <View style={styles.contactFooter}>
-                    <Text style={styles.contactText}>
+                    <Text style={[styles.contactText, { color: colors.textMuted }]}>
                         Can't find an answer to your question?{' '}
                         <Text
                             style={styles.contactLink}
@@ -135,10 +134,10 @@ export default function FAQsScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: BG_COLOR,
+        backgroundColor: '#13181C',
     },
     safeArea: {
-        backgroundColor: BG_COLOR,
+        backgroundColor: '#13181C',
     },
     header: {
         flexDirection: 'row',
@@ -152,7 +151,7 @@ const styles = StyleSheet.create({
     headerTitle: {
         fontSize: 20,
         fontWeight: '500',
-        color: TEXT_GRAY,
+        color: '#FFFFFF',
         marginLeft: 12,
     },
     scrollContent: {
@@ -201,7 +200,7 @@ const styles = StyleSheet.create({
         marginBottom: 24,
     },
     faqCard: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#1F2125',
         borderRadius: 12,
         padding: 16,
         marginBottom: 12,
@@ -220,7 +219,7 @@ const styles = StyleSheet.create({
         flex: 1,
         fontSize: 16,
         fontWeight: '500',
-        color: '#2B0E30',
+        color: '#FFFFFF',
         marginRight: 12,
     },
     iconCircle: {
@@ -236,7 +235,7 @@ const styles = StyleSheet.create({
     faqAnswer: {
         fontSize: 12,
         fontWeight: '400',
-        color: '#6B6B6B',
+        color: '#FFFFFFB2',
         lineHeight: 22,
         marginTop: 12,
         paddingRight: 40,
@@ -248,7 +247,7 @@ const styles = StyleSheet.create({
     contactText: {
         fontSize: 14,
         fontWeight: '400',
-        color: '#2B0E30',
+        color: '#FFFFFFB2',
         textAlign: 'center',
     },
     contactLink: {

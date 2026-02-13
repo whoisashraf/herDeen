@@ -1,4 +1,5 @@
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useAppColors } from '@/hooks/use-app-colors';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
@@ -16,27 +17,26 @@ import {
     View,
 } from 'react-native';
 
-const PURPLE = '#5C1E68';
-const TEXT_GRAY = '#1A1A1A';
-const BG_COLOR = '#F9F9F9';
-const LIGHT_PURPLE = '#F3E8F7';
+const PURPLE = '#E18DFF';
+const LIGHT_PURPLE = '#332646';
 
 export default function ContactUsScreen() {
     const router = useRouter();
+    const { colors, isDark } = useAppColors();
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [message, setMessage] = useState('');
 
     return (
-        <View style={styles.container}>
-            <StatusBar barStyle="dark-content" />
-            <SafeAreaView style={styles.safeArea}>
+        <View style={[styles.container, { backgroundColor: colors.background }]}>
+            <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
+            <SafeAreaView style={[styles.safeArea, { backgroundColor: colors.background }]}>
                 <View style={styles.header}>
                     <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-                        <IconSymbol name="arrow.left" size={24} color={TEXT_GRAY} />
+                        <IconSymbol name="arrow.left" size={24} color={colors.text} />
                     </TouchableOpacity>
-                    <Text style={styles.headerTitle}>Contact Us</Text>
+                    <Text style={[styles.headerTitle, { color: colors.text }]}>Contact Us</Text>
                 </View>
             </SafeAreaView>
 
@@ -70,61 +70,61 @@ export default function ContactUsScreen() {
                     {/* Contact Info Cards */}
                     <View style={styles.contactInfoContainer}>
                         {/* Email */}
-                        <View style={styles.infoCard}>
-                            <View style={styles.iconBox}>
+                        <View style={[styles.infoCard, { backgroundColor: colors.surface }]}>
+                            <View style={[styles.iconBox, { backgroundColor: colors.chip }]}>
                                 <IconSymbol name="mail" size={24} color={PURPLE} />
                             </View>
                             <View style={styles.infoTextContainer}>
-                                <Text style={styles.infoLabel}>Email Address</Text>
-                                <Text style={styles.infoValue}>support@herdeen.com</Text>
+                                <Text style={[styles.infoLabel, { color: colors.textMuted }]}>Email Address</Text>
+                                <Text style={[styles.infoValue, { color: colors.text }]}>support@herdeen.com</Text>
                             </View>
                         </View>
 
                         {/* Phone */}
-                        <View style={styles.infoCard}>
-                            <View style={styles.iconBox}>
+                        <View style={[styles.infoCard, { backgroundColor: colors.surface }]}>
+                            <View style={[styles.iconBox, { backgroundColor: colors.chip }]}>
                                 <IconSymbol name="phone" size={24} color={PURPLE} />
                             </View>
                             <View style={styles.infoTextContainer}>
-                                <Text style={styles.infoLabel}>Phone</Text>
-                                <Text style={styles.infoValue}>support@herdeen.com</Text>
+                                <Text style={[styles.infoLabel, { color: colors.textMuted }]}>Phone</Text>
+                                <Text style={[styles.infoValue, { color: colors.text }]}>support@herdeen.com</Text>
                             </View>
                         </View>
 
                         {/* Address */}
-                        <View style={styles.infoCard}>
-                            <View style={styles.iconBox}>
+                        <View style={[styles.infoCard, { backgroundColor: colors.surface }]}>
+                            <View style={[styles.iconBox, { backgroundColor: colors.chip }]}>
                                 <IconSymbol name="location" size={24} color={PURPLE} />
                             </View>
                             <View style={styles.infoTextContainer}>
-                                <Text style={styles.infoLabel}>Address</Text>
-                                <Text style={styles.infoValue}>E4/817G, Adekile, Idi-Orogbo, Ibadan.</Text>
+                                <Text style={[styles.infoLabel, { color: colors.textMuted }]}>Address</Text>
+                                <Text style={[styles.infoValue, { color: colors.text }]}>E4/817G, Adekile, Idi-Orogbo, Ibadan.</Text>
                             </View>
                         </View>
                     </View>
 
                     {/* Contact Form */}
-                    <Text style={styles.formTitle}>Send Us a Message</Text>
+                    <Text style={[styles.formTitle, { color: colors.text }]}>Send Us a Message</Text>
 
-                    <View style={styles.formCard}>
+                    <View style={[styles.formCard, { backgroundColor: colors.surface }]}>
                         {/* Name Row */}
                         <View style={styles.nameRow}>
                             <View style={styles.nameInputContainer}>
-                                <Text style={styles.inputLabel}>First Name</Text>
+                                <Text style={[styles.inputLabel, { color: colors.textMuted }]}>First Name</Text>
                                 <TextInput
-                                    style={styles.input}
+                                    style={[styles.input, { backgroundColor: colors.background, color: colors.text }]}
                                     placeholder="Aishah"
-                                    placeholderTextColor="#8A8A8E"
+                                    placeholderTextColor={colors.textMuted}
                                     value={firstName}
                                     onChangeText={setFirstName}
                                 />
                             </View>
                             <View style={styles.nameInputContainer}>
-                                <Text style={styles.inputLabel}>Last Name</Text>
+                                <Text style={[styles.inputLabel, { color: colors.textMuted }]}>Last Name</Text>
                                 <TextInput
-                                    style={styles.input}
+                                    style={[styles.input, { backgroundColor: colors.background, color: colors.text }]}
                                     placeholder="Abdullahi"
-                                    placeholderTextColor="#8A8A8E"
+                                    placeholderTextColor={colors.textMuted}
                                     value={lastName}
                                     onChangeText={setLastName}
                                 />
@@ -133,11 +133,11 @@ export default function ContactUsScreen() {
 
                         {/* Email */}
                         <View style={styles.inputContainer}>
-                            <Text style={styles.inputLabel}>Email Address</Text>
+                            <Text style={[styles.inputLabel, { color: colors.textMuted }]}>Email Address</Text>
                             <TextInput
-                                style={styles.input}
+                                style={[styles.input, { backgroundColor: colors.background, color: colors.text }]}
                                 placeholder="aishahabdullahi09@gmail.com"
-                                placeholderTextColor="#8A8A8E"
+                                placeholderTextColor={colors.textMuted}
                                 value={email}
                                 onChangeText={setEmail}
                                 keyboardType="email-address"
@@ -147,11 +147,11 @@ export default function ContactUsScreen() {
 
                         {/* Message */}
                         <View style={styles.inputContainer}>
-                            <Text style={styles.inputLabel}>Message</Text>
+                            <Text style={[styles.inputLabel, { color: colors.textMuted }]}>Message</Text>
                             <TextInput
-                                style={[styles.input, styles.messageInput]}
+                                style={[styles.input, styles.messageInput, { backgroundColor: colors.background, color: colors.text }]}
                                 placeholder="Type your message here..."
-                                placeholderTextColor="#8A8A8E"
+                                placeholderTextColor={colors.textMuted}
                                 value={message}
                                 onChangeText={setMessage}
                                 multiline
@@ -180,10 +180,10 @@ export default function ContactUsScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: BG_COLOR,
+        backgroundColor: '#13181C',
     },
     safeArea: {
-        backgroundColor: BG_COLOR,
+        backgroundColor: '#13181C',
     },
     header: {
         flexDirection: 'row',
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     headerTitle: {
         fontSize: 20,
         fontWeight: '500',
-        color: TEXT_GRAY,
+        color: '#FFFFFF',
         marginLeft: 12,
     },
     scrollContent: {
@@ -251,7 +251,7 @@ const styles = StyleSheet.create({
     infoCard: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#1F2125',
         borderRadius: 12,
         padding: 16,
         marginBottom: 12,
@@ -276,22 +276,22 @@ const styles = StyleSheet.create({
     infoLabel: {
         fontSize: 14,
         fontWeight: '500',
-        color: '#444444',
+        color: '#FFFFFFB2',
         marginBottom: 4,
     },
     infoValue: {
         fontSize: 14,
         fontWeight: '500',
-        color: '#2B0E30',
+        color: '#FFFFFF',
     },
     formTitle: {
         fontSize: 18,
         fontWeight: '700',
-        color: TEXT_GRAY,
+        color: '#FFFFFF',
         marginBottom: 16,
     },
     formCard: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#1F2125',
         width: 390,
         height: 457,
         borderRadius: 10,
@@ -313,16 +313,16 @@ const styles = StyleSheet.create({
     inputLabel: {
         fontSize: 14,
         fontWeight: '400',
-        color: '#444444',
+        color: '#FFFFFFB2',
         marginBottom: 8,
     },
     input: {
-        backgroundColor: '#F9F9F9',
+        backgroundColor: '#13181C',
         borderRadius: 12,
         paddingHorizontal: 16,
         paddingVertical: 14,
         fontSize: 16,
-        color: TEXT_GRAY,
+        color: '#FFFFFF',
     },
     messageInput: {
         height: 150,
@@ -342,7 +342,7 @@ const styles = StyleSheet.create({
         elevation: 4,
     },
     sendButtonDisabled: {
-        backgroundColor: '#C7C7CC',
+        backgroundColor: '#16171A',
         shadowOpacity: 0.1,
     },
     sendButtonText: {

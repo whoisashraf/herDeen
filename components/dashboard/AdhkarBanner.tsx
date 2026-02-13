@@ -14,8 +14,8 @@ const CARDS = [
     arabic: 'اللهم إنك عفو تحب العفو فاعف عني',
     translation: "So whoever does an atom's weight of good...",
     buttonText: 'View',
-    light: { bgColor: '#F7F2FF', tintColor: '#AA74E0' },
-    dark: { bgColor: '#2D1D44', tintColor: '#AA74E0' },
+    light: { bgColor: '#F7F2FF', tintColor: '#E18DFF' },
+    dark: { bgColor: '#2D1D44', tintColor: '#E18DFF' },
   },
   {
     id: 'quran',

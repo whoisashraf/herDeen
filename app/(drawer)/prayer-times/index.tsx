@@ -50,7 +50,7 @@ export default function PrayerTimesScreen() {
 
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
                 {/* Date & Location Banner */}
-                <View style={[styles.bannerContainer, { backgroundColor: '#AA74E0' }]}>
+                <View style={[styles.bannerContainer, { backgroundColor: '#E18DFF' }]}>
                     <ImageBackground
                         source={require('@/assets/images/bg-image.png')}
                         style={styles.bannerBackground}
@@ -83,7 +83,7 @@ export default function PrayerTimesScreen() {
                             <View
                                 style={[
                                     styles.prayerItem,
-                                    { backgroundColor: prayer.isCurrent ? '#AA74E0' : colors.surface },
+                                    { backgroundColor: prayer.isCurrent ? '#E18DFF' : colors.surface },
                                 ]}
                             >
                                 <View style={styles.prayerLeft}>

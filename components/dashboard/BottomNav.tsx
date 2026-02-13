@@ -17,10 +17,8 @@ export const BottomNav = () => {
     const pathname = usePathname();
     const insets = useSafeAreaInsets();
 
-    const isActive = (path: string) => pathname === path || pathname.includes(path);
-
     // Active color from the design looks like a lavender purple
-    const activeColor = '#AA74E0';
+    const activeColor = '#E18DFF';
     const inactiveColor = '#8E8E93';
 
     return (
@@ -53,14 +51,14 @@ export const BottomNav = () => {
 
             <TouchableOpacity
                 style={styles.navItem}
-                onPress={() => router.push('/planner')}
+                onPress={() => router.push('/journal')}
             >
                 <IconSymbol
                     name="book"
                     size={24}
-                    color={pathname.includes('/planner') ? activeColor : inactiveColor}
+                    color={pathname.includes('/journal') ? activeColor : inactiveColor}
                 />
-                <ThemedText type="poppins-medium" style={[styles.navText, { color: pathname.includes('/planner') ? activeColor : inactiveColor }]}>
+                <ThemedText type="poppins-medium" style={[styles.navText, { color: pathname.includes('/journal') ? activeColor : inactiveColor }]}>
                     Journal
                 </ThemedText>
             </TouchableOpacity>

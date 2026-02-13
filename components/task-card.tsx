@@ -1,5 +1,6 @@
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Task } from '@/contexts/planner-context';
+import { useAppColors } from '@/hooks/use-app-colors';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 interface TaskCardProps {
@@ -19,11 +20,14 @@ export function TaskCard({
   onUpdate,
   onDelete,
 }: TaskCardProps) {
+  const { colors, isDark } = useAppColors();
+  const cardBg = isDark ? colors.surface : '#FFFFFF';
+  const inputBg = isDark ? colors.surfaceSoft : '#F9FAFB';
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: cardBg, borderColor: isDark ? colors.border : '#F3E9F6' }]}>
       <View style={styles.header}>
-        <Text style={styles.title}>Task {taskNumber}</Text>
+        <Text style={[styles.title, { color: colors.text }]}>Task {taskNumber}</Text>
         <View style={styles.headerActions}>
           <TouchableOpacity onPress={onDelete} style={styles.deleteButton}>
             <IconSymbol name="trash" size={18} color="#EF4444" />
@@ -32,7 +36,7 @@ export function TaskCard({
             <IconSymbol
               name={isExpanded ? 'chevron.up' : 'chevron.down'}
               size={20}
-              color="#666"
+              color={colors.textMuted}
             />
           </TouchableOpacity>
         </View>
@@ -41,18 +45,18 @@ export function TaskCard({
       {isExpanded && (
         <View style={styles.content}>
           {/* Task Description */}
-          <Text style={styles.label}>What&apos;s on your plate today?</Text>
+          <Text style={[styles.label, { color: colors.textMuted }]}>What&apos;s on your plate today?</Text>
           <TextInput
-            style={styles.input}
+            style={[styles.input, { backgroundColor: inputBg, color: colors.text }]}
             placeholder="Online class, Grocery shopping, Client meeting"
-            placeholderTextColor="#999"
+            placeholderTextColor={colors.textFaint}
             multiline
             value={task.title}
             onChangeText={(text) => onUpdate({ title: text })}
           />
 
           {/* Priority */}
-          <Text style={styles.label}>Priority</Text>
+          <Text style={[styles.label, { color: colors.textMuted }]}>Priority</Text>
           <View style={styles.priorityContainer}>
             <TouchableOpacity
               style={[
@@ -65,6 +69,7 @@ export function TaskCard({
               <Text
                 style={[
                   styles.priorityText,
+                  { color: colors.textMuted },
                   task.priority === 'low' && styles.priorityTextActive,
                 ]}
               >
@@ -82,6 +87,7 @@ export function TaskCard({
               <Text
                 style={[
                   styles.priorityText,
+                  { color: colors.textMuted },
                   task.priority === 'medium' && styles.priorityTextActive,
                 ]}
               >
@@ -99,6 +105,7 @@ export function TaskCard({
               <Text
                 style={[
                   styles.priorityText,
+                  { color: colors.textMuted },
                   task.priority === 'high' && styles.priorityTextActive,
                 ]}
               >
@@ -110,30 +117,32 @@ export function TaskCard({
           {/* Time Inputs */}
           <View style={styles.timeRow}>
             <View style={styles.timeGroup}>
-              <Text style={styles.label}>Estimated Duration</Text>
-              <View style={styles.timeInputContainer}>
+              <Text style={[styles.label, { color: colors.textMuted }]}>Estimated Duration</Text>
+              <View style={[styles.timeInputContainer, { backgroundColor: inputBg }]}>
                 <TextInput
-                  style={styles.timeInput}
+                  style={[styles.timeInput, { color: colors.text }]}
                   placeholder="40"
+                  placeholderTextColor={colors.textFaint}
                   keyboardType="numeric"
                   value={task.estimatedDuration?.toString()}
                   onChangeText={(text) =>
                     onUpdate({ estimatedDuration: parseInt(text) || 0 })
                   }
                 />
-                <Text style={styles.timeUnit}>Min</Text>
+                <Text style={[styles.timeUnit, { color: colors.textMuted }]}>Min</Text>
               </View>
             </View>
             <View style={styles.timeGroup}>
-              <Text style={styles.label}>Prefer time</Text>
-              <View style={styles.timeInputContainer}>
+              <Text style={[styles.label, { color: colors.textMuted }]}>Prefer time</Text>
+              <View style={[styles.timeInputContainer, { backgroundColor: inputBg }]}>
                 <TextInput
-                  style={styles.timeInput}
+                  style={[styles.timeInput, { color: colors.text }]}
                   placeholder="01:50"
+                  placeholderTextColor={colors.textFaint}
                   value={task.preferredTime}
                   onChangeText={(text) => onUpdate({ preferredTime: text })}
                 />
-                <Text style={styles.timeUnit}>AM</Text>
+                <Text style={[styles.timeUnit, { color: colors.textMuted }]}>AM</Text>
               </View>
             </View>
           </View>
@@ -145,10 +154,10 @@ export function TaskCard({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
     borderRadius: 16,
     padding: 16,
     marginBottom: 12,
+    borderWidth: 1,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
@@ -163,22 +172,18 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
   },
   content: {
     marginTop: 16,
   },
   label: {
     fontSize: 13,
-    color: '#666',
     marginBottom: 8,
   },
   input: {
-    backgroundColor: '#F9FAFB',
     borderRadius: 8,
     padding: 12,
     fontSize: 14,
-    color: '#333',
     marginBottom: 16,
     minHeight: 44,
   },
@@ -200,7 +205,7 @@ const styles = StyleSheet.create({
   },
   priorityLowActive: {
     backgroundColor: '#FEF08A',
-    borderColor: '#AA74E0',
+    borderColor: '#E18DFF',
   },
   priorityMedium: {
     backgroundColor: '#EDE9FE',
@@ -208,7 +213,7 @@ const styles = StyleSheet.create({
   },
   priorityMediumActive: {
     backgroundColor: '#C4B5FD',
-    borderColor: '#AA74E0',
+    borderColor: '#E18DFF',
   },
   priorityHigh: {
     backgroundColor: '#FF00001F',
@@ -216,14 +221,13 @@ const styles = StyleSheet.create({
   },
   priorityHighActive: {
     backgroundColor: '#FECACA',
-    borderColor: '#AA74E0',
+    borderColor: '#E18DFF',
   },
   priorityText: {
     fontSize: 13,
-    color: '#666',
   },
   priorityTextActive: {
-    color: '#333',
+    color: '#11181C',
     fontWeight: '500',
   },
 
@@ -238,7 +242,7 @@ const styles = StyleSheet.create({
   timeInputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F9FAFB',
+    backgroundColor: 'transparent',
     borderRadius: 8,
     paddingHorizontal: 12,
   },
@@ -246,11 +250,9 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 12,
     fontSize: 14,
-    color: '#333',
   },
   timeUnit: {
     fontSize: 13,
-    color: '#999',
     marginLeft: 8,
   },
   headerActions: {

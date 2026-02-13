@@ -1,4 +1,5 @@
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useAppColors } from '@/hooks/use-app-colors';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
@@ -16,60 +17,66 @@ const CALENDAR_DAYS = [
 
 export function CycleStatusCard() {
     const router = useRouter();
+    const { colors, isDark } = useAppColors();
+    const cardBackground = isDark ? colors.surface : '#FFF';
+    const mutedText = isDark ? colors.textMuted : '#4B5563';
+    const primaryText = isDark ? colors.text : '#1F2937';
+    const futureDateColor = isDark ? colors.text : '#374151';
+    const bannerGradient = isDark ? ['#2B1F31', '#2E2437'] : ['#F3E5F5', '#EDE7F6'];
 
     return (
-        <TouchableOpacity style={styles.mainCard} onPress={() => router.push('/(drawer)/tracker/calendar')}>
+        <TouchableOpacity style={[styles.mainCard, { backgroundColor: cardBackground, borderColor: isDark ? colors.border : 'transparent' }]} onPress={() => router.push('/(drawer)/tracker/calendar')}>
             <View style={styles.calendarSection}>
                 <View style={styles.calendarHeader}>
                     <View style={styles.dateRow}>
-                        <IconSymbol name="calendar" size={20} color="#5E2C7E" />
+                        <IconSymbol name="calendar" size={20} color="#E18DFF" />
                         <Text style={styles.dateText}>July 15</Text>
                     </View>
-                    <Text style={styles.cycleStatusText}>You are out of your cycle</Text>
+                    <Text style={[styles.cycleStatusText, { color: mutedText }]}>You are out of your cycle</Text>
                 </View>
 
                 {/* Days Strip */}
                 <View style={styles.weekStrip}>
                     <View style={styles.dayColumn}>
-                        <Text style={styles.dayText}>S</Text>
+                        <Text style={[styles.dayText, { color: mutedText }]}>S</Text>
                         <View style={[styles.dateCircle, styles.selectedCircle]}>
                             <Text style={[styles.dateNumber, styles.selectedDateText]}>13</Text>
                         </View>
                     </View>
                     <View style={styles.dayColumn}>
-                        <Text style={styles.dayText}>M</Text>
+                        <Text style={[styles.dayText, { color: mutedText }]}>M</Text>
                         <View style={styles.dateCircle}>
-                            <Text style={[styles.dateNumber, styles.futureDateText]}>14</Text>
+                            <Text style={[styles.dateNumber, styles.futureDateText, { color: futureDateColor }]}>14</Text>
                         </View>
                     </View>
                     <View style={styles.dayColumn}>
-                        <Text style={styles.dayText}>T</Text>
+                        <Text style={[styles.dayText, { color: mutedText }]}>T</Text>
                         <View style={styles.dateCircle}>
-                            <Text style={[styles.dateNumber, styles.futureDateText]}>15</Text>
+                            <Text style={[styles.dateNumber, styles.futureDateText, { color: futureDateColor }]}>15</Text>
                         </View>
                     </View>
                     <View style={styles.dayColumn}>
-                        <Text style={styles.dayText}>Today</Text>
+                        <Text style={[styles.dayText, { color: mutedText }]}>Today</Text>
                         <View style={[styles.dateCircle, styles.todayCircle]}>
                             <Text style={[styles.dateNumber, styles.todayDateText]}>16</Text>
                         </View>
                     </View>
                     <View style={styles.dayColumn}>
-                        <Text style={styles.dayText}>T</Text>
+                        <Text style={[styles.dayText, { color: mutedText }]}>T</Text>
                         <View style={styles.dateCircle}>
-                            <Text style={[styles.dateNumber, styles.futureDateText]}>17</Text>
+                            <Text style={[styles.dateNumber, styles.futureDateText, { color: futureDateColor }]}>17</Text>
                         </View>
                     </View>
                     <View style={styles.dayColumn}>
-                        <Text style={styles.dayText}>F</Text>
+                        <Text style={[styles.dayText, { color: mutedText }]}>F</Text>
                         <View style={styles.dateCircle}>
-                            <Text style={[styles.dateNumber, styles.futureDateText]}>18</Text>
+                            <Text style={[styles.dateNumber, styles.futureDateText, { color: futureDateColor }]}>18</Text>
                         </View>
                     </View>
                     <View style={styles.dayColumn}>
-                        <Text style={styles.dayText}>S</Text>
+                        <Text style={[styles.dayText, { color: mutedText }]}>S</Text>
                         <View style={styles.dateCircle}>
-                            <Text style={[styles.dateNumber, styles.futureDateText]}>19</Text>
+                            <Text style={[styles.dateNumber, styles.futureDateText, { color: futureDateColor }]}>19</Text>
                         </View>
                     </View>
                 </View>
@@ -77,7 +84,7 @@ export function CycleStatusCard() {
 
             {/* Expect Period Banner */}
             <LinearGradient
-                colors={['#F3E5F5', '#EDE7F6']}
+                colors={bannerGradient}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={styles.periodBanner}
@@ -90,13 +97,13 @@ export function CycleStatusCard() {
                             contentFit="contain"
                         />
                         <View style={styles.predictionTextContainer}>
-                            <Text style={styles.expectLabel}>Expect period in</Text>
-                            <Text style={styles.daysCount}>14 days</Text>
+                            <Text style={[styles.expectLabel, { color: mutedText }]}>Expect period in</Text>
+                            <Text style={[styles.daysCount, { color: primaryText }]}>14 days</Text>
                         </View>
                     </View>
 
                     <View style={styles.bannerRight}>
-                        <Text style={styles.predictionDate}>July 30</Text>
+                        <Text style={[styles.predictionDate, { color: mutedText }]}>July 30</Text>
                         <TouchableOpacity style={styles.logPeriodButton}>
                             <Text style={styles.logPeriodText}>Log period</Text>
                         </TouchableOpacity>
@@ -111,6 +118,8 @@ const styles = StyleSheet.create({
     // Main Card
     mainCard: {
         backgroundColor: '#FFF',
+        borderWidth: 1,
+        borderColor: 'transparent',
         borderRadius: 24,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 6 },
@@ -137,12 +146,11 @@ const styles = StyleSheet.create({
     dateText: {
         fontSize: 15,
         fontWeight: '600',
-        color: '#5E2C7E',
+        color: '#E18DFF',
         fontStyle: 'italic',
     },
     cycleStatusText: {
         fontSize: 12,
-        color: '#4B5563',
         fontWeight: '500',
     },
 
@@ -159,7 +167,6 @@ const styles = StyleSheet.create({
     },
     dayText: {
         fontSize: 11,
-        color: '#6B7280',
         fontWeight: '500',
     },
     dateCircle: {
@@ -186,7 +193,7 @@ const styles = StyleSheet.create({
         fontWeight: '500',
     },
     todayDateText: {
-        color: '#5E2C7E',
+        color: '#E18DFF',
         fontWeight: '600',
     },
     futureDateText: {
@@ -222,7 +229,6 @@ const styles = StyleSheet.create({
     },
     expectLabel: {
         fontSize: 10,
-        color: '#4B5563',
         fontWeight: '400',
     },
     daysCount: {
@@ -237,11 +243,10 @@ const styles = StyleSheet.create({
     predictionDate: {
         fontSize: 10,
         fontWeight: '500',
-        color: '#4B5563',
         fontStyle: 'italic',
     },
     logPeriodButton: {
-        backgroundColor: '#5E2C7E',
+        backgroundColor: '#E18DFF',
         paddingVertical: 8,
         paddingHorizontal: 16,
         borderRadius: 10,

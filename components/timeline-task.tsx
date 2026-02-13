@@ -1,4 +1,5 @@
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useAppColors } from '@/hooks/use-app-colors';
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
@@ -23,6 +24,10 @@ export function TimelineTask({
   onEdit,
   onToggleComplete,
 }: TimelineTaskProps) {
+  const { colors, isDark } = useAppColors();
+  const cardBg = isDark ? colors.surface : '#FFFFFF';
+  const chipBg = isDark ? 'rgba(255, 0, 0, 0.22)' : '#FF00001F';
+
   // Fixed dashed column settings (matches design): 97px total length, dash 3px, gap 3px
   const DASH_CONTAINER_HEIGHT = 97;
   const DASH_HEIGHT = 3;
@@ -33,8 +38,8 @@ export function TimelineTask({
     <View style={styles.container}>
       {/* Timeline Dot */}
       <View style={styles.timelineContainer}>
-        <View style={[styles.dot, isCompleted && styles.dotCompleted]}>
-          <View style={[styles.dotInner, isCompleted && styles.dotInnerCompleted]} />
+        <View style={[styles.dot, { borderColor: cardBg }, isCompleted && styles.dotCompleted]}>
+          <View style={[styles.dotInner, { backgroundColor: cardBg }, isCompleted && styles.dotInnerCompleted]} />
         </View>
         <View style={[styles.dashColumn, { height: DASH_CONTAINER_HEIGHT }]} pointerEvents="none">
           {Array.from({ length: DASH_COUNT }).map((_, i) => (
@@ -45,21 +50,21 @@ export function TimelineTask({
 
       {/* Content */}
       <View style={styles.content}>
-        <Text style={styles.taskLabel}>Task {taskNumber}</Text>
-        <View style={styles.card}>
+        <Text style={[styles.taskLabel, { color: colors.text }]}>Task {taskNumber}</Text>
+        <View style={[styles.card, { backgroundColor: cardBg, borderColor: isDark ? colors.border : '#F3E9F6' }]}>
           <View style={styles.cardTopRow}>
-            <Text style={styles.title}>{title}</Text>
-            <View style={styles.timeContainer}>
-              <Text style={styles.time}>{startTime} - {endTime}</Text>
+            <Text style={[styles.title, { color: isDark ? colors.text : '#2F0633' }]}>{title}</Text>
+            <View style={[styles.timeContainer, { backgroundColor: chipBg }]}>
+              <Text style={[styles.time, { color: isDark ? colors.text : '#2B0E30' }]}>{startTime} - {endTime}</Text>
             </View>
           </View>
 
-          {description && <Text style={styles.description}>{description}</Text>}
+          {description && <Text style={[styles.description, { color: colors.textMuted }]}>{description}</Text>}
 
           <View style={styles.cardFooter}>
             {onEdit ? (
               <TouchableOpacity style={styles.editButton} onPress={onEdit}>
-                <IconSymbol name="pencil" size={14} color="#AA74E0" />
+                <IconSymbol name="pencil" size={14} color="#E18DFF" />
                 <Text style={styles.editText}>Edit</Text>
               </TouchableOpacity>
             ) : onToggleComplete && (
@@ -92,10 +97,10 @@ const styles = StyleSheet.create({
     width: 12,
     height: 12,
     borderRadius: 6,
-    backgroundColor: '#AA74E0',
+    backgroundColor: '#E18DFF',
     borderWidth: 2,
     borderColor: '#fff',
-    shadowColor: '#AA74E0',
+    shadowColor: '#E18DFF',
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
@@ -111,7 +116,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   dotCompleted: {
-    backgroundColor: '#4A0C63',
+    backgroundColor: '#E18DFF',
   },
   dashColumn: {
     position: 'absolute',
@@ -126,7 +131,7 @@ const styles = StyleSheet.create({
     width: 1.5,
     height: 3,
     borderRadius: 1,
-    backgroundColor: '#AA74E0',
+    backgroundColor: '#E18DFF',
     marginVertical: 3,
     opacity: 1,
   },
@@ -135,12 +140,10 @@ const styles = StyleSheet.create({
   },
   taskLabel: {
     fontSize: 13,
-    color: '#1F2937',
     marginBottom: 8,
     fontWeight: '600',
   },
   card: {
-    backgroundColor: '#FFFFFF',
     borderRadius: 12,
     paddingHorizontal: 18,
     paddingVertical: 14,
@@ -163,13 +166,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 22,
     fontWeight: '800',
-    color: '#2F0633',
     marginBottom: 4,
     flex: 1,
   },
   description: {
     fontSize: 13,
-    color: '#6B7280',
     lineHeight: 20,
     marginTop: 8,
     marginBottom: 8,
@@ -187,7 +188,6 @@ const styles = StyleSheet.create({
   },
   time: {
     fontSize: 12,
-    color: '#2B0E30',
     fontWeight: '600',
   },
   editButton: {
@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
   },
   editText: {
     fontSize: 13,
-    color: '#AA74E0',
+    color: '#E18DFF',
     fontWeight: '500',
   },
   checkButton: {

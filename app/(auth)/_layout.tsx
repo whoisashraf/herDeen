@@ -6,6 +6,11 @@ export default function AuthLayout() {
       <Stack.Screen name="sign-up" />
       <Stack.Screen name="login" />
       <Stack.Screen name="confirm-email" />
+      <Stack.Screen name="email-verified" />
+      <Stack.Screen name="forgot-password" />
+      <Stack.Screen name="reset-password" />
+      <Stack.Screen name="set-new-password" />
+      <Stack.Screen name="password-reset-success" />
     </Stack>
   );
 }

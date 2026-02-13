@@ -1,11 +1,14 @@
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useAppColors } from '@/hooks/use-app-colors';
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import type { Goal } from './types';
 
 export default function GoalCard({ goal, onUpdate, onDelete }: { goal: Goal; onUpdate: (id: string, data: Partial<Goal>) => void; onDelete: (id: string) => void }) {
+    const { colors, isDark } = useAppColors();
+
     return (
-        <View style={styles.goalCard}>
+        <View style={[styles.goalCard, { backgroundColor: isDark ? colors.surface : 'white', borderColor: isDark ? colors.border : '#F3F4F6' }]}>
             <View style={styles.goalHeader}>
                 <View style={styles.goalTitleRow}>
                     <View style={styles.goalIcon}>
@@ -17,10 +20,10 @@ export default function GoalCard({ goal, onUpdate, onDelete }: { goal: Goal; onU
                                             goal.title.includes('Dua') ? 'hands.sparkles' : 'moon.stars'
                             }
                             size={20}
-                            color="#4A0C63"
+                            color="#E18DFF"
                         />
                     </View>
-                    <Text style={styles.goalTitle}>{goal.title}</Text>
+                    <Text style={[styles.goalTitle, { color: colors.text }]}>{goal.title}</Text>
                 </View>
                 <TouchableOpacity
                     onPress={() => onDelete(goal.id)}
@@ -31,7 +34,7 @@ export default function GoalCard({ goal, onUpdate, onDelete }: { goal: Goal; onU
                 </TouchableOpacity>
             </View>
 
-            <Text style={styles.goalDescription}>{goal.description}</Text>
+            <Text style={[styles.goalDescription, { color: colors.textMuted }]}>{goal.description}</Text>
 
             {goal.type === 'checkboxes' ? (
                 <View style={styles.prayerRow}>
@@ -47,7 +50,7 @@ export default function GoalCard({ goal, onUpdate, onDelete }: { goal: Goal; onU
                                 <View style={[styles.prayerDot, active ? styles.prayerDotActive : styles.prayerDotInactive]}>
                                     {active ? <IconSymbol name="checkmark" size={12} color="white" /> : null}
                                 </View>
-                                <Text style={[styles.prayerLabel, active ? styles.prayerLabelActive : styles.prayerLabelInactive]}>{name}</Text>
+                                <Text style={[styles.prayerLabel, active ? styles.prayerLabelActive : [styles.prayerLabelInactive, { color: colors.textFaint }]]}>{name}</Text>
                             </TouchableOpacity>
                         );
                     })}
@@ -98,16 +101,16 @@ const styles = StyleSheet.create({
     prayerRow: { flexDirection: 'row', gap: 14, alignItems: 'center' },
     prayerItem: { alignItems: 'center' },
     prayerDot: { width: 28, height: 28, borderRadius: 14, alignItems: 'center', justifyContent: 'center', marginBottom: 4 },
-    prayerDotActive: { backgroundColor: '#4A0C63' },
+    prayerDotActive: { backgroundColor: '#E18DFF' },
     prayerDotInactive: { backgroundColor: '#F3E8F6' },
     prayerLabel: { fontSize: 11, marginTop: 4 },
-    prayerLabelActive: { color: '#4A0C63', fontWeight: '600' },
+    prayerLabelActive: { color: '#E18DFF', fontWeight: '600' },
     prayerLabelInactive: { color: '#9CA3AF' },
     yesNoRow: { flexDirection: 'row', gap: 12 },
     yesNoButton: { paddingHorizontal: 20, paddingVertical: 8, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
     yesNoButtonInactive: { backgroundColor: '#F3E8FF' },
-    yesNoButtonActive: { backgroundColor: '#4A0C63' },
+    yesNoButtonActive: { backgroundColor: '#E18DFF' },
     yesNoButtonText: { fontWeight: '600' },
-    yesNoButtonTextInactive: { color: '#4A0C63' },
+    yesNoButtonTextInactive: { color: '#E18DFF' },
     yesNoButtonTextActive: { color: 'white' }
 });

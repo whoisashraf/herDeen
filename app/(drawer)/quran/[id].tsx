@@ -57,31 +57,36 @@ export default function SurahDetailScreen() {
     const { id } = useLocalSearchParams();
     const colorScheme = useColorScheme() ?? 'light';
     const colors = Colors[colorScheme];
+    const isDark = colorScheme === 'dark';
+    const screenBackground = isDark ? '#090909' : colors.background;
+    const surfaceBackground = isDark ? '#1C1C1E' : '#F7F7F7';
+    const primaryText = isDark ? '#FFFFFF' : colors.text;
+    const mutedText = isDark ? '#8E8E93' : colors.textMuted;
 
     return (
-        <View style={[styles.container, { backgroundColor: '#090909' }]}>
+        <View style={[styles.container, { backgroundColor: screenBackground }]}>
             <Stack.Screen options={{ headerShown: false }} />
 
             {/* Header */}
             <View style={styles.header}>
-                <TouchableOpacity onPress={() => router.back()} style={styles.headerIconButton}>
-                    <IconSymbol name="arrow.left" size={24} color="white" />
+                <TouchableOpacity onPress={() => router.back()} style={[styles.headerIconButton, { backgroundColor: surfaceBackground }]}>
+                    <IconSymbol name="arrow.left" size={24} color={primaryText} />
                 </TouchableOpacity>
 
                 <View style={styles.headerTitleContainer}>
                     <TouchableOpacity style={styles.titleWrapper}>
-                        <ThemedText type="poppins-bold" style={styles.headerTitle}>
+                        <ThemedText type="poppins-medium" style={[styles.headerTitle, { color: primaryText }]}>
                             Al-Fatiah
                         </ThemedText>
-                        <IconSymbol name="chevron.down" size={16} color="white" />
+                        <IconSymbol name="chevron.down" size={16} color={primaryText} />
                     </TouchableOpacity>
-                    <ThemedText type="poppins-regular" style={styles.headerSubtitle}>
+                    <ThemedText type="poppins-regular" style={[styles.headerSubtitle, { color: mutedText }]}>
                         Page 1 • Juz 1/Hizb 1
                     </ThemedText>
                 </View>
 
-                <TouchableOpacity style={styles.headerIconButton}>
-                    <IconSymbol name="hexagon" size={24} color="white" />
+                <TouchableOpacity style={[styles.headerIconButton, styles.rightHeaderButton, { backgroundColor: surfaceBackground }]}>
+                    <IconSymbol name="hexagon" size={24} color={primaryText} />
                 </TouchableOpacity>
             </View>
 
@@ -107,7 +112,7 @@ export default function SurahDetailScreen() {
 
                 {/* Bismillah */}
                 <View style={styles.bismillahContainer}>
-                    <ThemedText type="amiri-bold" style={styles.bismillahText}>
+                    <ThemedText type="amiri-bold" style={[styles.bismillahText, { color: primaryText }]}>
                         بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ
                     </ThemedText>
                 </View>
@@ -117,11 +122,11 @@ export default function SurahDetailScreen() {
                     <View style={styles.versesRow}>
                         {VERSES.filter(v => !v.isBismillah).map((verse, index) => (
                             <React.Fragment key={index}>
-                                <ThemedText type="amiri-bold" style={styles.verseLargeText}>
+                                <ThemedText type="amiri-bold" style={[styles.verseLargeText, { color: primaryText }]}>
                                     {verse.arabic}
                                 </ThemedText>
                                 <View style={styles.verseMarker}>
-                                    <IconSymbol name="circle" size={32} color="white" />
+                                    <IconSymbol name="circle" size={32} color={primaryText} />
                                     {/* This would ideally be a custom verse marker icon from the design */}
                                 </View>
                             </React.Fragment>
@@ -131,7 +136,7 @@ export default function SurahDetailScreen() {
             </ScrollView>
 
             <View style={styles.footer}>
-                <ThemedText type="poppins-regular" style={styles.pageNumber}>1</ThemedText>
+                <ThemedText type="poppins-regular" style={[styles.pageNumber, { color: mutedText }]}>1</ThemedText>
             </View>
         </View>
     );
@@ -145,7 +150,7 @@ const styles = StyleSheet.create({
     header: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
+        justifyContent: 'flex-start',
         paddingHorizontal: 24,
         marginBottom: 20,
     },
@@ -158,7 +163,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     headerTitleContainer: {
-        alignItems: 'center',
+        alignItems: 'flex-start',
+        marginLeft: 12,
     },
     titleWrapper: {
         flexDirection: 'row',
@@ -166,12 +172,15 @@ const styles = StyleSheet.create({
         gap: 4,
     },
     headerTitle: {
-        fontSize: 18,
+        fontSize: 17,
         color: 'white',
     },
     headerSubtitle: {
         fontSize: 12,
         color: '#8E8E93',
+    },
+    rightHeaderButton: {
+        marginLeft: 'auto',
     },
     scrollContent: {
         paddingHorizontal: 24,
@@ -182,7 +191,7 @@ const styles = StyleSheet.create({
         borderRadius: 24,
         overflow: 'hidden',
         marginBottom: 40,
-        backgroundColor: '#AA74E0', // Matches the purple in screenshot
+        backgroundColor: '#E18DFF', // Matches the purple in screenshot
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -227,17 +236,20 @@ const styles = StyleSheet.create({
     },
     versesWrapper: {
         width: '100%',
+        alignItems: 'center',
     },
     versesRow: {
         flexDirection: 'row',
         flexWrap: 'wrap',
-        justifyContent: 'flex-end',
+        justifyContent: 'center',
+        alignSelf: 'center',
+        maxWidth: 340,
         gap: 12,
     },
     verseLargeText: {
         fontSize: 28,
         color: 'white',
-        textAlign: 'right',
+        textAlign: 'center',
         lineHeight: 52,
     },
     verseMarker: {

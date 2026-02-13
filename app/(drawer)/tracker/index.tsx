@@ -17,29 +17,34 @@ export default function TrackerScreen() {
     const router = useRouter();
     const colorScheme = useColorScheme() ?? 'light';
     const colors = Colors[colorScheme];
+    const isDark = colorScheme === 'dark';
+    const screenBackground = isDark ? '#090909' : colors.background;
+    const surfaceBackground = isDark ? '#1C1C1E' : colors.surface;
+    const primaryText = isDark ? '#FFFFFF' : colors.text;
+    const mutedText = isDark ? '#8E8E93' : colors.textMuted;
 
     return (
-        <View style={[styles.container, { backgroundColor: '#090909' }]}>
+        <View style={[styles.container, { backgroundColor: screenBackground }]}>
             <View style={styles.safeArea}>
                 {/* Header */}
                 <View style={styles.header}>
-                    <TouchableOpacity onPress={() => router.back()} style={styles.headerIconButton}>
-                        <IconSymbol name="arrow.left" size={24} color="white" />
+                    <TouchableOpacity onPress={() => router.back()} style={[styles.headerIconButton, { backgroundColor: surfaceBackground }]}>
+                        <IconSymbol name="arrow.left" size={24} color={primaryText} />
                     </TouchableOpacity>
 
                     <View style={styles.headerTitleContainer}>
-                        <ThemedText type="poppins-bold" style={styles.headerTitle}>Menstrual Tracker</ThemedText>
-                        <ThemedText type="poppins-regular" style={styles.headerSubtitle}>Day 12 • Follicular Phase</ThemedText>
+                        <ThemedText type="poppins-bold" style={[styles.headerTitle, { color: primaryText }]}>Menstrual Tracker</ThemedText>
+                        <ThemedText type="poppins-regular" style={[styles.headerSubtitle, { color: mutedText }]}>Day 12 • Follicular Phase</ThemedText>
                     </View>
 
-                    <TouchableOpacity style={styles.headerIconButton}>
-                        <IconSymbol name="hexagon" size={24} color="white" />
+                    <TouchableOpacity style={[styles.headerIconButton, { backgroundColor: surfaceBackground }]}>
+                        <IconSymbol name="hexagon" size={24} color={primaryText} />
                     </TouchableOpacity>
                 </View>
 
                 <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
                     {/* Banner similar to Quran */}
-                    <View style={styles.bannerContainer}>
+                    <View style={[styles.bannerContainer, { backgroundColor: surfaceBackground }]}>
                         <ImageBackground
                             source={require('@/assets/images/header_bg.jpg')}
                             style={styles.bannerBackground}
@@ -47,12 +52,12 @@ export default function TrackerScreen() {
                         >
                             <View style={styles.bannerContent}>
                                 <View>
-                                    <ThemedText type="poppins-medium" style={styles.bannerLabel}>PERIOD IN</ThemedText>
-                                    <ThemedText type="poppins-bold" style={styles.bannerMainText}>14 Days</ThemedText>
+                                    <ThemedText type="poppins-medium" style={[styles.bannerLabel, { color: mutedText }]}>PERIOD IN</ThemedText>
+                                    <ThemedText type="poppins-bold" style={[styles.bannerMainText, { color: primaryText }]}>14 Days</ThemedText>
                                     <ThemedText type="poppins-regular" style={styles.bannerSubText}>Low chance of pregnancy</ThemedText>
                                 </View>
                                 <View style={styles.bannerIconContainer}>
-                                    <IconSymbol name="drop.fill" size={40} color="#AA74E0" />
+                                    <IconSymbol name="drop.fill" size={40} color="#E18DFF" />
                                 </View>
                             </View>
                         </ImageBackground>
@@ -137,13 +142,13 @@ const styles = StyleSheet.create({
     },
     bannerSubText: {
         fontSize: 12,
-        color: '#AA74E0',
+        color: '#E18DFF',
     },
     bannerIconContainer: {
         width: 64,
         height: 64,
         borderRadius: 32,
-        backgroundColor: '#AA74E01A',
+        backgroundColor: '#E18DFF1A',
         justifyContent: 'center',
         alignItems: 'center',
     },

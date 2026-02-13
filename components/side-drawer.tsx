@@ -83,7 +83,7 @@ export function SideDrawer() {
           style={[
             styles.footerItem,
             pathname.includes('/settings') && {
-              backgroundColor: '#AA74E0',
+              backgroundColor: '#E18DFF',
               paddingHorizontal: 16,
               borderRadius: 12
             }
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   menuItemActive: {
-    backgroundColor: '#AA74E0',
+    backgroundColor: '#E18DFF',
   },
   menuText: {
     fontSize: 16,

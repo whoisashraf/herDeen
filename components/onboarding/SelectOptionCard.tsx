@@ -1,4 +1,5 @@
 // components/onboarding/SelectOptionCard.tsx
+import { useAppColors } from '@/hooks/use-app-colors';
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -10,20 +11,27 @@ interface SelectOptionCardProps {
 }
 
 export default function SelectOptionCard({ label, isSelected, onPress }: SelectOptionCardProps) {
+  const { colors, isDark } = useAppColors();
+
   return (
     <TouchableOpacity
       style={styles.container}
       onPress={onPress}
       activeOpacity={0.85}
     >
-      <View style={styles.textPart}>
-        <Text style={[styles.cardText, isSelected && styles.cardTextActive]} numberOfLines={1}>
+      <View style={[styles.textPart, { backgroundColor: colors.surface }]}>
+        <Text style={[styles.cardText, { color: colors.text }, isSelected && styles.cardTextActive]} numberOfLines={1}>
           {label}
         </Text>
       </View>
 
-      <View style={styles.checkPart}>
-        <View style={[styles.checkboxContainer, isSelected && styles.checkboxActive]}>
+      <View style={[styles.checkPart, { backgroundColor: colors.surface }]}>
+        <View
+          style={[
+            styles.checkboxContainer,
+            { borderColor: isDark ? '#FFFFFFB2' : colors.border },
+            isSelected && styles.checkboxActive,
+          ]}>
           {isSelected ? (
             <Ionicons name="checkmark" size={18} color="#FFFFFF" />
           ) : (
@@ -46,7 +54,6 @@ const styles = StyleSheet.create({
   },
   textPart: {
     flex: 1,
-    backgroundColor: '#1E1E20',
     borderRadius: 8,
     justifyContent: 'center',
     paddingHorizontal: 20,
@@ -54,13 +61,11 @@ const styles = StyleSheet.create({
   },
   checkPart: {
     width: 50, // Square-ish
-    backgroundColor: '#1E1E20',
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
   },
   cardText: {
-    color: '#FFFFFF',
     fontSize: 16,
     fontFamily: 'Poppins_500Medium',
   },
@@ -72,17 +77,15 @@ const styles = StyleSheet.create({
     height: 24,
     borderRadius: 6,
     borderWidth: 1.5,
-    borderColor: '#FFFFFFB2',
     justifyContent: 'center',
     alignItems: 'center',
   },
   checkboxActive: {
-    backgroundColor: '#AA74E0',
-    borderColor: '#AA74E0',
+    backgroundColor: '#E18DFF',
+    borderColor: '#E18DFF',
   },
   checkboxEmpty: {
     // Empty state border
   },
 });
-
 

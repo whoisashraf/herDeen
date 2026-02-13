@@ -57,6 +57,16 @@ export default function QuranScreen() {
     const [searchText, setSearchText] = useState('');
     const colorScheme = useColorScheme() ?? 'light';
     const colors = Colors[colorScheme];
+    const isDark = colorScheme === 'dark';
+    const screenBackground = isDark ? '#090909' : colors.background;
+    const surfaceBackground = isDark ? '#1C1C1E' : colors.surface;
+    const primaryText = isDark ? '#FFFFFF' : colors.text;
+    const mutedText = isDark ? '#8E8E93' : colors.textMuted;
+    const dividerColor = isDark ? '#1C1C1E' : '#E6E8EB';
+    const headerTitleColor = isDark ? '#FFFFFF' : '#1F2228';
+    const headerIconBackground = isDark ? '#1C1C1E' : '#E4E4E6';
+    const headerIconColor = isDark ? '#FFFFFF' : '#2A2E36';
+    const activeTabBackground = isDark ? '#1C1C1E' : '#F3E2F8';
 
     const renderSurahItem = (item: typeof SURAHS[0], index: number) => (
         <TouchableOpacity
@@ -73,15 +83,15 @@ export default function QuranScreen() {
                     <ThemedText type="poppins-bold" style={styles.surahNumber}>{item.number}</ThemedText>
                 </View>
                 <View style={styles.surahInfo}>
-                    <ThemedText type="poppins-bold" style={[styles.surahName, { color: 'white' }]}>
+                    <ThemedText type="poppins-bold" style={[styles.surahName, { color: primaryText }]}>
                         {item.name}
                     </ThemedText>
-                    <ThemedText type="poppins-regular" style={styles.englishName}>
+                    <ThemedText type="poppins-regular" style={[styles.englishName, { color: mutedText }]}>
                         {item.verses} verses • {item.location}
                     </ThemedText>
                 </View>
             </View>
-            <ThemedText type="amiri-bold" style={styles.arabicName}>
+            <ThemedText type="amiri-bold" style={[styles.arabicName, { color: primaryText }]}>
                 {item.arabicName}
             </ThemedText>
         </TouchableOpacity>
@@ -90,8 +100,8 @@ export default function QuranScreen() {
     const renderJuzItem = (juz: typeof JUZS[0]) => (
         <View key={juz.number}>
             <View style={styles.juzHeaderRow}>
-                <ThemedText type="poppins-medium" style={styles.juzTitle}>{juz.name}</ThemedText>
-                <ThemedText type="amiri-bold" style={styles.juzArabicTitle}>{juz.arabicName}</ThemedText>
+                <ThemedText type="poppins-medium" style={[styles.juzTitle, { color: primaryText }]}>{juz.name}</ThemedText>
+                <ThemedText type="amiri-bold" style={[styles.juzArabicTitle, { color: primaryText }]}>{juz.arabicName}</ThemedText>
             </View>
             {juz.verses.map((verse, idx) => (
                 <View key={idx} style={styles.verseListItem}>
@@ -102,10 +112,10 @@ export default function QuranScreen() {
                         </View>
                     </View>
                     <View style={styles.verseListContent}>
-                        <ThemedText type="amiri-bold" style={styles.verseListArabic}>{verse.text}</ThemedText>
+                        <ThemedText type="amiri-bold" style={[styles.verseListArabic, { color: primaryText }]}>{verse.text}</ThemedText>
                         <View style={styles.verseListSourceRow}>
-                            <ThemedText type="poppins-regular" style={styles.verseListSource}>{verse.source}</ThemedText>
-                            <ThemedText type="amiri-bold" style={styles.verseListSurah}>{verse.surah}</ThemedText>
+                            <ThemedText type="poppins-regular" style={[styles.verseListSource, { color: mutedText }]}>{verse.source}</ThemedText>
+                            <ThemedText type="amiri-bold" style={[styles.verseListSurah, { color: primaryText }]}>{verse.surah}</ThemedText>
                         </View>
                     </View>
                 </View>
@@ -116,13 +126,13 @@ export default function QuranScreen() {
     const renderFavoriteItem = (fav: typeof FAVORITES[0], index: number) => (
         <View key={index} style={styles.verseListItem}>
             <View style={styles.verseListLeft}>
-                <IconSymbol name="star.fill" size={24} color="#AA74E0" />
+                <IconSymbol name="star.fill" size={24} color="#E18DFF" />
             </View>
             <View style={styles.verseListContent}>
-                <ThemedText type="amiri-bold" style={styles.verseListArabic}>{fav.text}</ThemedText>
+                <ThemedText type="amiri-bold" style={[styles.verseListArabic, { color: primaryText }]}>{fav.text}</ThemedText>
                 <View style={styles.verseListSourceRow}>
-                    <ThemedText type="poppins-regular" style={styles.verseListSource}>{fav.source}</ThemedText>
-                    <ThemedText type="amiri-bold" style={styles.verseListSurah}>{fav.surah}</ThemedText>
+                    <ThemedText type="poppins-regular" style={[styles.verseListSource, { color: mutedText }]}>{fav.source}</ThemedText>
+                    <ThemedText type="amiri-bold" style={[styles.verseListSurah, { color: primaryText }]}>{fav.surah}</ThemedText>
                 </View>
             </View>
         </View>
@@ -130,25 +140,25 @@ export default function QuranScreen() {
 
     if (isSearching) {
         return (
-            <View style={[styles.container, { backgroundColor: '#111111' }]}>
+            <View style={[styles.container, { backgroundColor: screenBackground }]}>
                 <Stack.Screen options={{ headerShown: false }} />
                 <View style={styles.searchHeader}>
-                    <TouchableOpacity onPress={() => setIsSearching(false)} style={styles.searchHeaderButton}>
-                        <IconSymbol name="arrow.left" size={24} color="white" />
+                    <TouchableOpacity onPress={() => setIsSearching(false)} style={[styles.searchHeaderButton, { backgroundColor: surfaceBackground }]}>
+                        <IconSymbol name="arrow.left" size={24} color={primaryText} />
                     </TouchableOpacity>
-                    <View style={styles.searchBar}>
-                        <IconSymbol name="magnifyingglass" size={20} color="#8E8E93" />
+                    <View style={[styles.searchBar, { backgroundColor: surfaceBackground }]}>
+                        <IconSymbol name="magnifyingglass" size={20} color={mutedText} />
                         <TextInput
                             autoFocus
                             placeholder="Search by surahs, juz, verses..."
-                            placeholderTextColor="#8E8E93"
-                            style={styles.searchBarInput}
+                            placeholderTextColor={mutedText}
+                            style={[styles.searchBarInput, { color: primaryText }]}
                             value={searchText}
                             onChangeText={setSearchText}
                         />
                         {searchText.length > 0 && (
                             <TouchableOpacity onPress={() => setSearchText('')}>
-                                <IconSymbol name="xmark.circle.fill" size={20} color="#8E8E93" />
+                                <IconSymbol name="xmark.circle.fill" size={20} color={mutedText} />
                             </TouchableOpacity>
                         )}
                     </View>
@@ -161,20 +171,20 @@ export default function QuranScreen() {
     }
 
     return (
-        <View style={[styles.container, { backgroundColor: '#090909' }]}>
+        <View style={[styles.container, { backgroundColor: screenBackground }]}>
             <Stack.Screen options={{ headerShown: false }} />
 
             {/* Header */}
             <View style={styles.header}>
-                <ThemedText type="poppins-bold" style={[styles.headerTitle, { color: 'white' }]}>
+                <ThemedText type="poppins-semibold" style={[styles.headerTitle, { color: headerTitleColor }]}>
                     Quran
                 </ThemedText>
                 <View style={styles.headerRight}>
-                    <TouchableOpacity style={styles.headerIconButton} onPress={() => setIsSearching(true)}>
-                        <IconSymbol name="magnifyingglass" size={24} color="white" />
+                    <TouchableOpacity style={[styles.headerIconButton, { backgroundColor: headerIconBackground }]} onPress={() => setIsSearching(true)}>
+                        <IconSymbol name="magnifyingglass" size={22} color={headerIconColor} />
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.headerIconButton}>
-                        <IconSymbol name="hexagon" size={24} color="white" />
+                    <TouchableOpacity style={[styles.headerIconButton, { backgroundColor: headerIconBackground }]}>
+                        <IconSymbol name="hexagon" size={22} color={headerIconColor} />
                     </TouchableOpacity>
                 </View>
             </View>
@@ -187,12 +197,12 @@ export default function QuranScreen() {
                         return (
                             <TouchableOpacity
                                 key={tab}
-                                style={[styles.tab, isActive && styles.activeTab]}
+                                style={[styles.tab, isActive && [styles.activeTab, { backgroundColor: activeTabBackground }]]}
                                 onPress={() => setActiveTab(tab)}
                             >
                                 <ThemedText
                                     type="poppins-medium"
-                                    style={[styles.tabText, isActive ? styles.activeTabText : { color: '#8E8E93' }]}
+                                    style={[styles.tabText, isActive ? styles.activeTabText : { color: mutedText }]}
                                 >
                                     {tab}
                                 </ThemedText>
@@ -243,7 +253,7 @@ export default function QuranScreen() {
                     {activeTab === 'Surah' && SURAHS.map((item, index) => (
                         <View key={index}>
                             {renderSurahItem(item, index)}
-                            <View style={[styles.separator, { backgroundColor: '#1C1C1E' }]} />
+                            <View style={[styles.separator, { backgroundColor: dividerColor }]} />
                         </View>
                     ))}
 
@@ -254,13 +264,13 @@ export default function QuranScreen() {
                             FAVORITES.map((fav, index) => (
                                 <View key={index}>
                                     {renderFavoriteItem(fav, index)}
-                                    <View style={[styles.separator, { backgroundColor: '#1C1C1E' }]} />
+                                    <View style={[styles.separator, { backgroundColor: dividerColor }]} />
                                 </View>
                             ))
                         ) : (
                             <View style={styles.emptyContainer}>
-                                <IconSymbol name="star.slash.fill" size={80} color="#1C1C1E" />
-                                <ThemedText type="poppins-medium" style={styles.emptyText}>No favorites yet!</ThemedText>
+                                <IconSymbol name="star.slash.fill" size={80} color={dividerColor} />
+                                <ThemedText type="poppins-medium" style={[styles.emptyText, { color: primaryText }]}>No favorites yet!</ThemedText>
                             </View>
                         )
                     )}
@@ -280,21 +290,22 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingHorizontal: 24,
-        marginBottom: 20,
+        paddingHorizontal: 22,
+        marginBottom: 22,
     },
     headerTitle: {
         fontSize: 32,
+        lineHeight: 38,
     },
     headerRight: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 12,
+        gap: 10,
     },
     headerIconButton: {
-        width: 44,
-        height: 44,
-        borderRadius: 22,
+        width: 42,
+        height: 42,
+        borderRadius: 21,
         backgroundColor: '#1C1C1E',
         justifyContent: 'center',
         alignItems: 'center',
@@ -322,14 +333,14 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     activeTabText: {
-        color: '#AA74E0',
+        color: '#E18DFF',
     },
     bannerContainer: {
         height: 156,
         borderRadius: 20,
         overflow: 'hidden',
         marginBottom: 32,
-        backgroundColor: '#AA74E01A',
+        backgroundColor: '#E18DFF1A',
     },
     bannerBackground: {
         flex: 1,
@@ -371,11 +382,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     quranImage: {
-        width: 100,
-        height: 80,
+        width: 132,
+        height: 102,
         position: 'absolute',
-        top: -10,
-        right: -10,
+        top: -24,
+        right: -18,
     },
     continueButton: {
         flexDirection: 'row',
