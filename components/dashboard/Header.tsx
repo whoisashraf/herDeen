@@ -9,13 +9,14 @@ export const Header = ({ showGreeting = true, showNotifications = true }: { show
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const insets = useSafeAreaInsets();
+  const headerBackground = colors.background;
 
   return (
     <View
       style={[
         styles.container,
         {
-          backgroundColor: colors.background,
+          backgroundColor: headerBackground,
           paddingTop: insets.top + 12,
         },
       ]}>
@@ -45,7 +46,7 @@ export const Header = ({ showGreeting = true, showNotifications = true }: { show
           <TouchableOpacity style={[styles.iconButton, { backgroundColor: colors.surface }]}>
             <View style={styles.bellContainer}>
               <IconSymbol name="bell" size={22} color={colors.text} />
-              <View style={[styles.notificationDot, { borderColor: colors.background }]} />
+              <View style={[styles.notificationDot, { borderColor: headerBackground }]} />
             </View>
           </TouchableOpacity>
         )}
@@ -122,4 +123,3 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
   },
 });
-

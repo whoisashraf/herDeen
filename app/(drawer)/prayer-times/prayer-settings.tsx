@@ -15,8 +15,8 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type SettingItemProps = {
-    icon: string | number; // icon can be a string (for IconSymbol) or a number (for Image require)
-    iconType?: 'image' | 'symbol'; // Added iconType prop
+    icon: string | number;
+    iconType?: 'image' | 'symbol';
     title: string;
     subText?: string;
     onPress?: () => void;
@@ -24,16 +24,13 @@ type SettingItemProps = {
     switchValue?: boolean;
     onSwitchChange?: (value: boolean) => void;
     colors: ThemePalette;
+    isLight: boolean;
+    showDivider?: boolean;
 };
-
-const LOCATION_TOGGLE_ON = '#A978E8';
-const LOCATION_TOGGLE_OFF = '#FFFFFF4D';
-const LOCATION_KNOB_ON = '#0C0D10';
-const LOCATION_KNOB_OFF = '#DADDE3';
 
 const SettingItem: React.FC<SettingItemProps> = ({
     icon,
-    iconType = 'symbol', // Default to symbol
+    iconType = 'symbol',
     title,
     subText,
     onPress,
@@ -41,58 +38,76 @@ const SettingItem: React.FC<SettingItemProps> = ({
     switchValue,
     onSwitchChange,
     colors,
+    isLight,
+    showDivider = true,
 }) => {
-    const iconColor = colors.icon;
+    const iconColor = isLight ? '#1B2129' : colors.icon;
+    const iconBg = isLight ? '#EAEAEA' : colors.surface;
+    const titleColor = isLight ? '#171D26' : colors.text;
+    const subtitleColor = isLight ? '#5B626B' : colors.textMuted;
+    const chevronColor = isLight ? '#B3B3B8' : colors.textMuted;
+    const dividerColor = isLight ? '#D9D9D9' : colors.border;
+    const toggleOn = isLight ? '#CF7FEF' : '#A978E8';
+    const toggleOff = isLight ? '#B6B6B9' : '#FFFFFF4D';
 
     return (
-        <TouchableOpacity
-            style={[
-                styles.settingItem,
-                {
-                    borderBottomColor: colors.surface,
-                },
-            ]}
-            onPress={onPress}
-            disabled={isSwitch}
-            activeOpacity={0.7}
-        >
-            <View style={[styles.iconBox, { backgroundColor: colors.surface }]}>
-                {iconType === 'image' ? (
-                    <Image source={icon as number} style={[styles.localIcon, { tintColor: iconColor }]} />
-                ) : (
-                    <IconSymbol name={icon as string} size={22} color={iconColor} />
-                )}
-            </View>
-            <View style={styles.itemTextContainer}>
-                <ThemedText type="poppins-medium" style={[styles.itemText, { color: colors.text }]}>
-                    {title}
-                </ThemedText>
-                {subText && (
-                    <ThemedText type="poppins-regular" style={[styles.itemSubText, { color: colors.textMuted }]}>
-                        {subText}
+        <View style={styles.settingGroup}>
+            <TouchableOpacity
+                style={styles.settingItem}
+                onPress={onPress}
+                disabled={isSwitch && !onPress}
+                activeOpacity={0.75}
+            >
+                <View style={[styles.iconBox, { backgroundColor: iconBg }]}>
+                    {iconType === 'image' ? (
+                        <Image source={icon as number} style={[styles.localIcon, { tintColor: iconColor }]} />
+                    ) : (
+                        <IconSymbol name={icon as string} size={26} color={iconColor} />
+                    )}
+                </View>
+
+                <View style={styles.itemTextContainer}>
+                    <ThemedText type="poppins-medium" style={[styles.itemText, { color: titleColor }]}>
+                        {title}
                     </ThemedText>
+                    {subText ? (
+                        <ThemedText type="poppins-regular" style={[styles.itemSubText, { color: subtitleColor }]}>
+                            {subText}
+                        </ThemedText>
+                    ) : null}
+                </View>
+
+                {isSwitch ? (
+                    <TouchableOpacity
+                        activeOpacity={0.85}
+                        onPress={() => onSwitchChange?.(!switchValue)}
+                        style={styles.toggleHit}
+                    >
+                        <View
+                            style={[
+                                styles.toggleTrack,
+                                {
+                                    backgroundColor: switchValue ? toggleOn : toggleOff,
+                                    alignItems: switchValue ? 'flex-end' : 'flex-start',
+                                },
+                            ]}
+                        >
+                            <View style={styles.toggleKnob} />
+                        </View>
+                    </TouchableOpacity>
+                ) : (
+                    <IconSymbol name="chevron.right" size={28} color={chevronColor} />
                 )}
-            </View>
-            {isSwitch ? (
-                <TouchableOpacity
-                    activeOpacity={0.8}
-                    onPress={() => onSwitchChange?.(!switchValue)}
-                    style={styles.toggleHit}
-                >
-                    <View style={[styles.toggleTrack, switchValue ? styles.toggleOn : styles.toggleOff]}>
-                        <View style={[styles.toggleKnob, switchValue ? styles.knobOn : styles.knobOff]} />
-                    </View>
-                </TouchableOpacity>
-            ) : (
-                <IconSymbol name="chevron.right" size={18} color={colors.textMuted} />
-            )}
-        </TouchableOpacity>
+            </TouchableOpacity>
+
+            {showDivider ? <View style={[styles.itemDivider, { backgroundColor: dividerColor }]} /> : null}
+        </View>
     );
 };
 
 export default function PrayerSettingsScreen() {
     const router = useRouter();
-    const { colors } = useAppColors();
+    const { colors, isDark } = useAppColors();
     const insets = useSafeAreaInsets();
 
     const [adhanSoundEnabled, setAdhanSoundEnabled] = useState(false);
@@ -102,43 +117,55 @@ export default function PrayerSettingsScreen() {
     const [asrMethod, setAsrMethod] = useState<'Shafi' | 'Hanafi'>('Shafi');
     const [isAsrModalVisible, setIsAsrModalVisible] = useState(false);
 
+    const isLight = !isDark;
+    const pageBg = isLight ? '#F1F1F1' : colors.background;
+    const headerBg = isLight ? '#EAEAEA' : colors.surface;
+    const headerTextColor = isLight ? '#151B24' : colors.text;
+    const sectionColor = isLight ? '#ACACB0' : colors.textMuted;
+    const asrOptionIconBg = isLight ? '#F0F0F0' : colors.surfaceSoft;
+    const asrOptionIconColor = isLight ? '#1B2129' : '#D487FA';
+
     return (
-        <SafeAreaView style={[styles.safeArea, { backgroundColor: colors.background }]}>
+        <SafeAreaView style={[styles.safeArea, { backgroundColor: pageBg }]}>
             <Stack.Screen options={{ headerShown: false }} />
 
-            {/* Header */}
-            <View style={[styles.header, { paddingTop: insets.top + 5 }]}>
+            <View style={[styles.header, { paddingTop: insets.top + 8 }]}>
                 <TouchableOpacity
                     onPress={() => router.back()}
-                    style={[styles.headerButton, { backgroundColor: colors.surface }]}
+                    style={[styles.headerButton, { backgroundColor: headerBg }]}
                 >
-                    <IconSymbol name="arrow.left" size={20} color={colors.icon} />
+                    <IconSymbol name="arrow.left" size={24} color={headerTextColor} />
                 </TouchableOpacity>
-                <ThemedText type="poppins-bold" style={[styles.headerTitle, { color: colors.text }]}>
+                <ThemedText type="poppins-semibold" style={[styles.headerTitle, { color: headerTextColor }]}>
                     Prayer settings
                 </ThemedText>
             </View>
 
-            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-                {/* Prayer Location Section */}
-                <ThemedText type="poppins-regular" style={[styles.sectionTitle, { color: colors.textMuted }]}>
+            <ScrollView
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={[styles.scrollContent, { paddingBottom: insets.bottom + 24 }]}
+            >
+                <ThemedText type="poppins-regular" style={[styles.sectionTitle, { color: sectionColor }]}>
                     Prayer Location
                 </ThemedText>
+
                 <SettingItem
                     icon={require('@/assets/icons/current-location.png')}
                     iconType="image"
                     title="Current Location"
                     subText="Ilorin East, Nigeria"
-                    onPress={() => router.push('/(drawer)/settings/current-location')}
+                    onPress={() => router.push('/prayer-times/current-location')}
                     colors={colors}
+                    isLight={isLight}
                 />
                 <SettingItem
                     icon={require('@/assets/icons/calculation-method.png')}
                     iconType="image"
                     title="Calculation method"
                     subText="Muslim World League (MWL)"
-                    onPress={() => router.push('/(drawer)/settings/calculation-method')}
+                    onPress={() => router.push('/prayer-times/calculation-method')}
                     colors={colors}
+                    isLight={isLight}
                 />
                 <SettingItem
                     icon={require('@/assets/icons/asr-method.png')}
@@ -147,56 +174,60 @@ export default function PrayerSettingsScreen() {
                     subText="Standard / Hanafi"
                     onPress={() => setIsAsrModalVisible(true)}
                     colors={colors}
+                    isLight={isLight}
                 />
 
-                {/* Adhan & Sound Section */}
-                <ThemedText type="poppins-regular" style={[styles.sectionTitle, { color: colors.textMuted, marginTop: 32 }]}>
+                <ThemedText type="poppins-regular" style={[styles.sectionTitle, styles.sectionWithTopGap, { color: sectionColor }]}>
                     Adhan & Sound
                 </ThemedText>
                 <SettingItem
                     icon={require('@/assets/icons/volume-high.png')}
                     iconType="image"
                     title="Adhan sound"
-                    subText={adhanSoundEnabled ? "Enabled" : "Disabled"}
+                    subText={adhanSoundEnabled ? 'Enabled' : 'Disabled'}
                     isSwitch
                     switchValue={adhanSoundEnabled}
                     onSwitchChange={setAdhanSoundEnabled}
                     colors={colors}
+                    isLight={isLight}
                 />
                 <SettingItem
                     icon={require('@/assets/icons/screen-rotation.png')}
                     iconType="image"
                     title="Vibration"
-                    subText={vibrationEnabled ? "Enabled" : "Disabled"}
+                    subText={vibrationEnabled ? 'Enabled' : 'Disabled'}
                     isSwitch
                     switchValue={vibrationEnabled}
                     onSwitchChange={setVibrationEnabled}
                     colors={colors}
+                    isLight={isLight}
                 />
 
-                {/* Special Times Section */}
-                <ThemedText type="poppins-regular" style={[styles.sectionTitle, { color: colors.textMuted, marginTop: 32 }]}>
+                <ThemedText type="poppins-regular" style={[styles.sectionTitle, styles.sectionWithTopGap, { color: sectionColor }]}>
                     Special Times
                 </ThemedText>
                 <SettingItem
                     icon={require('@/assets/icons/the-prophets-mosque.png')}
                     iconType="image"
                     title="Jumu'ah reminder"
-                    subText={jumuahReminderEnabled ? "Enabled" : "Disabled"}
+                    subText={jumuahReminderEnabled ? 'Enabled' : 'Disabled'}
                     isSwitch
                     switchValue={jumuahReminderEnabled}
                     onSwitchChange={setJumuahReminderEnabled}
                     colors={colors}
+                    isLight={isLight}
                 />
                 <SettingItem
                     icon={require('@/assets/icons/tahajjud-eminder.png')}
                     iconType="image"
                     title="Tahajjud reminder"
-                    subText={tahajjudReminderEnabled ? "Enabled" : "Disabled"}
+                    subText={tahajjudReminderEnabled ? 'Enabled' : 'Disabled'}
                     isSwitch
                     switchValue={tahajjudReminderEnabled}
                     onSwitchChange={setTahajjudReminderEnabled}
                     colors={colors}
+                    isLight={isLight}
+                    showDivider
                 />
             </ScrollView>
 
@@ -224,8 +255,8 @@ export default function PrayerSettingsScreen() {
                             onPress={() => setAsrMethod('Shafi')}
                         >
                             <View style={styles.asrLeft}>
-                                <View style={[styles.asrIconBox, { backgroundColor: colors.surfaceSoft }]}>
-                                    <IconSymbol name="sun" size={18} color="#0C0D10" />
+                                <View style={[styles.asrIconBox, { backgroundColor: asrOptionIconBg }]}>
+                                    <IconSymbol name="sun.max" size={19} color={asrOptionIconColor} />
                                 </View>
                                 <ThemedText type="poppins-medium" style={[styles.asrOptionText, { color: colors.text }]}>
                                     Shafi
@@ -238,15 +269,17 @@ export default function PrayerSettingsScreen() {
                                 </View>
                             ) : null}
                         </TouchableOpacity>
+
                         <View style={[styles.asrDivider, { backgroundColor: colors.border }]} />
+
                         <TouchableOpacity
                             style={styles.asrOption}
                             activeOpacity={0.8}
                             onPress={() => setAsrMethod('Hanafi')}
                         >
                             <View style={styles.asrLeft}>
-                                <View style={[styles.asrIconBox, { backgroundColor: colors.surfaceSoft }]}>
-                                    <IconSymbol name="sun" size={18} color="#0C0D10" />
+                                <View style={[styles.asrIconBox, { backgroundColor: asrOptionIconBg }]}>
+                                    <IconSymbol name="sun.min" size={19} color={asrOptionIconColor} />
                                 </View>
                                 <ThemedText type="poppins-medium" style={[styles.asrOptionText, { color: colors.text }]}>
                                     Hanafi
@@ -273,68 +306,96 @@ const styles = StyleSheet.create({
     header: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingHorizontal: 24,
-        paddingBottom: 12,
-        marginBottom: 8,
+        paddingHorizontal: 20,
+        paddingBottom: 14,
     },
     headerButton: {
-        width: 44,
-        height: 44,
-        borderRadius: 22,
+        width: 58,
+        height: 58,
+        borderRadius: 29,
         justifyContent: 'center',
         alignItems: 'center',
     },
     headerTitle: {
-        fontSize: 24,
+        fontSize: 22,
+        lineHeight: 30,
         marginLeft: 16,
     },
     scrollContent: {
-        paddingHorizontal: 24,
-        paddingTop: 8,
-        paddingBottom: 28,
+        paddingHorizontal: 20,
+        paddingTop: 6,
     },
     sectionTitle: {
-        fontSize: 14,
-        marginBottom: 10,
+        fontSize: 18,
+        lineHeight: 26,
+        marginBottom: 12,
+    },
+    sectionWithTopGap: {
+        marginTop: 32,
+    },
+    settingGroup: {
+        marginBottom: 2,
     },
     settingItem: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingVertical: 16,
-        paddingHorizontal: 4,
-        borderBottomWidth: 1.5,
+        minHeight: 86,
+        paddingVertical: 10,
     },
     iconBox: {
-        width: 48,
-        height: 48,
+        width: 56,
+        height: 56,
+        borderRadius: 18,
         justifyContent: 'center',
         alignItems: 'center',
         marginRight: 16,
     },
-    localIcon: { // Style for local image icons
-        width: 22, // Same size as IconSymbol
-        height: 22, // Same size as IconSymbol
+    localIcon: {
+        width: 26,
+        height: 26,
         resizeMode: 'contain',
     },
     itemTextContainer: {
         flex: 1,
+        paddingRight: 14,
     },
     itemText: {
-        fontSize: 17,
+        fontSize: 22 / 1.4,
+        lineHeight: 30,
     },
     itemSubText: {
-        fontSize: 13,
+        fontSize: 17 / 1.4,
+        lineHeight: 22,
         marginTop: 2,
+    },
+    itemDivider: {
+        height: 1,
+        marginLeft: 72,
+    },
+    toggleHit: {
+        paddingLeft: 10,
+        paddingVertical: 6,
+    },
+    toggleTrack: {
+        width: 54,
+        height: 32,
+        borderRadius: 16,
+        justifyContent: 'center',
+        paddingHorizontal: 3,
+    },
+    toggleKnob: {
+        width: 26,
+        height: 26,
+        borderRadius: 13,
+        backgroundColor: '#FFFFFF',
     },
     asrOverlay: {
         flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.45)',
         justifyContent: 'flex-end',
     },
     asrSheet: {
         width: '100%',
         height: 285,
-        backgroundColor: '#16171A',
         borderTopLeftRadius: 32,
         borderTopRightRadius: 32,
         paddingHorizontal: 24,
@@ -346,7 +407,6 @@ const styles = StyleSheet.create({
         width: 54,
         height: 6,
         borderRadius: 3,
-        backgroundColor: '#6B6F76',
         marginBottom: 18,
     },
     asrHeader: {
@@ -357,7 +417,6 @@ const styles = StyleSheet.create({
     },
     asrTitle: {
         fontSize: 22,
-        color: '#FFFFFF',
     },
     asrOption: {
         flexDirection: 'row',
@@ -374,17 +433,14 @@ const styles = StyleSheet.create({
         width: 48,
         height: 48,
         borderRadius: 16,
-        backgroundColor: '#1F2125',
         alignItems: 'center',
         justifyContent: 'center',
     },
     asrOptionText: {
         fontSize: 18,
-        color: '#FFFFFF',
     },
     asrDivider: {
         height: 1.5,
-        backgroundColor: '#2A2D33',
     },
     asrCheck: {
         flexDirection: 'row',
@@ -392,35 +448,5 @@ const styles = StyleSheet.create({
     },
     asrCheckBack: {
         marginLeft: -6,
-    },
-    toggleHit: {
-        paddingLeft: 8,
-        paddingVertical: 6,
-    },
-    toggleTrack: {
-        width: 46,
-        height: 24,
-        borderRadius: 12,
-        justifyContent: 'center',
-        paddingHorizontal: 3,
-    },
-    toggleOn: {
-        backgroundColor: LOCATION_TOGGLE_ON,
-        alignItems: 'flex-end',
-    },
-    toggleOff: {
-        backgroundColor: LOCATION_TOGGLE_OFF,
-        alignItems: 'flex-start',
-    },
-    toggleKnob: {
-        width: 18,
-        height: 18,
-        borderRadius: 9,
-    },
-    knobOn: {
-        backgroundColor: LOCATION_KNOB_ON,
-    },
-    knobOff: {
-        backgroundColor: LOCATION_KNOB_OFF,
     },
 });

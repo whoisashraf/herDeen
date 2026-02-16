@@ -1,5 +1,7 @@
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { QIBLA_DIRECTION_LIGHT_SVG } from '@/constants/qibla-direction-light-svg';
+import { QIBLA_DIRECTION_SVG } from '@/constants/qibla-direction-svg';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import * as Location from 'expo-location';
@@ -9,9 +11,13 @@ import React, { useEffect, useState } from 'react';
 import { Dimensions, SafeAreaView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SvgXml } from 'react-native-svg';
 
 const { width } = Dimensions.get('window');
-const COMPASS_SIZE = width * 0.85;
+const COMPASS_WIDTH = Math.min(width - 20, 375);
+const DARK_COMPASS_ASPECT_RATIO = 493 / 375;
+const LIGHT_COMPASS_ASPECT_RATIO = 541 / 375;
+const SVG_POINTER_BASE_BEARING = 309.4;
 
 export default function QiblaScreen() {
     const router = useRouter();
@@ -19,6 +25,8 @@ export default function QiblaScreen() {
     const isDark = colorScheme === 'dark';
     const colors = Colors[colorScheme];
     const insets = useSafeAreaInsets();
+    const compassHeight = COMPASS_WIDTH * (isDark ? DARK_COMPASS_ASPECT_RATIO : LIGHT_COMPASS_ASPECT_RATIO);
+    const qiblaSvg = isDark ? QIBLA_DIRECTION_SVG : QIBLA_DIRECTION_LIGHT_SVG;
 
     const [qiblaAngle, setQiblaAngle] = useState(0);
     const [heading, setHeading] = useState(0);
@@ -52,13 +60,18 @@ export default function QiblaScreen() {
             angle = (angle + 360) % 360;
             // Adjust for device orientation if needed, but standard magnetometer is usually enough
             setHeading(Math.round(angle));
-            rotation.value = withSpring(-angle, { damping: 20, stiffness: 100 });
         });
 
         Magnetometer.setUpdateInterval(100);
 
         return () => subscription.remove();
     }, []);
+
+    useEffect(() => {
+        const relativeBearing = (qiblaAngle - heading + 360) % 360;
+        const targetRotation = relativeBearing - SVG_POINTER_BASE_BEARING;
+        rotation.value = withSpring(targetRotation, { damping: 20, stiffness: 100 });
+    }, [heading, qiblaAngle, rotation]);
 
     const animatedCompassStyle = useAnimatedStyle(() => ({
         transform: [{ rotate: `${rotation.value}deg` }],
@@ -67,20 +80,6 @@ export default function QiblaScreen() {
     const getDirectionText = (degree: number) => {
         const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
         return directions[Math.round(degree / 45) % 8];
-    };
-
-    const renderTicks = () => {
-        const ticks = [];
-        for (let i = 0; i < 360; i += 30) {
-            ticks.push(
-                <View key={i} style={[styles.tickContainer, { transform: [{ rotate: `${i}deg` }] }]}>
-                    <ThemedText style={[styles.tickText, { color: colors.textMuted }]}>
-                        {i}°
-                    </ThemedText>
-                </View>
-            );
-        }
-        return ticks;
     };
 
     return (
@@ -98,7 +97,7 @@ export default function QiblaScreen() {
                     </ThemedText>
                     <View style={{ flex: 1 }} />
                     <TouchableOpacity
-                        onPress={() => router.push('/settings/prayer-settings')}
+                        onPress={() => router.push('/prayer-times/prayer-settings')}
                         style={[styles.headerBtn, { backgroundColor: colors.surface }]}
                     >
                         <IconSymbol name="hexagon" size={20} color={colors.text} />
@@ -107,33 +106,17 @@ export default function QiblaScreen() {
 
                 {/* Compass Container */}
                 <View style={styles.compassMainContainer}>
-                    <Animated.View style={[styles.compassWrapper, animatedCompassStyle]}>
-                        {/* Outer Labels */}
-                        <View style={styles.cardinalContainer}>
-                            <ThemedText style={[styles.cardinalN, { color: '#FF3B30' }]}>N</ThemedText>
-                            <ThemedText style={[styles.cardinalE, { color: colors.textMuted }]}>E</ThemedText>
-                            <ThemedText style={[styles.cardinalS, { color: colors.textMuted }]}>S</ThemedText>
-                            <ThemedText style={[styles.cardinalW, { color: colors.textMuted }]}>W</ThemedText>
-                        </View>
-
-                        {/* Outer Ring with ticks */}
-                        <View style={[styles.outerRing, { borderColor: colors.surface }]}>
-                            {renderTicks()}
-                        </View>
-
-                        {/* Qibla Pointer */}
-                        <View style={[styles.qiblaPointerContainer, { transform: [{ rotate: `${qiblaAngle}deg` }] }]}>
-                            <View style={styles.qiblaPointer} />
-                        </View>
+                    <Animated.View style={[styles.compassSvgWrapper, { width: COMPASS_WIDTH, height: compassHeight }, animatedCompassStyle]}>
+                        <SvgXml xml={qiblaSvg} width={COMPASS_WIDTH} height={compassHeight} />
                     </Animated.View>
 
-                    {/* Static Inner Display */}
-                    <View style={[styles.innerDisplay, { backgroundColor: colors.surface }]}>
+                    {/* Center readout stays static while compass rotates */}
+                    <View style={[styles.innerDisplay, { backgroundColor: isDark ? '#1A1D22' : '#F1F2F4' }]}>
                         <View style={styles.innerDisplayTextContainer}>
-                            <ThemedText style={[styles.headingDegree, { color: colors.text }]}>
+                            <ThemedText type="poppins-semibold" style={[styles.headingDegree, { color: colors.text }]}>
                                 {heading}°
                             </ThemedText>
-                            <ThemedText style={[styles.headingDirection, { color: colors.textMuted }]}>
+                            <ThemedText type="poppins-regular" style={[styles.headingDirection, { color: colors.textMuted }]}>
                                 {getDirectionText(heading)}
                             </ThemedText>
                         </View>
@@ -185,66 +168,15 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    compassWrapper: {
-        width: COMPASS_SIZE,
-        height: COMPASS_SIZE,
+    compassSvgWrapper: {
         justifyContent: 'center',
         alignItems: 'center',
-    },
-    cardinalContainer: {
-        position: 'absolute',
-        width: '100%',
-        height: '100%',
-    },
-    cardinalN: { position: 'absolute', top: -30, left: '50%', transform: [{ translateX: -6 }], fontSize: 20, fontWeight: '700' },
-    cardinalE: { position: 'absolute', right: -30, top: '50%', transform: [{ translateY: -12 }], fontSize: 20, fontWeight: '700' },
-    cardinalS: { position: 'absolute', bottom: -30, left: '50%', transform: [{ translateX: -6 }], fontSize: 20, fontWeight: '700' },
-    cardinalW: { position: 'absolute', left: -30, top: '50%', transform: [{ translateY: -12 }], fontSize: 20, fontWeight: '700' },
-    outerRing: {
-        width: '90%',
-        height: '90%',
-        borderRadius: COMPASS_SIZE * 0.45,
-        borderWidth: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    tickContainer: {
-        position: 'absolute',
-        height: '110%',
-        width: 40,
-        alignItems: 'center',
-        paddingTop: 0,
-    },
-    tickText: {
-        fontSize: 10,
-        fontFamily: 'Poppins-Regular',
-    },
-    qiblaPointerContainer: {
-        position: 'absolute',
-        width: '100%',
-        height: '100%',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    qiblaPointer: {
-        position: 'absolute',
-        top: '15%',
-        width: 0,
-        height: 0,
-        backgroundColor: 'transparent',
-        borderStyle: 'solid',
-        borderLeftWidth: 10,
-        borderRightWidth: 10,
-        borderBottomWidth: 25,
-        borderLeftColor: 'transparent',
-        borderRightColor: 'transparent',
-        borderBottomColor: '#E18DFF',
     },
     innerDisplay: {
         position: 'absolute',
-        width: 140,
-        height: 140,
-        borderRadius: 70,
+        width: 130,
+        height: 130,
+        borderRadius: 65,
         justifyContent: 'center',
         alignItems: 'center',
         shadowColor: '#000',
@@ -257,13 +189,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     headingDegree: {
-        fontSize: 32,
-        fontFamily: 'Poppins-Bold',
+        fontSize: 28,
     },
     headingDirection: {
-        fontSize: 16,
-        fontFamily: 'Poppins-Medium',
-        marginTop: -5,
+        fontSize: 14,
+        marginTop: -4,
     },
     footer: {
         paddingBottom: 40,

@@ -21,6 +21,7 @@ export default function CurrentLocationScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { colors, isDark } = useAppColors();
+  const isLight = !isDark;
   const [search, setSearch] = useState('');
   const [autoDetect, setAutoDetect] = useState(true);
   const [recent, setRecent] = useState(RECENT_LOCATIONS);
@@ -31,16 +32,27 @@ export default function CurrentLocationScreen() {
     return recent.filter((item) => item.toLowerCase().includes(query));
   }, [recent, search]);
 
+  const pageBg = isLight ? '#F1F1F1' : colors.background;
+  const headerBtnBg = isLight ? '#E9E9E9' : colors.surface;
+  const titleColor = isLight ? '#161D26' : colors.text;
+  const searchBg = isLight ? '#E8E8E8' : colors.surface;
+  const subtleText = isLight ? '#AAAAAF' : colors.textMuted;
+  const rowTitleColor = isLight ? '#171D26' : colors.text;
+  const rowSubColor = isLight ? '#5E6570' : colors.textMuted;
+  const footerColor = isLight ? '#5F6670' : colors.textMuted;
+  const toggleOffBg = isLight ? '#D6D6DA' : '#FFFFFF4D';
+  const iconTileBg = isLight ? '#E9E9E9' : colors.surface;
+
   return (
-    <View style={[styles.container, { backgroundColor: colors.background, paddingTop: insets.top + 40 }]}>
+    <View style={[styles.container, { backgroundColor: pageBg, paddingTop: insets.top + 8 }]}>
       <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
       <Stack.Screen options={{ headerShown: false }} />
 
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={[styles.headerBtn, { backgroundColor: colors.surface }]}>
-          <IconSymbol name="arrow.left" size={20} color={colors.text} />
+        <TouchableOpacity onPress={() => router.back()} style={[styles.headerBtn, { backgroundColor: headerBtnBg }]}>
+          <IconSymbol name="arrow.left" size={20} color={titleColor} />
         </TouchableOpacity>
-        <ThemedText type="poppins-semibold" style={[styles.headerTitle, { color: colors.text }]}>
+        <ThemedText type="poppins-semibold" style={[styles.headerTitle, { color: titleColor }]}>
           Location
         </ThemedText>
       </View>
@@ -50,30 +62,30 @@ export default function CurrentLocationScreen() {
         contentContainerStyle={styles.content}
       >
         <View style={styles.mainContent}>
-          <View style={[styles.searchBar, { backgroundColor: colors.surface }]}> 
-            <IconSymbol name="search" size={20} color={colors.textMuted} />
+          <View style={[styles.searchBar, { backgroundColor: searchBg }]}>
+            <IconSymbol name="search" size={18} color={subtleText} />
             <TextInput
               value={search}
               onChangeText={setSearch}
               placeholder="Search for location"
-              placeholderTextColor={colors.textMuted}
-              style={[styles.searchInput, { color: colors.text }]}
+              placeholderTextColor={subtleText}
+              style={[styles.searchInput, { color: rowTitleColor }]}
             />
           </View>
 
           <View style={styles.currentRow}>
             <View style={styles.currentLeft}>
-              <View style={[styles.iconCircle, { backgroundColor: colors.surface }]}> 
+              <View style={[styles.iconCircle, { backgroundColor: iconTileBg }]}>
                 <Image
                   source={require('@/assets/icons/current-location.png')}
-                  style={[styles.currentIcon, { tintColor: colors.text }]}
+                  style={[styles.currentIcon, { tintColor: rowTitleColor }]}
                 />
               </View>
               <View>
-                <ThemedText type="poppins-semibold" style={[styles.currentTitle, { color: colors.text }]}> 
+                <ThemedText type="poppins-medium" style={[styles.currentTitle, { color: rowTitleColor }]}>
                   Current location
                 </ThemedText>
-                <ThemedText type="poppins-regular" style={[styles.currentSub, { color: colors.textMuted }]}> 
+                <ThemedText type="poppins-regular" style={[styles.currentSub, { color: rowSubColor }]}>
                   Oko Erin Kwara Nigeria
                 </ThemedText>
               </View>
@@ -83,19 +95,19 @@ export default function CurrentLocationScreen() {
               onPress={() => setAutoDetect((prev) => !prev)}
               style={styles.toggleHit}
             >
-              <View style={[styles.toggleTrack, autoDetect ? styles.toggleOn : styles.toggleOff]}>
+              <View style={[styles.toggleTrack, autoDetect ? styles.toggleOn : [styles.toggleOff, { backgroundColor: toggleOffBg }]]}>
                 <View style={[styles.toggleKnob, autoDetect ? styles.knobOn : styles.knobOff]} />
               </View>
             </TouchableOpacity>
           </View>
 
           <View style={styles.sectionHeader}>
-            <ThemedText type="poppins-regular" style={[styles.sectionTitle, { color: colors.textMuted }]}> 
+            <ThemedText type="poppins-regular" style={[styles.sectionTitle, { color: subtleText }]}>
               Recent location
             </ThemedText>
             {recent.length > 0 ? (
               <TouchableOpacity onPress={() => setRecent([])}>
-                <ThemedText type="poppins-regular" style={[styles.clearAll, { color: colors.textMuted }]}> 
+                <ThemedText type="poppins-regular" style={[styles.clearAll, { color: rowSubColor }]}>
                   Clear all
                 </ThemedText>
               </TouchableOpacity>
@@ -106,15 +118,15 @@ export default function CurrentLocationScreen() {
             {filteredRecent.map((item) => (
               <View key={item} style={styles.recentRow}>
                 <View style={styles.recentLeft}>
-                  <IconSymbol name="arrow.counterclockwise" size={20} color={colors.textMuted} />
-                  <ThemedText type="poppins-medium" style={[styles.recentText, { color: colors.text }]}> 
+                  <IconSymbol name="arrow.counterclockwise" size={22} color={rowSubColor} />
+                  <ThemedText type="poppins-medium" style={[styles.recentText, { color: rowTitleColor }]}>
                     {item}
                   </ThemedText>
                 </View>
                 <TouchableOpacity
                   onPress={() => setRecent((prev) => prev.filter((loc) => loc !== item))}
                 >
-                  <IconSymbol name="xmark" size={20} color={colors.textMuted} />
+                  <IconSymbol name="xmark" size={20} color={rowSubColor} />
                 </TouchableOpacity>
               </View>
             ))}
@@ -122,13 +134,13 @@ export default function CurrentLocationScreen() {
         </View>
 
         <View style={styles.footer}>
-          <ThemedText type="poppins-regular" style={[styles.footerText, { color: colors.textMuted }]}> 
+          <ThemedText type="poppins-regular" style={[styles.footerText, { color: footerColor }]}>
             Manually selecting a location will
           </ThemedText>
-          <ThemedText type="poppins-regular" style={[styles.footerText, { color: colors.textMuted }]}> 
+          <ThemedText type="poppins-regular" style={[styles.footerText, { color: footerColor }]}>
             turn off auto-detect location
           </ThemedText>
-          <ThemedText type="poppins-regular" style={[styles.footerPowered, { color: colors.textMuted }]}> 
+          <ThemedText type="poppins-regular" style={[styles.footerPowered, { color: footerColor }]}>
             powered by Google
           </ThemedText>
         </View>
@@ -144,23 +156,24 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 24,
-    paddingBottom: 8,
+    paddingHorizontal: 20,
+    paddingBottom: 10,
   },
   headerBtn: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     alignItems: 'center',
     justifyContent: 'center',
   },
   headerTitle: {
     marginLeft: 16,
-    fontSize: 26,
+    fontSize: 24,
+    lineHeight: 30,
   },
   content: {
-    paddingHorizontal: 24,
-    paddingTop: 12,
+    paddingHorizontal: 20,
+    paddingTop: 16,
     paddingBottom: 32,
     flexGrow: 1,
   },
@@ -170,8 +183,8 @@ const styles = StyleSheet.create({
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 28,
-    paddingHorizontal: 18,
+    borderRadius: 26,
+    paddingHorizontal: 16,
     height: 52,
     gap: 10,
   },
@@ -183,9 +196,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    borderRadius: 20,
-    paddingVertical: 16,
-    paddingHorizontal: 16,
+    paddingVertical: 4,
   },
   currentLeft: {
     flexDirection: 'row',
@@ -193,37 +204,43 @@ const styles = StyleSheet.create({
     gap: 14,
   },
   iconCircle: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 52,
+    height: 52,
+    borderRadius: 18,
     alignItems: 'center',
     justifyContent: 'center',
   },
   currentIcon: {
-    width: 20,
-    height: 20,
+    width: 21,
+    height: 21,
     resizeMode: 'contain',
   },
   currentTitle: {
-    fontSize: 18,
+    fontSize: 17,
+    lineHeight: 24,
   },
   currentSub: {
     fontSize: 14,
-    marginTop: 2,
+    lineHeight: 20,
+    marginTop: 0,
   },
   sectionHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    marginTop: 4,
   },
   sectionTitle: {
-    fontSize: 16,
+    fontSize: 18,
+    lineHeight: 26,
   },
   clearAll: {
-    fontSize: 16,
+    fontSize: 18,
+    lineHeight: 26,
   },
   recentList: {
-    gap: 18,
+    gap: 24,
+    marginTop: 2,
   },
   recentRow: {
     flexDirection: 'row',
@@ -236,28 +253,32 @@ const styles = StyleSheet.create({
     gap: 14,
   },
   recentText: {
-    fontSize: 18,
+    fontSize: 17,
+    lineHeight: 24,
   },
   footer: {
     marginTop: 'auto',
     alignItems: 'center',
-    gap: 8,
+    gap: 4,
+    paddingBottom: 10,
   },
   footerText: {
-    fontSize: 16,
+    fontSize: 15,
+    lineHeight: 22,
   },
   footerPowered: {
-    fontSize: 16,
-    marginTop: 14,
+    fontSize: 15,
+    lineHeight: 22,
+    marginTop: 18,
   },
   toggleHit: {
     paddingLeft: 8,
-    paddingVertical: 6,
+    paddingVertical: 4,
   },
   toggleTrack: {
     width: 46,
-    height: 24,
-    borderRadius: 12,
+    height: 28,
+    borderRadius: 14,
     justifyContent: 'center',
     paddingHorizontal: 3,
   },
@@ -266,16 +287,16 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   toggleOff: {
-    backgroundColor: '#FFFFFF4D',
+    backgroundColor: '#D6D6DA',
     alignItems: 'flex-start',
   },
   toggleKnob: {
-    width: 18,
-    height: 18,
-    borderRadius: 9,
+    width: 22,
+    height: 22,
+    borderRadius: 11,
   },
   knobOn: {
-    backgroundColor: '#0C0D10',
+    backgroundColor: '#FFFFFF',
   },
   knobOff: {
     backgroundColor: '#DADDE3',

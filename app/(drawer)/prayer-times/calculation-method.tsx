@@ -3,18 +3,18 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useAppColors } from '@/hooks/use-app-colors';
 import { Stack, useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, ScrollView, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const METHODS = [
-  { id: 'mwl', label: 'Muslim World League (MWL)', flag: '🇸🇦' },
-  { id: 'isna', label: 'North America (ISNA)', flag: '🇺🇸' },
-  { id: 'umm', label: 'Umm al-Qura University, Makkah', flag: '🇸🇦' },
-  { id: 'muis', label: 'MUIS (Majlis Ugama Islam Singapura)', flag: '🇸🇬' },
-  { id: 'egypt', label: 'Egyptian General Authority of Survey', flag: '🇪🇬' },
-  { id: 'uzb', label: 'Muslim Board of Uzbekistan', flag: '🇺🇿' },
-  { id: 'karachi', label: 'University of Islamic Sciences, Karachi', flag: '🇵🇰' },
-  { id: 'turkey', label: 'Turkey Presidency of Religious Affairs', flag: '🇹🇷' },
+  { id: 'mwl', label: 'Muslim World League (MWL)', flagCode: 'sa' },
+  { id: 'isna', label: 'North America (ISNA)', flagCode: 'us' },
+  { id: 'umm', label: 'Umm al-Qura University, Makkah', flagCode: 'sa' },
+  { id: 'muis', label: 'MUIS (Majis Ugama Islam Singapura)', flagCode: 'sg' },
+  { id: 'egypt', label: 'Egyptian General Authority of Survey', flagCode: 'eg' },
+  { id: 'uzb', label: 'Muslim Board of Uzbekistan', flagCode: 'uz' },
+  { id: 'karachi', label: 'University of Islamic Sciences, Karachi', flagCode: 'pk' },
+  { id: 'turkey', label: 'Turkey Presidency of Religious Affairs', flagCode: 'tr' },
 ];
 
 const ACCENT = '#A978E8';
@@ -24,17 +24,22 @@ export default function CalculationMethodScreen() {
   const insets = useSafeAreaInsets();
   const { colors, isDark } = useAppColors();
   const [selectedId, setSelectedId] = useState('mwl');
+  const pageBg = isDark ? colors.background : '#F1F1F1';
+  const titleColor = isDark ? colors.text : '#121923';
+  const rowTextColor = isDark ? colors.text : '#5C636D';
+  const headerBtnBg = isDark ? colors.surface : '#E9E9E9';
+  const flagBg = isDark ? colors.surface : '#ECECEC';
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background, paddingTop: insets.top + 8 }]}>
+    <View style={[styles.container, { backgroundColor: pageBg, paddingTop: insets.top + 8 }]}>
       <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
       <Stack.Screen options={{ headerShown: false }} />
 
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={[styles.headerBtn, { backgroundColor: colors.surface }]}> 
-          <IconSymbol name="arrow.left" size={20} color={colors.text} />
+        <TouchableOpacity onPress={() => router.back()} style={[styles.headerBtn, { backgroundColor: headerBtnBg }]}>
+          <IconSymbol name="arrow.left" size={24} color={titleColor} />
         </TouchableOpacity>
-        <ThemedText type="poppins-semibold" style={[styles.headerTitle, { color: colors.text }]}> 
+        <ThemedText type="poppins-semibold" style={[styles.headerTitle, { color: titleColor }]}>
           Calculation Method
         </ThemedText>
       </View>
@@ -53,12 +58,16 @@ export default function CalculationMethodScreen() {
               onPress={() => setSelectedId(method.id)}
             >
               <View style={styles.rowLeft}>
-                <View style={[styles.flagCircle, { backgroundColor: colors.surface }]}> 
-                  <Text style={styles.flagText}>{method.flag}</Text>
+                <View style={[styles.flagCircle, { backgroundColor: flagBg }]}>
+                  <Image
+                    source={{ uri: `https://flagcdn.com/w80/${method.flagCode}.png` }}
+                    style={styles.flagImage}
+                    resizeMode="cover"
+                  />
                 </View>
                 <ThemedText
-                  type="poppins-medium"
-                  style={[styles.rowLabel, { color: isSelected ? colors.text : colors.textMuted }]}
+                  type="poppins-regular"
+                  style={[styles.rowLabel, { color: rowTextColor }]}
                 >
                   {method.label}
                 </ThemedText>
@@ -86,25 +95,25 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 24,
-    paddingBottom: 8,
+    paddingHorizontal: 20,
+    paddingBottom: 12,
   },
   headerBtn: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 52,
+    height: 52,
+    borderRadius: 26,
     alignItems: 'center',
     justifyContent: 'center',
   },
   headerTitle: {
-    marginLeft: 16,
-    fontSize: 24,
+    marginLeft: 14,
+    fontSize: 22,
   },
   listContent: {
-    paddingHorizontal: 24,
-    paddingTop: 18,
+    paddingHorizontal: 20,
+    paddingTop: 20,
     paddingBottom: 24,
-    gap: 26,
+    gap: 24,
   },
   row: {
     flexDirection: 'row',
@@ -121,20 +130,22 @@ const styles = StyleSheet.create({
     width: 34,
     height: 34,
     borderRadius: 17,
+    overflow: 'hidden',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  flagText: {
-    fontSize: 18,
+  flagImage: {
+    width: '100%',
+    height: '100%',
   },
   rowLabel: {
     flex: 1,
     flexShrink: 1,
     fontSize: 18,
-    lineHeight: 24,
+    lineHeight: 25,
   },
   rightSlot: {
-    width: 44,
+    width: 38,
     alignItems: 'flex-end',
   },
   doubleCheck: {

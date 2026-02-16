@@ -2,14 +2,34 @@ import { ThemedText } from '@/components/themed-text';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import React from 'react';
-import { ImageBackground, StyleSheet, View } from 'react-native';
+import { ImageBackground, StyleSheet, View, ViewStyle } from 'react-native';
 
-export const PrayerTimesCard = () => {
+type PrayerTimesCardProps = {
+  greeting?: string;
+  todayLabel?: string;
+  hijriDate?: string;
+  gregorianDate?: string;
+  prayerLabel?: string;
+  prayerTime?: string;
+  countdown?: string;
+  containerStyle?: ViewStyle;
+};
+
+export const PrayerTimesCard = ({
+  greeting = 'Asalam Alaikum',
+  todayLabel = 'Today is',
+  hijriDate = '17 Ramadan, 1447',
+  gregorianDate = '40 Jan, 2025',
+  prayerLabel = 'Fajr',
+  prayerTime = '16:14',
+  countdown = '-05:37:43',
+  containerStyle,
+}: PrayerTimesCardProps = {}) => {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, containerStyle]}>
       <View style={[styles.card, { backgroundColor: colors.primary }]}>
         <ImageBackground
           source={require('@/assets/images/bg-image.png')}
@@ -19,17 +39,19 @@ export const PrayerTimesCard = () => {
           <View style={styles.content}>
             <View style={styles.leftContent}>
               <ThemedText type="poppins-medium" style={styles.greetingText}>
-                Asalam Alaikum
+                {greeting}
               </ThemedText>
               <View style={styles.dateContainer}>
-                <ThemedText type="poppins-regular" style={styles.todayIs}>
-                  Today is
-                </ThemedText>
+                {todayLabel ? (
+                  <ThemedText type="poppins-regular" style={styles.todayIs}>
+                    {todayLabel}
+                  </ThemedText>
+                ) : null}
                 <ThemedText type="poppins-bold" style={styles.dateText}>
-                  17 Ramadan, 1447
+                  {hijriDate}
                 </ThemedText>
                 <ThemedText type="poppins-regular" style={styles.gregorianDate}>
-                  40 Jan, 2025
+                  {gregorianDate}
                 </ThemedText>
               </View>
             </View>
@@ -38,13 +60,13 @@ export const PrayerTimesCard = () => {
               <View style={styles.clockCircle}>
                 <View style={styles.clockContent}>
                   <ThemedText type="poppins-medium" style={styles.prayerLabel}>
-                    Fajr
+                    {prayerLabel}
                   </ThemedText>
                   <ThemedText type="poppins-bold" style={styles.prayerTime}>
-                    16:14
+                    {prayerTime}
                   </ThemedText>
                   <ThemedText type="poppins-regular" style={styles.countdownText}>
-                    -05:37:43
+                    {countdown}
                   </ThemedText>
                 </View>
                 {/* Circular Progress simulating the 3/4 ring */}
@@ -155,4 +177,3 @@ const styles = StyleSheet.create({
     color: 'rgba(255, 255, 255, 0.8)',
   },
 });
-

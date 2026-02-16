@@ -1,6 +1,7 @@
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ADHKAR_CHAPTERS, ADHKAR_CONTENT } from '@/constants/adhkar-data';
+import { useAppColors } from '@/hooks/use-app-colors';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import React from 'react';
 import {
@@ -14,6 +15,7 @@ import {
 export default function AdhkarDetailScreen() {
     const { id } = useLocalSearchParams();
     const router = useRouter();
+    const { colors } = useAppColors();
 
     const chapter = ADHKAR_CHAPTERS.find((c) => c.id === id);
     // Fallback to sample content if specific ID not found, for layout demonstration
@@ -21,36 +23,36 @@ export default function AdhkarDetailScreen() {
 
     if (!chapter) {
         return (
-            <View style={styles.container}>
+            <View style={[styles.container, { backgroundColor: colors.background }]}>
                 <ThemedText>Chapter not found</ThemedText>
             </View>
         );
     }
 
     return (
-        <SafeAreaView style={styles.safeArea}>
-            <View style={styles.container}>
+        <SafeAreaView style={[styles.safeArea, { backgroundColor: colors.background }]}>
+            <View style={[styles.container, { backgroundColor: colors.background }]}>
                 <Stack.Screen options={{ headerShown: false }} />
 
                 {/* Header */}
                 <View style={styles.header}>
-                    <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-                        <IconSymbol name="arrow.left" size={24} color="white" />
+                    <TouchableOpacity onPress={() => router.back()} style={[styles.backButton, { backgroundColor: colors.surface }]}>
+                        <IconSymbol name="arrow.left" size={24} color={colors.text} />
                     </TouchableOpacity>
-                    <ThemedText type="poppins-bold" style={styles.headerTitle}>{chapter.title}</ThemedText>
+                    <ThemedText type="poppins-bold" style={[styles.headerTitle, { color: colors.text }]}>{chapter.title}</ThemedText>
                 </View>
 
                 <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
                     {content.map((item, index) => (
                         <View key={item.id} style={[
                             styles.contentItem,
-                            index !== content.length - 1 && styles.separator
+                            index !== content.length - 1 && [styles.separator, { borderBottomColor: colors.border }]
                         ]}>
-                            <ThemedText style={styles.arabicText}>{item.arabic}</ThemedText>
-                            <ThemedText type="poppins-italic" style={styles.transliterationText}>
+                            <ThemedText style={[styles.arabicText, { color: colors.text }]}>{item.arabic}</ThemedText>
+                            <ThemedText type="poppins-italic" style={[styles.transliterationText, { color: colors.textFaint }]}>
                                 {item.transliteration}
                             </ThemedText>
-                            <ThemedText type="poppins-regular" style={styles.translationText}>
+                            <ThemedText type="poppins-regular" style={[styles.translationText, { color: colors.textMuted }]}>
                                 {item.translation}
                             </ThemedText>
                         </View>
@@ -59,12 +61,12 @@ export default function AdhkarDetailScreen() {
 
                 <View style={styles.footerContainer}>
                     <View style={styles.footer}>
-                        <TouchableOpacity style={styles.footerButton}>
-                            <IconSymbol name="arrow.left" size={20} color="white" />
+                        <TouchableOpacity style={[styles.footerButton, { backgroundColor: colors.surface }]}>
+                            <IconSymbol name="arrow.left" size={20} color={colors.text} />
                         </TouchableOpacity>
-                        <ThemedText type="poppins-medium" style={styles.footerTitle}>{chapter.title}</ThemedText>
-                        <TouchableOpacity style={styles.footerButton}>
-                            <IconSymbol name="arrow.right" size={20} color="white" />
+                        <ThemedText type="poppins-medium" style={[styles.footerTitle, { color: colors.text }]}>{chapter.title}</ThemedText>
+                        <TouchableOpacity style={[styles.footerButton, { backgroundColor: colors.surface }]}>
+                            <IconSymbol name="arrow.right" size={20} color={colors.text} />
                         </TouchableOpacity>
                     </View>
                 </View>

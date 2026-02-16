@@ -30,7 +30,7 @@ export const Colors = {
     background: FigmaColors.darkBackground,
     surface: FigmaColors.darkSurface,
     inputBackground: INPUT_BACKGROUND,
-    primary: FigmaColors.primary,
+    primary: '#AA74E0',
     primaryLight: '#44104D',
     tint: tintColorDark,
     icon: FigmaColors.white,

@@ -29,6 +29,13 @@ export default function DrawerLayout() {
           }}
         />
         <Drawer.Screen
+          name="sukuni"
+          options={{
+            drawerLabel: 'Sukūni',
+            drawerItemStyle: { display: 'none' },
+          }}
+        />
+        <Drawer.Screen
           name="planner"
           options={{
             drawerLabel: 'AI Day Planner',

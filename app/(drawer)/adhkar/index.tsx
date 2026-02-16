@@ -1,5 +1,6 @@
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useAppColors } from '@/hooks/use-app-colors';
 import { Stack, useRouter } from 'expo-router';
 import React from 'react';
 import {
@@ -16,45 +17,46 @@ import { ADHKAR_CATEGORIES } from '@/constants/adhkar-data';
 
 export default function AdhkarScreen() {
     const router = useRouter();
+    const { colors, isDark } = useAppColors();
 
     const renderCategoryItem = (item: typeof ADHKAR_CATEGORIES[0]) => {
         return (
             <TouchableOpacity
                 key={item.id}
-                style={styles.card}
+                style={[styles.card, { backgroundColor: colors.surface }]}
                 onPress={() => router.push(`/(drawer)/adhkar/${item.id}`)}
             >
                 <View style={styles.cardContent}>
-                    <ThemedText type="poppins-medium" style={styles.cardTitle}>
+                    <ThemedText type="poppins-medium" style={[styles.cardTitle, { color: colors.text }]}>
                         {item.title}
                     </ThemedText>
-                    <Image source={item.icon} style={styles.categoryIcon} resizeMode="contain" />
+                    <Image source={item.icon} style={[styles.categoryIcon, { tintColor: isDark ? '#e7c5f3' : '#C98BE8' }]} resizeMode="contain" />
                 </View>
             </TouchableOpacity>
         );
     };
 
     return (
-        <SafeAreaView style={styles.safeArea}>
-            <View style={styles.container}>
+        <SafeAreaView style={[styles.safeArea, { backgroundColor: colors.background }]}>
+            <View style={[styles.container, { backgroundColor: colors.background }]}>
                 <Stack.Screen options={{ headerShown: false }} />
 
                 {/* Header */}
                 <View style={styles.header}>
-                    <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-                        <IconSymbol name="arrow.left" size={24} color="white" />
+                    <TouchableOpacity onPress={() => router.back()} style={[styles.backButton, { backgroundColor: colors.surface }]}>
+                        <IconSymbol name="arrow.left" size={24} color={colors.text} />
                     </TouchableOpacity>
-                    <ThemedText type="poppins-bold" style={styles.headerTitle}>Adhkar</ThemedText>
+                    <ThemedText type="poppins-bold" style={[styles.headerTitle, { color: colors.text }]}>Adhkar</ThemedText>
                 </View>
 
                 <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
                     {/* Search Bar */}
-                    <View style={styles.searchContainer}>
-                        <IconSymbol name="magnifyingglass" size={20} color="#636366" style={styles.searchIcon} />
+                    <View style={[styles.searchContainer, { backgroundColor: colors.input }]}>
+                        <IconSymbol name="magnifyingglass" size={20} color={colors.textFaint} style={styles.searchIcon} />
                         <TextInput
                             placeholder="Search duas"
-                            placeholderTextColor="#636366"
-                            style={styles.searchInput}
+                            placeholderTextColor={colors.textFaint}
+                            style={[styles.searchInput, { color: colors.text }]}
                         />
                     </View>
 

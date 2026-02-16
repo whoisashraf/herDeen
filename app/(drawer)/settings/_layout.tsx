@@ -9,9 +9,6 @@ export default function SettingsLayout() {
             }}
         >
             <Stack.Screen name="index" />
-            <Stack.Screen name="prayer-settings" />
-            <Stack.Screen name="calculation-method" />
-            <Stack.Screen name="current-location" />
             <Stack.Screen name="profile" />
             <Stack.Screen name="password" />
         </Stack>

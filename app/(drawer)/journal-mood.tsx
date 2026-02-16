@@ -1,10 +1,12 @@
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { JOURNAL_MOOD_WHEEL_SVG } from '@/constants/journal-mood-wheel-svg';
 import { useAppColors } from '@/hooks/use-app-colors';
 import { Stack, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React, { useMemo, useState } from 'react';
 import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SvgXml } from 'react-native-svg';
 
 const { width } = Dimensions.get('window');
 
@@ -14,6 +16,20 @@ type MoodOption = {
   key: MoodKey;
   label: string;
   color: string;
+};
+
+const MOOD_WHEEL_VIEWBOX_WIDTH = 607;
+const MOOD_WHEEL_VIEWBOX_HEIGHT = 604;
+const MOOD_WHEEL_WIDTH = Math.min(width * 1.62, MOOD_WHEEL_VIEWBOX_WIDTH);
+const MOOD_WHEEL_HEIGHT = MOOD_WHEEL_WIDTH * (MOOD_WHEEL_VIEWBOX_HEIGHT / MOOD_WHEEL_VIEWBOX_WIDTH);
+const MOOD_WHEEL_VIEWPORT_HEIGHT = 360;
+const MOOD_HIT_SIZE = 92;
+const MOOD_HOTSPOTS: Record<MoodKey, { x: number; y: number }> = {
+  neutral: { x: 92.749, y: 286.57 },
+  sad: { x: 159.808, y: 147.496 },
+  happy: { x: 306.983, y: 91.674 },
+  great: { x: 458.203, y: 164.38 },
+  tired: { x: 506.945, y: 320.726 },
 };
 
 const MOOD_OPTIONS: MoodOption[] = [
@@ -182,7 +198,7 @@ export default function JournalMoodScreen() {
         </TouchableOpacity>
       </View>
 
-      <Text style={[styles.questionText, { color: colors.textMuted }]}>How was{'\n'}your day, sis?</Text>
+      <Text style={[styles.questionText, { color: colors.textMuted }]}>How's{'\n'}your day, sis?</Text>
 
       <View style={styles.selectedWrap}>
         <MoodFace mood={activeMood.key} color={activeMood.color} size={124} lineColor="#FFFFFF" />
@@ -190,22 +206,34 @@ export default function JournalMoodScreen() {
       </View>
 
       <View style={styles.wheelWrap}>
-        <View style={styles.wheelOuter}>
+        <View style={[styles.wheelViewport, { width: MOOD_WHEEL_WIDTH, height: MOOD_WHEEL_VIEWPORT_HEIGHT }]}>
+          <SvgXml xml={JOURNAL_MOOD_WHEEL_SVG} width={MOOD_WHEEL_WIDTH} height={MOOD_WHEEL_HEIGHT} />
           {MOOD_OPTIONS.map((mood) => (
             <TouchableOpacity
               key={mood.key}
-              style={[styles.segment, { backgroundColor: mood.color }]}
+              activeOpacity={0.8}
+              style={[
+                styles.moodHitArea,
+                {
+                  left: (MOOD_HOTSPOTS[mood.key].x / MOOD_WHEEL_VIEWBOX_WIDTH) * MOOD_WHEEL_WIDTH - MOOD_HIT_SIZE / 2,
+                  top: (MOOD_HOTSPOTS[mood.key].y / MOOD_WHEEL_VIEWBOX_HEIGHT) * MOOD_WHEEL_HEIGHT - MOOD_HIT_SIZE / 2,
+                },
+              ]}
               onPress={() => setSelectedMood(mood.key)}>
-              <MoodFace mood={mood.key} color={mood.color} size={64} lineColor="rgba(0,0,0,0.36)" />
+              {selectedMood === mood.key ? (
+                <View
+                  pointerEvents="none"
+                  style={[
+                    styles.moodSelectionRing,
+                    {
+                      borderColor: isDark ? 'rgba(255,255,255,0.95)' : 'rgba(19,24,28,0.82)',
+                      backgroundColor: isDark ? 'rgba(255,255,255,0.16)' : 'rgba(255,255,255,0.58)',
+                    },
+                  ]}
+                />
+              ) : null}
             </TouchableOpacity>
           ))}
-        </View>
-
-        <View style={[styles.wheelCutout, { backgroundColor: colors.background }]} />
-
-        <View style={styles.pointerWrap}>
-          <IconSymbol name="place" size={56} color="#E7EAEE" />
-          <View style={[styles.pointerDot, { backgroundColor: colors.background }]} />
         </View>
       </View>
     </View>
@@ -255,49 +283,27 @@ const styles = StyleSheet.create({
   },
   wheelWrap: {
     position: 'absolute',
-    bottom: -16,
-    left: -(width * 0.08),
-    width: width * 1.16,
-    height: 320,
+    bottom: -18,
+    width: '100%',
     alignItems: 'center',
     justifyContent: 'flex-end',
   },
-  wheelOuter: {
-    width: '100%',
-    height: 220,
-    borderTopLeftRadius: 220,
-    borderTopRightRadius: 220,
+  wheelViewport: {
     overflow: 'hidden',
-    flexDirection: 'row',
   },
-  segment: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingTop: 20,
-  },
-  wheelCutout: {
+  moodHitArea: {
     position: 'absolute',
-    bottom: 0,
-    width: width * 0.9,
-    height: 116,
-    borderTopLeftRadius: 120,
-    borderTopRightRadius: 120,
-    backgroundColor: '#13181C',
-  },
-  pointerWrap: {
-    position: 'absolute',
-    bottom: 66,
+    width: MOOD_HIT_SIZE,
+    height: MOOD_HIT_SIZE,
+    borderRadius: MOOD_HIT_SIZE / 2,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  pointerDot: {
-    position: 'absolute',
-    width: 16,
-    height: 16,
-    borderRadius: 8,
-    backgroundColor: '#13181C',
-    marginTop: -4,
+  moodSelectionRing: {
+    width: 82,
+    height: 82,
+    borderRadius: 41,
+    borderWidth: 3,
   },
   faceBase: {
     alignItems: 'center',

@@ -6,7 +6,6 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Stack, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
-    Dimensions,
     Image,
     ImageBackground,
     ScrollView,
@@ -15,8 +14,6 @@ import {
     TouchableOpacity,
     View
 } from 'react-native';
-
-const { width } = Dimensions.get('window');
 
 const SURAHS = [
     { number: 1, name: 'Al-Faatiha', englishName: 'The Opening', verses: 7, arabicName: 'الفاتحة', location: 'Makkah' },
@@ -183,7 +180,10 @@ export default function QuranScreen() {
                     <TouchableOpacity style={[styles.headerIconButton, { backgroundColor: headerIconBackground }]} onPress={() => setIsSearching(true)}>
                         <IconSymbol name="magnifyingglass" size={22} color={headerIconColor} />
                     </TouchableOpacity>
-                    <TouchableOpacity style={[styles.headerIconButton, { backgroundColor: headerIconBackground }]}>
+                    <TouchableOpacity
+                        style={[styles.headerIconButton, { backgroundColor: headerIconBackground }]}
+                        onPress={() => router.push('/(drawer)/quran/1?openSettings=1')}
+                    >
                         <IconSymbol name="hexagon" size={22} color={headerIconColor} />
                     </TouchableOpacity>
                 </View>
@@ -336,11 +336,11 @@ const styles = StyleSheet.create({
         color: '#E18DFF',
     },
     bannerContainer: {
-        height: 156,
+        height: 140,
         borderRadius: 20,
         overflow: 'hidden',
         marginBottom: 32,
-        backgroundColor: '#E18DFF1A',
+        backgroundColor: '#AA74E01A',
     },
     bannerBackground: {
         flex: 1,

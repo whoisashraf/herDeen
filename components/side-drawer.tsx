@@ -12,6 +12,7 @@ interface MenuItem {
 
 const menuItems: MenuItem[] = [
   { id: 'home', label: 'Home', icon: 'house', route: '/(drawer)' },
+  { id: 'sukuni', label: 'Sukūni', icon: 'sparkles', route: '/(drawer)/sukuni' },
   { id: 'planner', label: 'AI Day Planner', icon: 'calendar', route: '/(drawer)/planner' },
   { id: 'ibadah-goals', label: 'Ibadah Goals', icon: 'flag', route: '/(drawer)/ibadah-goals' },
   { id: 'quran', label: 'Her Quran', icon: 'book', route: '/(drawer)/quran' },

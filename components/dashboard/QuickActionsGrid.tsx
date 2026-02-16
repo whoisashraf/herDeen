@@ -50,7 +50,7 @@ export const QuickActionsGrid = () => {
               } else if (action.name === 'Tasbih') {
                 router.push('/tasbih');
               } else if (action.name === 'Sukūni') {
-                // router.push('/sukuni');
+                router.push('/sukuni');
               } else if (action.name === 'Track') {
                 router.push('/tracker');
               } else if (action.name === 'More') {

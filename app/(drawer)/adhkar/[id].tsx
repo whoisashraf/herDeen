@@ -1,6 +1,7 @@
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ADHKAR_CATEGORIES, ADHKAR_CHAPTERS } from '@/constants/adhkar-data';
+import { useAppColors } from '@/hooks/use-app-colors';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import React from 'react';
 import {
@@ -15,44 +16,45 @@ import {
 export default function AdhkarCategoryScreen() {
     const { id } = useLocalSearchParams();
     const router = useRouter();
+    const { colors } = useAppColors();
 
     const category = ADHKAR_CATEGORIES.find((c) => c.id === id);
 
     if (!category) {
         return (
-            <View style={styles.container}>
+            <View style={[styles.container, { backgroundColor: colors.background }]}>
                 <ThemedText>Category not found</ThemedText>
             </View>
         );
     }
 
     return (
-        <SafeAreaView style={styles.safeArea}>
-            <View style={styles.container}>
+        <SafeAreaView style={[styles.safeArea, { backgroundColor: colors.background }]}>
+            <View style={[styles.container, { backgroundColor: colors.background }]}>
                 <Stack.Screen options={{ headerShown: false }} />
 
                 {/* Header */}
                 <View style={styles.header}>
-                    <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-                        <IconSymbol name="arrow.left" size={24} color="white" />
+                    <TouchableOpacity onPress={() => router.back()} style={[styles.backButton, { backgroundColor: colors.surface }]}>
+                        <IconSymbol name="arrow.left" size={24} color={colors.text} />
                     </TouchableOpacity>
                     <View style={styles.headerTitleContainer}>
                         <View style={styles.titleWithIcon}>
-                            <ThemedText type="poppins-semibold" style={styles.headerTitle}>{category.title}</ThemedText>
-                            <IconSymbol name="chevron.down" size={16} color="white" style={styles.chevronDown} />
+                            <ThemedText type="poppins-semibold" style={[styles.headerTitle, { color: colors.text }]}>{category.title}</ThemedText>
+                            <IconSymbol name="chevron.down" size={16} color={colors.text} style={styles.chevronDown} />
                         </View>
-                        <ThemedText type="poppins-regular" style={styles.headerSubtitle}>{category.count}</ThemedText>
+                        <ThemedText type="poppins-regular" style={[styles.headerSubtitle, { color: colors.textMuted }]}>{category.count}</ThemedText>
                     </View>
                 </View>
 
                 <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
                     {/* Search Bar */}
-                    <View style={styles.searchContainer}>
-                        <IconSymbol name="magnifyingglass" size={20} color="#636366" style={styles.searchIcon} />
+                    <View style={[styles.searchContainer, { backgroundColor: colors.input }]}>
+                        <IconSymbol name="magnifyingglass" size={20} color={colors.textFaint} style={styles.searchIcon} />
                         <TextInput
                             placeholder="Search duas"
-                            placeholderTextColor="#636366"
-                            style={styles.searchInput}
+                            placeholderTextColor={colors.textFaint}
+                            style={[styles.searchInput, { color: colors.text }]}
                         />
                     </View>
 
@@ -61,11 +63,11 @@ export default function AdhkarCategoryScreen() {
                         {ADHKAR_CHAPTERS.map((chapter) => (
                             <TouchableOpacity
                                 key={chapter.id}
-                                style={styles.chapterItem}
+                                style={[styles.chapterItem, { borderBottomColor: colors.border }]}
                                 onPress={() => router.push(`/(drawer)/adhkar/content/${chapter.id}`)}
                             >
-                                <ThemedText type="poppins-medium" style={styles.chapterTitle}>{chapter.title}</ThemedText>
-                                <IconSymbol name="chevron.right" size={20} color="#3A3A3C" />
+                                <ThemedText type="poppins-medium" style={[styles.chapterTitle, { color: colors.text }]}>{chapter.title}</ThemedText>
+                                <IconSymbol name="chevron.right" size={20} color={colors.textFaint} />
                             </TouchableOpacity>
                         ))}
                     </View>
